@@ -1,0 +1,35 @@
+---
+title: "Explorative Datenanalyse"
+title-block-banner: true
+author: Ole Kepa, Fabian Elsner, Sören Bax
+format: 
+  html: 
+    theme: superhero
+    toc: true
+    toc_float: true
+    embed-resources: true
+    code-fold: true
+  pdf: 
+    toc: true
+    number-sections: true
+---
+
+# 1 Titel
+```{r}
+1+1
+```
+
+## 1.1 Titel
+```{r}
+1+1
+```
+
+# 2 Titel
+```{r}
+1+1
+```
+
+## 2.2 Titel
+```{r}
+1+1
+```
