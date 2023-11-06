@@ -1,7 +1,9 @@
 ---
-title: "Explorative Datenanalyse"
+title: "Datenanalyse von ....."
 title-block-banner: true
-author: Ole Kepa, Fabian Elsner, Sören Bax
+author: Ole Kepa,<br>
+        Fabian Elsner,<br>
+        Sören Bax
 format: 
   html: 
     theme: superhero
@@ -13,6 +15,9 @@ format:
     toc: true
     number-sections: true
 ---
+
+# Gendererklärung
+Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Ansprechweisen, sei es divers, männlich oder weiblich verzichtet. Alle Formulierungen sprechen gleichermaßen alle Geschlechter an.
 
 # 1 Titel
 ```{r}
@@ -33,3 +38,37 @@ format:
 ```{r}
 1+1
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Ehrenwörtliche Erklärung
+Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.
