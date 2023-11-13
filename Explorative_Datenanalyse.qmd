@@ -1,6 +1,6 @@
 ---
-title: "Hauspreise"
-subtitle: "EDA und Regression"
+title: "Einkaufsgewohnheiten in den USA"
+subtitle: ""
 title-block-banner: true
 lang: de
 author: Ole Kepa,<br>
