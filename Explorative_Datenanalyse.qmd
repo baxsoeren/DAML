@@ -36,6 +36,8 @@ Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Anspre
 
 # Aufgabe und Daten verstehen
 
+# Beschreibung der Datenquelle
+
 Laden wir zuerst die beiden Datensets:
 
 ```{r, message=FALSE}
@@ -116,21 +118,80 @@ describe_tbl(shopping_behavior)
 
 Im Datensatz "Shoping_behavior" gibt es ebenfalls 3.900 Instazen (Beobachtungen). Zudem gibt wa qiwswe bwi jwswe Instanz keine enthalten Werte ohne Angabe (NA). Daher müssen wir, wie beim vorherigen Datensatz  keine fehlenden Variablen aufbereiten.
 
-# Untersuchung der Daten
+# Untersuchung der Daten (Auf ausreißer)
 
 
-## Einlesen der Daten
+# Untersuchung der Thesen (mit Methoden der EDA)
 
-Aufbereitung
+## These 1 (Ole)
 
-# Anwendung und Evaluation von ML-Modellen
+## These 2 (Ole)
 
-Text
+## These 3 (Ole)
 
-# Kritische Bewertung/ Ideen für weitere Analysen
+## These 4 (Fabian)
+
+## These 5 (Fabian)
+
+## These 6 (Fabian)
+
+## These 7 (Sörn)
+
+## These 8 (Sörn)
+
+## These 9 (Sörn)
+
+# Anwendung und Beurteilung von Machine-Learning-Modellen
+
+## Modell 1 (Ole)
+
+### Anvendung
+
+### Beurteilung
+
+## Modell 2 (Ole)
+
+### Anvendung
+
+### Beurteilung
+
+## Modell 3 (Fabian)
+
+### Anvendung
+
+### Beurteilung
+
+## Modell 4 (Fabian)
+
+### Anvendung
+
+### Beurteilung
+
+## Modell 5 (Sörn)
+
+### Anvendung
+
+### Beurteilung
+
+## Modell 6 (Sörn)
+
+### Anvendung
+
+### Beurteilung
+
+# Fazit
+
+## Bewertung
 
 Ich finde das sehr Kritisch und nicht schön
 
+## Ideen für weitere Analysen
+
+# Quellen
+
+Datenset: <a href="https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data">
+                 https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data</a>
 
 # Ehrenwörtliche Erklärung
 Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.
+
