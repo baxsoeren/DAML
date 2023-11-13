@@ -18,6 +18,7 @@ format:
   pdf: 
     toc: true
     number-sections: true
+    keep-tex: true 
 ---
 
 ```{r, message=FALSE, include = FALSE}
