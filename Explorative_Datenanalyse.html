@@ -3092,7 +3092,7 @@ vertical-align: -.125em;
 </section>
 <section id="einlesen-der-daten" class="level2">
 <h2 class="anchored" data-anchor-id="einlesen-der-daten">Einlesen der Daten</h2>
-<p>Wir lesen zunächst Daten .</p>
+<p>Wir lesen zunächst Daten ein .</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -3137,6 +3137,51 @@ vertical-align: -.125em;
 #   `Frequency of Purchases` &lt;chr&gt;</code></pre>
 </div>
 </div>
+<p>Wir lesen erneut Daten ein .</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>shopping_behavior <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;./data/shopping_behavior_updated.csv&#39;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Wir werfen einen Blick auf die ersten 20 Einträge:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(shopping_behavior, <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 18
+   `Customer ID`   Age Gender `Item Purchased` Category   Purchase Amount (USD…¹
+           &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;            &lt;chr&gt;                       &lt;dbl&gt;
+ 1             1    55 Male   Blouse           Clothing                       53
+ 2             2    19 Male   Sweater          Clothing                       64
+ 3             3    50 Male   Jeans            Clothing                       73
+ 4             4    21 Male   Sandals          Footwear                       90
+ 5             5    45 Male   Blouse           Clothing                       49
+ 6             6    46 Male   Sneakers         Footwear                       20
+ 7             7    63 Male   Shirt            Clothing                       85
+ 8             8    27 Male   Shorts           Clothing                       34
+ 9             9    26 Male   Coat             Outerwear                      97
+10            10    57 Male   Handbag          Accessori…                     31
+11            11    53 Male   Shoes            Footwear                       34
+12            12    30 Male   Shorts           Clothing                       68
+13            13    61 Male   Coat             Outerwear                      72
+14            14    65 Male   Dress            Clothing                       51
+15            15    64 Male   Coat             Outerwear                      53
+16            16    64 Male   Skirt            Clothing                       81
+17            17    25 Male   Sunglasses       Accessori…                     36
+18            18    53 Male   Dress            Clothing                       38
+19            19    52 Male   Sweater          Clothing                       48
+20            20    66 Male   Pants            Clothing                       90
+# ℹ abbreviated name: ¹​`Purchase Amount (USD)`
+# ℹ 12 more variables: Location &lt;chr&gt;, Size &lt;chr&gt;, Color &lt;chr&gt;, Season &lt;chr&gt;,
+#   `Review Rating` &lt;dbl&gt;, `Subscription Status` &lt;chr&gt;, `Shipping Type` &lt;chr&gt;,
+#   `Discount Applied` &lt;chr&gt;, `Promo Code Used` &lt;chr&gt;,
+#   `Previous Purchases` &lt;dbl&gt;, `Payment Method` &lt;chr&gt;,
+#   `Frequency of Purchases` &lt;chr&gt;</code></pre>
+</div>
+</div>
 </section>
 </section>
 <section id="titel" class="level1">
@@ -3144,7 +3189,7 @@ vertical-align: -.125em;
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2</code></pre>
@@ -3155,7 +3200,7 @@ vertical-align: -.125em;
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2</code></pre>
@@ -3168,7 +3213,7 @@ vertical-align: -.125em;
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2</code></pre>
@@ -3179,7 +3224,7 @@ vertical-align: -.125em;
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2</code></pre>
