@@ -3048,18 +3048,13 @@ vertical-align: -.125em;
   <ul>
   <li><a href="#gendererklärung" id="toc-gendererklärung" class="nav-link active" data-scroll-target="#gendererklärung"><span class="header-section-number">1</span> Gendererklärung</a></li>
   <li><a href="#aufgabe-und-daten-verstehen" id="toc-aufgabe-und-daten-verstehen" class="nav-link" data-scroll-target="#aufgabe-und-daten-verstehen"><span class="header-section-number">2</span> Aufgabe und Daten verstehen</a></li>
-  <li><a href="#beschreibung-der-datenquelle" id="toc-beschreibung-der-datenquelle" class="nav-link" data-scroll-target="#beschreibung-der-datenquelle"><span class="header-section-number">3</span> Beschreibung der Datenquelle</a>
+  <li><a href="#untersuchung-der-daten" id="toc-untersuchung-der-daten" class="nav-link" data-scroll-target="#untersuchung-der-daten"><span class="header-section-number">3</span> Untersuchung der Daten</a>
   <ul class="collapse">
-  <li><a href="#erste-datenquelle" id="toc-erste-datenquelle" class="nav-link" data-scroll-target="#erste-datenquelle"><span class="header-section-number">3.1</span> Erste Datenquelle</a></li>
-  <li><a href="#zweite-datenquelle" id="toc-zweite-datenquelle" class="nav-link" data-scroll-target="#zweite-datenquelle"><span class="header-section-number">3.2</span> Zweite Datenquelle</a></li>
+  <li><a href="#einlesen-der-daten" id="toc-einlesen-der-daten" class="nav-link" data-scroll-target="#einlesen-der-daten"><span class="header-section-number">3.1</span> Einlesen der Daten</a></li>
   </ul></li>
-  <li><a href="#untersuchung-der-daten" id="toc-untersuchung-der-daten" class="nav-link" data-scroll-target="#untersuchung-der-daten"><span class="header-section-number">4</span> Untersuchung der Daten</a>
-  <ul class="collapse">
-  <li><a href="#einlesen-der-daten" id="toc-einlesen-der-daten" class="nav-link" data-scroll-target="#einlesen-der-daten"><span class="header-section-number">4.1</span> Einlesen der Daten</a></li>
-  </ul></li>
-  <li><a href="#anwendung-und-evaluation-von-ml-modellen" id="toc-anwendung-und-evaluation-von-ml-modellen" class="nav-link" data-scroll-target="#anwendung-und-evaluation-von-ml-modellen"><span class="header-section-number">5</span> Anwendung und Evaluation von ML-Modellen</a></li>
-  <li><a href="#kritische-bewertung-ideen-für-weitere-analysen" id="toc-kritische-bewertung-ideen-für-weitere-analysen" class="nav-link" data-scroll-target="#kritische-bewertung-ideen-für-weitere-analysen"><span class="header-section-number">6</span> Kritische Bewertung/ Ideen für weitere Analysen</a></li>
-  <li><a href="#ehrenwörtliche-erklärung" id="toc-ehrenwörtliche-erklärung" class="nav-link" data-scroll-target="#ehrenwörtliche-erklärung"><span class="header-section-number">7</span> Ehrenwörtliche Erklärung</a></li>
+  <li><a href="#anwendung-und-evaluation-von-ml-modellen" id="toc-anwendung-und-evaluation-von-ml-modellen" class="nav-link" data-scroll-target="#anwendung-und-evaluation-von-ml-modellen"><span class="header-section-number">4</span> Anwendung und Evaluation von ML-Modellen</a></li>
+  <li><a href="#kritische-bewertung-ideen-für-weitere-analysen" id="toc-kritische-bewertung-ideen-für-weitere-analysen" class="nav-link" data-scroll-target="#kritische-bewertung-ideen-für-weitere-analysen"><span class="header-section-number">5</span> Kritische Bewertung/ Ideen für weitere Analysen</a></li>
+  <li><a href="#ehrenwörtliche-erklärung" id="toc-ehrenwörtliche-erklärung" class="nav-link" data-scroll-target="#ehrenwörtliche-erklärung"><span class="header-section-number">6</span> Ehrenwörtliche Erklärung</a></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Andere Formate</h2><ul><li><a href="Explorative_Datenanalyse.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
@@ -3074,20 +3069,15 @@ vertical-align: -.125em;
 </section>
 <section id="aufgabe-und-daten-verstehen" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Aufgabe und Daten verstehen</h1>
-<p>Thesen…</p>
-</section>
-<section id="beschreibung-der-datenquelle" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Beschreibung der Datenquelle</h1>
-<section id="erste-datenquelle" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="erste-datenquelle"><span class="header-section-number">3.1</span> Erste Datenquelle</h2>
-<p>Wir lesen zunächst Daten ein .</p>
+<p>Laden wir zuerst die beiden Datensets:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>shopping_trends <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;./data/shopping_trends.csv&#39;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>shopping_trends <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;./data/shopping_trends.csv&#39;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>shopping_behavior <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;./data/shopping_behavior_updated.csv&#39;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Nun werfen wir einen kurzen Blick auf die Datenstruktur:</p>
+<p>Nun werfen wir einen kurzen Blick auf die Datenstrukturen.<br> Zunächst einmal die Datenstruktur des Datensets “Shopping_trends”:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -3116,7 +3106,7 @@ vertical-align: -.125em;
 #   `Frequency of Purchases` &lt;chr&gt;</code></pre>
 </div>
 </div>
-<p>Jede Zeile steht für irgendwas.</p>
+<p>Jede Zeile steht für einen *********</p>
 <table class="table">
 <colgroup>
 <col style="width: 35%">
@@ -3240,22 +3230,11 @@ vertical-align: -.125em;
 0 variables with no variance</code></pre>
 </div>
 </div>
-<p>Im ersten Datensatz gibt es 3.900 Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.</p>
-</section>
-<section id="zweite-datenquelle" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="zweite-datenquelle"><span class="header-section-number">3.2</span> Zweite Datenquelle</h2>
-<p>Wir lesen erneut Daten ein .</p>
+<p>Im Datensatz “Shopping_trends” gibt es 3.900 Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.<br> <br> Nun schauen wir auf die Datenstruktur des Datensets “Shopping_behavior”:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>shopping_behavior <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;./data/shopping_behavior_updated.csv&#39;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<p>Nun werfen wir einen kurzen Blick auf die Datenstruktur:</p>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>shopping_behavior</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>shopping_behavior</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3,900 × 18
@@ -3280,7 +3259,7 @@ vertical-align: -.125em;
 #   `Frequency of Purchases` &lt;chr&gt;</code></pre>
 </div>
 </div>
-<p>Jede Zeile steht für irgendwas.</p>
+<p>Jede Zeile steht für *******.</p>
 <table class="table">
 <colgroup>
 <col style="width: 38%">
@@ -3395,7 +3374,7 @@ vertical-align: -.125em;
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe_tbl</span>(shopping_behavior)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe_tbl</span>(shopping_behavior)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>3 900 (3.9k) observations with 18 variables
@@ -3404,26 +3383,25 @@ vertical-align: -.125em;
 0 variables with no variance</code></pre>
 </div>
 </div>
-<p>Im zweiten Datensatz gibt es 3.900 Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.</p>
+<p>Im Datensatz “Shoping_behavior” gibt es ebenfalls 3.900 Instazen (Beobachtungen). Zudem gibt wa qiwswe bwi jwswe Instanz keine enthalten Werte ohne Angabe (NA). Daher müssen wir, wie beim vorherigen Datensatz keine fehlenden Variablen aufbereiten.</p>
 </section>
-</section>
-<section id="untersuchung-der-daten" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Untersuchung der Daten</h1>
-<section id="einlesen-der-daten" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="einlesen-der-daten"><span class="header-section-number">4.1</span> Einlesen der Daten</h2>
+<section id="untersuchung-der-daten" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Untersuchung der Daten</h1>
+<section id="einlesen-der-daten" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="einlesen-der-daten"><span class="header-section-number">3.1</span> Einlesen der Daten</h2>
 <p>Aufbereitung</p>
 </section>
 </section>
-<section id="anwendung-und-evaluation-von-ml-modellen" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Anwendung und Evaluation von ML-Modellen</h1>
+<section id="anwendung-und-evaluation-von-ml-modellen" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Anwendung und Evaluation von ML-Modellen</h1>
 <p>Text</p>
 </section>
-<section id="kritische-bewertung-ideen-für-weitere-analysen" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Kritische Bewertung/ Ideen für weitere Analysen</h1>
-<p>Text</p>
+<section id="kritische-bewertung-ideen-für-weitere-analysen" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Kritische Bewertung/ Ideen für weitere Analysen</h1>
+<p>Ich finde das sehr Kritisch und nicht schön</p>
 </section>
-<section id="ehrenwörtliche-erklärung" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Ehrenwörtliche Erklärung</h1>
+<section id="ehrenwörtliche-erklärung" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Ehrenwörtliche Erklärung</h1>
 <p>Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.</p>
 </section>
 

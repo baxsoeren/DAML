@@ -36,25 +36,21 @@ Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Anspre
 
 # Aufgabe und Daten verstehen
 
-Thesen...
-
-# Beschreibung der Datenquelle
-
-## Erste Datenquelle
-
-Wir lesen zunächst Daten ein .
+Laden wir zuerst die beiden Datensets:
 
 ```{r, message=FALSE}
 shopping_trends <- read_csv('./data/shopping_trends.csv')
+shopping_behavior <- read_csv('./data/shopping_behavior_updated.csv')
 ```
 
-Nun werfen wir einen kurzen Blick auf die Datenstruktur:
+Nun werfen wir einen kurzen Blick auf die Datenstrukturen.<br>
+Zunächst einmal die Datenstruktur des Datensets "Shopping_trends":
 
 ```{r}
 shopping_trends
 ```
 
-Jede Zeile steht für irgendwas.
+Jede Zeile steht für einen *********
 
 Variable                    |Typ    |Bedeutung
 :---------------------------|:------|:------------------------------------------
@@ -82,23 +78,15 @@ Variable                    |Typ    |Bedeutung
 describe_tbl(shopping_trends)
 ```
 
-Im ersten Datensatz gibt es 3.900 Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.
-
-## Zweite Datenquelle
-
-Wir lesen erneut Daten ein .
-
-```{r, message=FALSE}
-shopping_behavior <- read_csv('./data/shopping_behavior_updated.csv')
-```
-
-Nun werfen wir einen kurzen Blick auf die Datenstruktur:
+Im Datensatz "Shopping_trends" gibt es 3.900 Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.<br>
+<br>
+Nun schauen wir auf die Datenstruktur des Datensets "Shopping_behavior":
 
 ```{r}
 shopping_behavior
 ```
 
-Jede Zeile steht für irgendwas.
+Jede Zeile steht für *******.
 
 Variable                    |Typ    |Bedeutung
 :---------------------------|:------|:------------------------------------
@@ -126,7 +114,7 @@ Variable                    |Typ    |Bedeutung
 describe_tbl(shopping_behavior)
 ```
 
-Im zweiten Datensatz gibt es 3.900 Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.
+Im Datensatz "Shoping_behavior" gibt es ebenfalls 3.900 Instazen (Beobachtungen). Zudem gibt wa qiwswe bwi jwswe Instanz keine enthalten Werte ohne Angabe (NA). Daher müssen wir, wie beim vorherigen Datensatz  keine fehlenden Variablen aufbereiten.
 
 # Untersuchung der Daten
 
@@ -141,7 +129,7 @@ Text
 
 # Kritische Bewertung/ Ideen für weitere Analysen
 
-Text
+Ich finde das sehr Kritisch und nicht schön
 
 
 # Ehrenwörtliche Erklärung
