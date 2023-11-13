@@ -36,13 +36,13 @@ library(explore)
 Wir lesen zunächst Daten .
 
 ```{r, message=FALSE}
-shoping_trends <- read_csv('./shoping_trends.csv')
+shopping_trends <- read_csv('./data/shopping_trends.csv')
 ```
 
 Wir werfen einen Blick auf die ersten 20 Einträge:
 
 ```{r}
-head(states, 20)
+head(shopping_trends, 20)
 ```
 
 # 1 Titel
