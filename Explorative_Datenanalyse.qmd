@@ -1,26 +1,41 @@
 ---
-title: "Explorative Datenanalyse"
+title: "Hauspreise"
+subtitle: "EDA und Regression"
 title-block-banner: true
-author: Ole Kepa
+lang: de
+author: Ole Kepa,<br>
+        Fabian Elsner,<br>
+        Sören Bax
 format: 
   html: 
     theme: superhero
     toc: true
     toc_float: true
+    number-sections: true
     embed-resources: true
     code-fold: true
+    code-summary: "Code anzeigen"
   pdf: 
     toc: true
     number-sections: true
-date: 2023-11-06
 ---
 
 # Gendererklärung
 Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Ansprechweisen, sei es divers, männlich oder weiblich verzichtet. Alle Formulierungen sprechen gleichermaßen alle Geschlechter an.
 
-#Vorbereitung
+# Aufgabe und Daten verstehen
 
-## Laden der Pakete
+Thesen...
+
+# Beschreibung der Datenquelle
+
+Super Datenquelle
+
+# Untersuchung der Daten
+
+## Vorbereitung
+
+### Laden der Pakete
 
 Wir laden zunächst die benötigten Pakete.
 
@@ -31,7 +46,7 @@ library(tidyverse)
 library(explore)
 ```
 
-## Einlesen der Daten
+### Einlesen der Daten
 
 Wir lesen zunächst Daten ein .
 
@@ -57,54 +72,17 @@ Wir werfen einen Blick auf die ersten 20 Einträge:
 head(shopping_behavior, 20)
 ```
 
-# 1 Titel
-```{r}
-1+1
-```
-## 1.1 Titel
-```{r}
-1+1
-```
+## Einlesen der Daten
 
-# 2 Titel
-```{r}
-1+1
-```
+Aufbereitung
 
-## 2.2 Titel
-```{r}
-1+1
-```
+# Anwendung und Evaluation von ML-Modellen
 
+Text
 
+# Kritische Bewertung/ Ideen für weitere Analysen
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Text
 
 
 # Ehrenwörtliche Erklärung

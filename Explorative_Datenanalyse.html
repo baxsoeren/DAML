@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.3.433">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Ole Kepa">
-<meta name="dcterms.date" content="2023-11-06">
+<meta name="author" content="Ole Kepa,  Fabian Elsner,  Sören Bax">
 
-<title>Explorative Datenanalyse</title>
+<title>Hauspreise</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -3022,7 +3021,8 @@ vertical-align: -.125em;
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Explorative Datenanalyse</h1>
+      <h1 class="title">Hauspreise</h1>
+            <p class="subtitle lead">EDA und Regression</p>
                       </div>
   </div>
     
@@ -3030,18 +3030,12 @@ vertical-align: -.125em;
   <div class="quarto-title-meta">
 
       <div>
-      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-heading">Autor:in</div>
       <div class="quarto-title-meta-contents">
-               <p>Ole Kepa </p>
+               <p>Ole Kepa,<br> Fabian Elsner,<br> Sören Bax </p>
             </div>
     </div>
       
-      <div>
-      <div class="quarto-title-meta-heading">Published</div>
-      <div class="quarto-title-meta-contents">
-        <p class="date">November 6, 2023</p>
-      </div>
-    </div>
     
       
     </div>
@@ -3050,60 +3044,73 @@ vertical-align: -.125em;
   </header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
   <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+    <h2 id="toc-title">Inhaltsverzeichnis</h2>
    
   <ul>
-  <li><a href="#gendererklärung" id="toc-gendererklärung" class="nav-link active" data-scroll-target="#gendererklärung">Gendererklärung</a>
+  <li><a href="#gendererklärung" id="toc-gendererklärung" class="nav-link active" data-scroll-target="#gendererklärung"><span class="header-section-number">1</span> Gendererklärung</a></li>
+  <li><a href="#aufgabe-und-daten-verstehen" id="toc-aufgabe-und-daten-verstehen" class="nav-link" data-scroll-target="#aufgabe-und-daten-verstehen"><span class="header-section-number">2</span> Aufgabe und Daten verstehen</a></li>
+  <li><a href="#beschreibung-der-datenquelle" id="toc-beschreibung-der-datenquelle" class="nav-link" data-scroll-target="#beschreibung-der-datenquelle"><span class="header-section-number">3</span> Beschreibung der Datenquelle</a></li>
+  <li><a href="#untersuchung-der-daten" id="toc-untersuchung-der-daten" class="nav-link" data-scroll-target="#untersuchung-der-daten"><span class="header-section-number">4</span> Untersuchung der Daten</a>
   <ul class="collapse">
-  <li><a href="#laden-der-pakete" id="toc-laden-der-pakete" class="nav-link" data-scroll-target="#laden-der-pakete">Laden der Pakete</a></li>
-  <li><a href="#einlesen-der-daten" id="toc-einlesen-der-daten" class="nav-link" data-scroll-target="#einlesen-der-daten">Einlesen der Daten</a></li>
-  </ul></li>
-  <li><a href="#titel" id="toc-titel" class="nav-link" data-scroll-target="#titel">1 Titel</a>
+  <li><a href="#vorbereitung" id="toc-vorbereitung" class="nav-link" data-scroll-target="#vorbereitung"><span class="header-section-number">4.1</span> Vorbereitung</a>
   <ul class="collapse">
-  <li><a href="#titel-1" id="toc-titel-1" class="nav-link" data-scroll-target="#titel-1">1.1 Titel</a></li>
+  <li><a href="#laden-der-pakete" id="toc-laden-der-pakete" class="nav-link" data-scroll-target="#laden-der-pakete"><span class="header-section-number">4.1.1</span> Laden der Pakete</a></li>
+  <li><a href="#einlesen-der-daten" id="toc-einlesen-der-daten" class="nav-link" data-scroll-target="#einlesen-der-daten"><span class="header-section-number">4.1.2</span> Einlesen der Daten</a></li>
   </ul></li>
-  <li><a href="#titel-2" id="toc-titel-2" class="nav-link" data-scroll-target="#titel-2">2 Titel</a>
-  <ul class="collapse">
-  <li><a href="#titel-3" id="toc-titel-3" class="nav-link" data-scroll-target="#titel-3">2.2 Titel</a></li>
+  <li><a href="#einlesen-der-daten-1" id="toc-einlesen-der-daten-1" class="nav-link" data-scroll-target="#einlesen-der-daten-1"><span class="header-section-number">4.2</span> Einlesen der Daten</a></li>
   </ul></li>
-  <li><a href="#ehrenwörtliche-erklärung" id="toc-ehrenwörtliche-erklärung" class="nav-link" data-scroll-target="#ehrenwörtliche-erklärung">Ehrenwörtliche Erklärung</a></li>
+  <li><a href="#anwendung-und-evaluation-von-ml-modellen" id="toc-anwendung-und-evaluation-von-ml-modellen" class="nav-link" data-scroll-target="#anwendung-und-evaluation-von-ml-modellen"><span class="header-section-number">5</span> Anwendung und Evaluation von ML-Modellen</a></li>
+  <li><a href="#kritische-bewertung-ideen-für-weitere-analysen" id="toc-kritische-bewertung-ideen-für-weitere-analysen" class="nav-link" data-scroll-target="#kritische-bewertung-ideen-für-weitere-analysen"><span class="header-section-number">6</span> Kritische Bewertung/ Ideen für weitere Analysen</a></li>
+  <li><a href="#ehrenwörtliche-erklärung" id="toc-ehrenwörtliche-erklärung" class="nav-link" data-scroll-target="#ehrenwörtliche-erklärung"><span class="header-section-number">7</span> Ehrenwörtliche Erklärung</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="Explorative_Datenanalyse.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Andere Formate</h2><ul><li><a href="Explorative_Datenanalyse.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
-<section id="gendererklärung" class="level1">
-<h1>Gendererklärung</h1>
+<section id="gendererklärung" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Gendererklärung</h1>
 <p>Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Ansprechweisen, sei es divers, männlich oder weiblich verzichtet. Alle Formulierungen sprechen gleichermaßen alle Geschlechter an.</p>
-<p>#Vorbereitung</p>
-<section id="laden-der-pakete" class="level2">
-<h2 class="anchored" data-anchor-id="laden-der-pakete">Laden der Pakete</h2>
+</section>
+<section id="aufgabe-und-daten-verstehen" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Aufgabe und Daten verstehen</h1>
+<p>Thesen…</p>
+</section>
+<section id="beschreibung-der-datenquelle" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Beschreibung der Datenquelle</h1>
+<p>Super Datenquelle</p>
+</section>
+<section id="untersuchung-der-daten" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Untersuchung der Daten</h1>
+<section id="vorbereitung" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="vorbereitung"><span class="header-section-number">4.1</span> Vorbereitung</h2>
+<section id="laden-der-pakete" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="laden-der-pakete"><span class="header-section-number">4.1.1</span> Laden der Pakete</h3>
 <p>Wir laden zunächst die benötigten Pakete.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(explore)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(explore)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="einlesen-der-daten" class="level2">
-<h2 class="anchored" data-anchor-id="einlesen-der-daten">Einlesen der Daten</h2>
+<section id="einlesen-der-daten" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="einlesen-der-daten"><span class="header-section-number">4.1.2</span> Einlesen der Daten</h3>
 <p>Wir lesen zunächst Daten ein .</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>shopping_trends <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;./data/shopping_trends.csv&#39;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>shopping_trends <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;./data/shopping_trends.csv&#39;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Wir werfen einen Blick auf die ersten 20 Einträge:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(shopping_trends, <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(shopping_trends, <span class="dv">20</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 20 × 19
@@ -3141,14 +3148,14 @@ vertical-align: -.125em;
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>shopping_behavior <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;./data/shopping_behavior_updated.csv&#39;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>shopping_behavior <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;./data/shopping_behavior_updated.csv&#39;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Wir werfen einen Blick auf die ersten 20 Einträge:</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(shopping_behavior, <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(shopping_behavior, <span class="dv">20</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 20 × 18
@@ -3184,56 +3191,21 @@ vertical-align: -.125em;
 </div>
 </section>
 </section>
-<section id="titel" class="level1">
-<h1>1 Titel</h1>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
-</div>
-</div>
-<section id="titel-1" class="level2">
-<h2 class="anchored" data-anchor-id="titel-1">1.1 Titel</h2>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
-</div>
-</div>
+<section id="einlesen-der-daten-1" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="einlesen-der-daten-1"><span class="header-section-number">4.2</span> Einlesen der Daten</h2>
+<p>Aufbereitung</p>
 </section>
 </section>
-<section id="titel-2" class="level1">
-<h1>2 Titel</h1>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
-</div>
-</div>
-<section id="titel-3" class="level2">
-<h2 class="anchored" data-anchor-id="titel-3">2.2 Titel</h2>
-<div class="cell">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
-</div>
-</div>
+<section id="anwendung-und-evaluation-von-ml-modellen" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Anwendung und Evaluation von ML-Modellen</h1>
+<p>Text</p>
 </section>
+<section id="kritische-bewertung-ideen-für-weitere-analysen" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Kritische Bewertung/ Ideen für weitere Analysen</h1>
+<p>Text</p>
 </section>
-<section id="ehrenwörtliche-erklärung" class="level1">
-<h1>Ehrenwörtliche Erklärung</h1>
+<section id="ehrenwörtliche-erklärung" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Ehrenwörtliche Erklärung</h1>
 <p>Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.</p>
 </section>
 
@@ -3293,12 +3265,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
+    button.setAttribute("title", "Kopiert");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
+      button.setAttribute("data-bs-title", "Kopiert");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",
