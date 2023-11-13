@@ -20,6 +20,17 @@ format:
     number-sections: true
 ---
 
+```{r, message=FALSE, include = FALSE}
+library(tidyverse) 
+library(tidymodels)
+library(explore) 
+library(rpart.plot) 
+library(viridis)
+library(corrplot)
+library(GGally)
+```
+
+
 # Gendererklärung
 Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Ansprechweisen, sei es divers, männlich oder weiblich verzichtet. Alle Formulierungen sprechen gleichermaßen alle Geschlechter an.
 
@@ -29,24 +40,7 @@ Thesen...
 
 # Beschreibung der Datenquelle
 
-Super Datenquelle
-
-# Untersuchung der Daten
-
-## Vorbereitung
-
-### Laden der Pakete
-
-Wir laden zunächst die benötigten Pakete.
-
-```{r}
-#| message: false
-#| warning: false
-library(tidyverse)
-library(explore)
-```
-
-### Einlesen der Daten
+## Erste Datenquelle
 
 Wir lesen zunächst Daten ein .
 
@@ -54,11 +48,43 @@ Wir lesen zunächst Daten ein .
 shopping_trends <- read_csv('./data/shopping_trends.csv')
 ```
 
-Wir werfen einen Blick auf die ersten 20 Einträge:
+Nun werfen wir einen kurzen Blick auf die Datenstruktur:
 
 ```{r}
-head(shopping_trends, 20)
+shopping_trends
 ```
+
+Jede Zeile steht für irgendwas.
+
+Variable                    |Typ    |Bedeutung
+:---------------------------|:------|:------------------------------------------
+**Customer ID**             |dbl    | Eindeutige Kunden Identifikationsnummer
+**Age**                     |dbl    | Alter des Kundens
+**Gender**                  |chr    | Geschlecht des Kundens
+**Item Purchased**          |chr    | Gekauftes Produkt
+**Category**                |chr    | Kategorie des gekauften Produkts
+**Purchase Amount**         |dbl    | Bezahlter Preis
+**Location**                |chr    | 
+**Size**                    |chr    | 
+**Color**                   |chr    | 
+**Season**                  |chr    | 
+**Review Rating**           |dbl    | 
+**Subscription Status**     |chr    | 
+**Payment Method**          |chr    | 
+**Shipping Type**           |chr    | 
+**Discount Applied**        |chr    | 
+**Promo Code Used**         |chr    | 
+**Previous Purchases**      |dbl    | 
+**Preferred Payment Method**|chr    | 
+**Frequency of Purchases**  |chr    | 
+
+```{r}
+describe_tbl(shopping_trends)
+```
+
+Im ersten Datensatz gibt es 3.900 Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.
+
+## Zweite Datenquelle
 
 Wir lesen erneut Daten ein .
 
@@ -66,11 +92,44 @@ Wir lesen erneut Daten ein .
 shopping_behavior <- read_csv('./data/shopping_behavior_updated.csv')
 ```
 
-Wir werfen einen Blick auf die ersten 20 Einträge:
+Nun werfen wir einen kurzen Blick auf die Datenstruktur:
 
 ```{r}
-head(shopping_behavior, 20)
+shopping_behavior
 ```
+
+Jede Zeile steht für irgendwas.
+
+Variable                    |Typ    |Bedeutung
+:---------------------------|:------|:------------------------------------
+**Customer ID**             |dbl    | Eindeutige Kunden Identifikationsnummer
+**Age**                     |dbl    | Alter des Kundens
+**Gender**                  |chr    | Geschlecht des Kundens
+**Item Purchased**          |chr    | Gekauftes Produkt
+**Category**                |chr    | Kategorie des gekauften Produkts
+**Purchase Amount**         |dbl    | Bezahlter Preis
+**Location**                |chr    | 
+**Size**                    |chr    | 
+**Color**                   |chr    | 
+**Season**                  |chr    | 
+**Review Rating**           |dbl    | 
+**Subscription Status**     |chr    | 
+**Payment Method**          |chr    | 
+**Shipping Type**           |chr    | 
+**Discount Applied**        |chr    | 
+**Promo Code Used**         |chr    | 
+**Previous Purchases**      |dbl    | 
+**Payment Method**          |chr    | 
+**Frequency of Purchases**  |chr    | 
+
+```{r}
+describe_tbl(shopping_behavior)
+```
+
+Im zweiten Datensatz gibt es 3.900 Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.
+
+# Untersuchung der Daten
+
 
 ## Einlesen der Daten
 
