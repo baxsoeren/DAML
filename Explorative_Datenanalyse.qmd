@@ -1,9 +1,7 @@
 ---
-title: "Datenanalyse von ....."
+title: "Explorative Datenanalyse"
 title-block-banner: true
-author: Ole Kepa,<br>
-        Fabian Elsner,<br>
-        Sören Bax
+author: Ole Kepa
 format: 
   html: 
     theme: superhero
@@ -14,10 +12,38 @@ format:
   pdf: 
     toc: true
     number-sections: true
+date: 2023-11-06
 ---
 
 # Gendererklärung
 Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Ansprechweisen, sei es divers, männlich oder weiblich verzichtet. Alle Formulierungen sprechen gleichermaßen alle Geschlechter an.
+
+#Vorbereitung
+
+## Laden der Pakete
+
+Wir laden zunächst die benötigten Pakete.
+
+```{r}
+#| message: false
+#| warning: false
+library(tidyverse)
+library(explore)
+```
+
+## Einlesen der Daten
+
+Wir lesen zunächst Daten .
+
+```{r, message=FALSE}
+shoping_trends <- read_csv('./shoping_trends.csv')
+```
+
+Wir werfen einen Blick auf die ersten 20 Einträge:
+
+```{r}
+head(states, 20)
+```
 
 # 1 Titel
 ```{r}
