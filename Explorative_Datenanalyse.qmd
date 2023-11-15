@@ -24,11 +24,7 @@ date: 2023-12-23
 ```{r, message=FALSE, include = FALSE}
 library(tidyverse) 
 library(tidymodels)
-library(explore) 
-library(rpart.plot) 
-library(viridis)
-library(corrplot)
-library(GGally)
+library(explore)
 ```
 
 
@@ -50,7 +46,7 @@ Nun werfen wir einen kurzen Blick auf die Datenstrukturen.<br>
 Zunächst einmal die Datenstruktur des Datensets "Shopping_trends":
 
 ```{r}
-shopping_trends
+knitr::kable(head(shopping_trends), caption = "Das Spaltenformat des Datensatzes 'shopping_trends'")
 ```
 
 Jede Zeile steht für einen *********
@@ -86,7 +82,7 @@ Im Datensatz "Shopping_trends" gibt es 3.900 Instazen (Beobachtungen). Keine die
 Nun schauen wir auf die Datenstruktur des Datensets "Shopping_behavior":
 
 ```{r}
-shopping_behavior
+knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des Datensatzes'shopping_behavior'")
 ```
 
 Jede Zeile steht für *******.
@@ -208,16 +204,6 @@ hist(shopping_behavior$Age)
 Ich finde das sehr Kritisch und nicht schön
 
 ## Ideen für weitere Analysen
-
-
-
-```{r}
-knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des eingelesenen Datensatzes")
-```
-
-
-
-
 
 # Quellen
 
