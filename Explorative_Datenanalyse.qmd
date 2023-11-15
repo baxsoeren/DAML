@@ -8,7 +8,7 @@ author: Ole Kepa,<br>
         Sören Bax
 format: 
   html: 
-    theme: superhero
+    theme: flatly 
     toc: true
     toc_float: true
     number-sections: true
@@ -20,6 +20,7 @@ format:
     number-sections: true
 date: 2023-12-23
 ---
+<!-- THEMES: https://quarto.org/docs/output-formats/html-themes.html -->
 
 ```{r, message=FALSE, include = FALSE}
 library(tidyverse) 
