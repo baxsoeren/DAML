@@ -15,12 +15,14 @@ format:
     embed-resources: true
     code-fold: true
     code-summary: "Code anzeigen"
+date: 2023-12-23
+---
+<!-- 
   pdf: 
     toc: true
     number-sections: true
-date: 2023-12-23
----
-<!-- THEMES: https://quarto.org/docs/output-formats/html-themes.html -->
+    
+THEMES: https://quarto.org/docs/output-formats/html-themes.html -->
 
 ```{r, message=FALSE, include = FALSE}
 library(tidyverse) 
