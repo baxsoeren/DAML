@@ -80,7 +80,7 @@ Variable                    |Typ    |Bedeutung
 describe_tbl(shopping_trends)
 ```
 
-Im Datensatz "Shopping_trends" gibt es 3.900 Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.<br>
+Im Datensatz "Shopping_trends" gibt es **`r nrow(shopping_trends)`** Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.<br>
 <br>
 Nun schauen wir auf die Datenstruktur des Datensets "Shopping_behavior":
 
@@ -116,7 +116,7 @@ Variable                    |Typ    |Bedeutung
 describe_tbl(shopping_behavior)
 ```
 
-Im Datensatz "Shoping_behavior" gibt es ebenfalls 3.900 Instazen (Beobachtungen). Zudem gibt wa qiwswe bwi jwswe Instanz keine enthalten Werte ohne Angabe (NA). Daher müssen wir, wie beim vorherigen Datensatz  keine fehlenden Variablen aufbereiten.
+Im Datensatz "Shoping_behavior" gibt es ebenfalls **`r nrow(shopping_behavior)`** Instazen (Beobachtungen). Zudem gibt es keine Instanz, welche Werte ohne Angabe (NA) enthalten. Daher müssen wir, wie beim vorherigen Datensatz  keine fehlenden Variablen aufbereiten.
 
 **These 1: Die meisten Personen kaufen wöchentlich ein.**
 
