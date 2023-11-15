@@ -119,6 +119,24 @@ describe_tbl(shopping_behavior)
 
 Im Datensatz "Shoping_behavior" gibt es ebenfalls 3.900 Instazen (Beobachtungen). Zudem gibt wa qiwswe bwi jwswe Instanz keine enthalten Werte ohne Angabe (NA). Daher müssen wir, wie beim vorherigen Datensatz  keine fehlenden Variablen aufbereiten.
 
+**These 1: .**
+
+**These 2: .**
+
+**These 3: .**
+
+**These 4: .**
+
+**These 5: .**
+
+**These 6: .**
+
+**These 7: Männer kaufen weniger ein als Frauen.**
+
+**These 8: Die Kategorie "Klamotten wird am meisten gekauft.**
+
+**These 9: Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.**
+
 # Untersuchung der Daten (Auf ausreißer)
 
 ```{r}
