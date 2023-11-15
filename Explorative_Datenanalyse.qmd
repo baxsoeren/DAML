@@ -121,17 +121,17 @@ Im Datensatz "Shoping_behavior" gibt es ebenfalls 3.900 Instazen (Beobachtungen)
 
 **These 1: .**
 
-**These 2: .**
+**These 2: DIe meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**
 
-**These 3: .**
+**These 3: Die meisten Kunden zahlen Bar.**
 
-**These 4: .**
+**These 4: Die meisten Kunden nutzen keinen Rabattcode.**
 
-**These 5: .**
+**These 5: Männer kaufen weniger ein als Frauen.**
 
-**These 6: .**
+**These 6: Es werden mehr Winter als Sommerklamotten gekauft.**
 
-**These 7: Männer kaufen weniger ein als Frauen.**
+**These 7: Die meisten Klamotten werden im Norden gekauft.**
 
 **These 8: Die Kategorie "Klamotten wird am meisten gekauft.**
 
