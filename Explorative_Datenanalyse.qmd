@@ -18,6 +18,7 @@ format:
   pdf: 
     toc: true
     number-sections: true
+date: 2023-12-23
 ---
 
 ```{r, message=FALSE, include = FALSE}
@@ -120,6 +121,9 @@ Im Datensatz "Shoping_behavior" gibt es ebenfalls 3.900 Instazen (Beobachtungen)
 
 # Untersuchung der Daten (Auf ausreißer)
 
+```{r}
+hist(shopping_behavior$Age)
+```
 
 # Untersuchung der Thesen (mit Methoden der EDA)
 
