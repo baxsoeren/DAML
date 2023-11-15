@@ -3440,8 +3440,8 @@ vertical-align: -.125em;
 </div>
 </div>
 <p>Im Datensatz “Shoping_behavior” gibt es ebenfalls 3.900 Instazen (Beobachtungen). Zudem gibt wa qiwswe bwi jwswe Instanz keine enthalten Werte ohne Angabe (NA). Daher müssen wir, wie beim vorherigen Datensatz keine fehlenden Variablen aufbereiten.</p>
-<p><strong>These 1: .</strong></p>
-<p><strong>These 2: DIe meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.</strong></p>
+<p><strong>These 1: Die meisten Personen kaufen wöchentlich ein.</strong></p>
+<p><strong>These 2: Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.</strong></p>
 <p><strong>These 3: Die meisten Kunden zahlen Bar.</strong></p>
 <p><strong>These 4: Die meisten Kunden nutzen keinen Rabattcode.</strong></p>
 <p><strong>These 5: Männer kaufen weniger ein als Frauen.</strong></p>
@@ -3557,6 +3557,181 @@ vertical-align: -.125em;
 </section>
 <section id="ideen-für-weitere-analysen" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="ideen-für-weitere-analysen"><span class="header-section-number">7.2</span> Ideen für weitere Analysen</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(shopping_behavior), <span class="at">caption =</span> <span class="st">&quot;Das Spaltenformat des eingelesenen Datensatzes&quot;</span>)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Das Spaltenformat des eingelesenen Datensatzes</caption>
+<colgroup>
+<col style="width: 4%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 6%">
+<col style="width: 3%">
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 2%">
+<col style="width: 4%">
+<col style="width: 2%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Customer ID</th>
+<th style="text-align: right;">Age</th>
+<th style="text-align: left;">Gender</th>
+<th style="text-align: left;">Item Purchased</th>
+<th style="text-align: left;">Category</th>
+<th style="text-align: right;">Purchase Amount (USD)</th>
+<th style="text-align: left;">Location</th>
+<th style="text-align: left;">Size</th>
+<th style="text-align: left;">Color</th>
+<th style="text-align: left;">Season</th>
+<th style="text-align: right;">Review Rating</th>
+<th style="text-align: left;">Subscription Status</th>
+<th style="text-align: left;">Shipping Type</th>
+<th style="text-align: left;">Discount Applied</th>
+<th style="text-align: left;">Promo Code Used</th>
+<th style="text-align: right;">Previous Purchases</th>
+<th style="text-align: left;">Payment Method</th>
+<th style="text-align: left;">Frequency of Purchases</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Blouse</td>
+<td style="text-align: left;">Clothing</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: left;">Kentucky</td>
+<td style="text-align: left;">L</td>
+<td style="text-align: left;">Gray</td>
+<td style="text-align: left;">Winter</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Express</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">Venmo</td>
+<td style="text-align: left;">Fortnightly</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Sweater</td>
+<td style="text-align: left;">Clothing</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: left;">Maine</td>
+<td style="text-align: left;">L</td>
+<td style="text-align: left;">Maroon</td>
+<td style="text-align: left;">Winter</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Express</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Cash</td>
+<td style="text-align: left;">Fortnightly</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Jeans</td>
+<td style="text-align: left;">Clothing</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: left;">Massachusetts</td>
+<td style="text-align: left;">S</td>
+<td style="text-align: left;">Maroon</td>
+<td style="text-align: left;">Spring</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Free Shipping</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: left;">Credit Card</td>
+<td style="text-align: left;">Weekly</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Sandals</td>
+<td style="text-align: left;">Footwear</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: left;">Rhode Island</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">Maroon</td>
+<td style="text-align: left;">Spring</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Next Day Air</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: left;">PayPal</td>
+<td style="text-align: left;">Weekly</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">45</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Blouse</td>
+<td style="text-align: left;">Clothing</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: left;">Oregon</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">Turquoise</td>
+<td style="text-align: left;">Spring</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Free Shipping</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: left;">PayPal</td>
+<td style="text-align: left;">Annually</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: left;">Male</td>
+<td style="text-align: left;">Sneakers</td>
+<td style="text-align: left;">Footwear</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">Wyoming</td>
+<td style="text-align: left;">M</td>
+<td style="text-align: left;">White</td>
+<td style="text-align: left;">Summer</td>
+<td style="text-align: right;">2.9</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Standard</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">Venmo</td>
+<td style="text-align: left;">Weekly</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
 </section>
 <section id="quellen" class="level1" data-number="8">

@@ -119,9 +119,9 @@ describe_tbl(shopping_behavior)
 
 Im Datensatz "Shoping_behavior" gibt es ebenfalls 3.900 Instazen (Beobachtungen). Zudem gibt wa qiwswe bwi jwswe Instanz keine enthalten Werte ohne Angabe (NA). Daher müssen wir, wie beim vorherigen Datensatz  keine fehlenden Variablen aufbereiten.
 
-**These 1: .**
+**These 1: Die meisten Personen kaufen wöchentlich ein.**
 
-**These 2: DIe meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**
+**These 2: Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**
 
 **These 3: Die meisten Kunden zahlen Bar.**
 
@@ -208,6 +208,16 @@ hist(shopping_behavior$Age)
 Ich finde das sehr Kritisch und nicht schön
 
 ## Ideen für weitere Analysen
+
+
+
+```{r}
+knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des eingelesenen Datensatzes")
+```
+
+
+
+
 
 # Quellen
 
