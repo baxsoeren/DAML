@@ -98,19 +98,19 @@ Variable                    |Typ    |Bedeutung
 **Item Purchased**          |chr    | Gekauftes Produkt
 **Category**                |chr    | Kategorie des gekauften Produkts
 **Purchase Amount**         |dbl    | Bezahlter Preis
-**Location**                |chr    | 
-**Size**                    |chr    | 
-**Color**                   |chr    | 
-**Season**                  |chr    | 
-**Review Rating**           |dbl    | 
-**Subscription Status**     |chr    | 
-**Payment Method**          |chr    | 
-**Shipping Type**           |chr    | 
-**Discount Applied**        |chr    | 
-**Promo Code Used**         |chr    | 
-**Previous Purchases**      |dbl    | 
-**Payment Method**          |chr    | 
-**Frequency of Purchases**  |chr    | 
+**Location**                |chr    | Ort des Kaufes
+**Size**                    |chr    | Konfektionsgröße des gekauften Produkts
+**Color**                   |chr    | Farbe des gekauften Produkts
+**Season**                  |chr    | Jahreszeit, in welcher der Kauf getätigt wurde
+**Review Rating**           |dbl    | Kundenbewertungen zum Produkt
+**Subscription Status**     |chr    | Status des Abonnements
+**Payment Method**          |chr    | Zahlungsmethode
+**Shipping Type**           |chr    | Versandart
+**Discount Applied**        |chr    | Rabattcode genutzt?
+**Promo Code Used**         |chr    | Werbecode genutzt?
+**Previous Purchases**      |dbl    | Vorherige Käufe
+**Payment Method**|chr    | Bevorzugte Zahlungsmethode
+**Frequency of Purchases**  |chr    | Häufigkeit von Käufen
 
 ```{r}
 describe_tbl(shopping_behavior)
