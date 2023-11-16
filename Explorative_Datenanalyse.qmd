@@ -109,7 +109,7 @@ Variable                    |Typ    |Bedeutung
 **Discount Applied**        |chr    | Rabattcode genutzt?
 **Promo Code Used**         |chr    | Werbecode genutzt?
 **Previous Purchases**      |dbl    | Vorherige Käufe
-**Payment Method**|chr    | Bevorzugte Zahlungsmethode
+**Payment Method**          |chr    | Bevorzugte Zahlungsmethode
 **Frequency of Purchases**  |chr    | Häufigkeit von Käufen
 
 ```{r}
@@ -151,10 +151,13 @@ hist(shopping_behavior$Age)
 ## These 3 (Ole)
 
 ## These 4 (Fabian)
+In dieser These wird die Hypothese geprüft, das die meisten Kunden keine Rabattcodes nutzen würden. 
 
 ## These 5 (Fabian)
+In dieser These wird die Hypothese geprüft, das Männer weniger Produkte einkaufen als Frauen. 
 
 ## These 6 (Fabian)
+In dieser These wird die Hypothese geprüft, das im Winter mehr Kleidung gekauft wird als im Sommer. 
 
 ## These 7 (Sörn)
 
