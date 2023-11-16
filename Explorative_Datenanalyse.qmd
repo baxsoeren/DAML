@@ -220,7 +220,7 @@ Datenset: <a href="https://www.kaggle.com/datasets/zeesolver/consumer-behavior-a
 Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.
 
 <!-- Unterschriften in HTML -->
-<img src="./signatures/OleKepa.png"> <img src="./signatures/FabianElsner.png"> <img src="./signatures/SoerenBax.png">
+<img src="./signatures/OleKepa.png" height="50" width="100"> <img src="./signatures/FabianElsner.png" height="50" width="100"> <img src="./signatures/SoerenBax.png" height="50" width="100">
 
 <!-- Unterschriften in PDF einbinden -->
 \includegraphics{"./signatures/OleKepa.png"} \includegraphics{"./signatures/OleKepa.png"} \includegraphics{"./signatures/OleKepa.png"}
