@@ -53,7 +53,7 @@ Zunächst einmal die Datenstruktur des Datensets "Shopping_trends":
 knitr::kable(head(shopping_trends), caption = "Das Spaltenformat des Datensatzes 'shopping_trends'")
 ```
 
-Jede Zeile steht für einen *********
+Jede Zeile steht für einen Shopping-Trend.
 
 Variable                    |Typ    |Bedeutung
 :---------------------------|:------|:------------------------------------------
@@ -89,7 +89,7 @@ Nun schauen wir auf die Datenstruktur des Datensets "Shopping_behavior":
 knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des Datensatzes'shopping_behavior'")
 ```
 
-Jede Zeile steht für *******.
+Jede Zeile steht für ein Shopping-Verhalten.
 
 Variable                    |Typ    |Bedeutung
 :---------------------------|:------|:------------------------------------
