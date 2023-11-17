@@ -156,13 +156,13 @@ Drucke das Histogramm und die Zusammenfassung
 ## These 3 (Ole)
 
 ## These 4 (Fabian)
-In dieser These wird die Hypothese geprüft, das die meisten Kunden keine Rabattcodes nutzen würden. 
+In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. 
 
 ## These 5 (Fabian)
-In dieser These wird die Hypothese geprüft, das Männer weniger Produkte einkaufen als Frauen. 
+In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen. 
 
 ## These 6 (Fabian)
-In dieser These wird die Hypothese geprüft, das im Winter mehr Kleidung gekauft wird als im Sommer. 
+In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauft wird als im Sommer. 
 
 ## These 7 (Sörn)
 
