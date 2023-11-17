@@ -28,6 +28,7 @@ THEMES: https://quarto.org/docs/output-formats/html-themes.html -->
 library(tidyverse) 
 library(tidymodels)
 library(explore)
+library(ggplot2)
 ```
 
 
@@ -145,6 +146,10 @@ hist(shopping_behavior$Age)
 # Untersuchung der Thesen (mit Methoden der EDA)
 
 ## These 1 (Ole)
+
+Histogramm für die Häufigkeit von Einkäufen
+Zusammenfassende Statistiken
+Drucke das Histogramm und die Zusammenfassung
 
 ## These 2 (Ole)
 
