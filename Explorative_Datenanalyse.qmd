@@ -37,6 +37,12 @@ Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Anspre
 
 # Aufgabe und Daten verstehen
 
+In dieser Arbeit soll untersucht werden, wie das Kaufverhalten und die Kauftrends der Kunden in den USA ist. Anschließend sollen mehrere Modelle entwickelt werden, welche Beispielsweise voraussagen, ob <mark>[...].</mark>
+
+Hierzu steht ein Dataset zu dem Kaufverhalten der Verbraucher in den USA zur Verfügung, das unter https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data abgerufen werden kann.
+
+Dieses Datenset beinhaltet insgesamt zwei CSV-Dateien....
+
 # Beschreibung der Datenquelle
 
 Laden wir zuerst die beiden Datensets:
