@@ -139,7 +139,7 @@ Im Datensatz "Shoping_behavior" gibt es ebenfalls **`r nrow(shopping_behavior)`*
 
 **These 7: Die meisten Klamotten werden im Norden gekauft.**
 
-**These 8: Die Kategorie "Klamotten wird am meisten gekauft.**
+**These 8: Die Kategorie "Klamotten" wird am meisten gekauft.**
 
 **These 9: Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.**
 
@@ -152,6 +152,7 @@ Im Datensatz "Shoping_behavior" gibt es ebenfalls **`r nrow(shopping_behavior)`*
 Histogramm für die Häufigkeit von Einkäufen
 Zusammenfassende Statistiken
 Drucke das Histogramm und die Zusammenfassung
+
 
 ## These 2 (Ole)
 
@@ -175,6 +176,45 @@ In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauf
 ```{r}
 hist(shopping_behavior$Age)
 ```
+
+Einkauf mit dem höchsten Alter:
+
+```{r, message=FALSE}
+shopping_behavior |> arrange(desc(Age)) |> head(1)
+```
+
+Einkauf mit dem niedrigsten Alter:
+
+```{r, message=FALSE}
+shopping_behavior |> arrange(Age) |> head(1)
+```
+
+Berechnen wir Mittelwert und Median.
+
+```{r}
+shopping_behavior |> summarise(mean(Age), median(Age))
+
+mean_behavior <- as.double(mean(shopping_behavior$Age))
+med_behavior <- as.integer(median(shopping_behavior$Age))
+```
+
+Der Mittelwert `r mean_behavior` ist nicht robust gegenüber Ausreißern, deswegen ist der deutlich höher als der Median mit dem Wert `r med_behavior`.
+
+Die Spannweite des Alters ist:
+
+```{r}
+max(shopping_behavior$Age) - min(shopping_behavior$Age)
+```
+
+Nun erstellen wir einen Boxplot für das Alter:
+
+```{r}
+ggplot(shopping_behavior, aes(x = "", y = Age)) +
+  geom_boxplot() +
+  labs(x = NULL, y = "Alter")
+
+```
+
 
 # Anwendung und Beurteilung von Machine-Learning-Modellen
 
