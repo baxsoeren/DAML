@@ -29,6 +29,7 @@ library(tidyverse)
 library(tidymodels)
 library(explore)
 library(ggplot2)
+library(usmap)
 ```
 
 
@@ -45,57 +46,19 @@ Dieses Datenset beinhaltet insgesamt zwei CSV-Dateien `[...].`
 
 ## Beschreibung der Datenquelle
 
-Laden wir zuerst die beiden Datensets:
+Laden wir zuerst die Daten:
 
 ```{r, message=FALSE}
-shopping_trends <- read_csv('./data/shopping_trends.csv')
 shopping_behavior <- read_csv('./data/shopping_behavior_updated.csv')
 ```
 
-Nun werfen wir einen kurzen Blick auf die Datenstrukturen.<br>
-Zunächst einmal die Datenstruktur des Datensets "Shopping_trends":
-
-```{r}
-knitr::kable(head(shopping_trends), caption = "Das Spaltenformat des Datensatzes 'shopping_trends'")
-```
-
-Jede Zeile steht für einen Shopping-Trend.
-
-Variable                    |Typ    |Bedeutung
-:---------------------------|:------|:------------------------------------------
-**Customer ID**             |dbl    | Eindeutige Kunden Identifikationsnummer
-**Age**                     |dbl    | Alter des Kundens
-**Gender**                  |chr    | Geschlecht des Kundens
-**Item Purchased**          |chr    | Gekauftes Produkt
-**Category**                |chr    | Kategorie des gekauften Produkts
-**Purchase Amount**         |dbl    | Bezahlter Preis
-**Location**                |chr    | Ort des Kaufes
-**Size**                    |chr    | Konfektionsgröße des gekauften Produkts
-**Color**                   |chr    | Farbe des gekauften Produkts
-**Season**                  |chr    | Jahreszeit, in welcher der Kauf getätigt wurde
-**Review Rating**           |dbl    | Kundenbewertungen zum Produkt
-**Subscription Status**     |chr    | Status des Abonnements
-**Payment Method**          |chr    | Zahlungsmethode
-**Shipping Type**           |chr    | Versandart
-**Discount Applied**        |chr    | Rabattcode genutzt?
-**Promo Code Used**         |chr    | Werbecode genutzt?
-**Previous Purchases**      |dbl    | Vorherige Käufe
-**Preferred Payment Method**|chr    | Bevorzugte Zahlungsmethode
-**Frequency of Purchases**  |chr    | Häufigkeit von Käufen
-
-```{r}
-describe_tbl(shopping_trends)
-```
-
-Im Datensatz "Shopping_trends" gibt es **`r nrow(shopping_trends)`** Instazen (Beobachtungen). Keine dieser Instanzen enthalten Werte ohne Angabe (NA), daher müssen wir das Datenset nicht aufgrund fehlender Variablen aufbereiten.<br>
-<br>
-Nun schauen wir auf die Datenstruktur des Datensets "Shopping_behavior":
+Nun werfen wir einen kurzen Blick auf die Datenstruktur des Datensets "shopping_behavior":
 
 ```{r}
 knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des Datensatzes'shopping_behavior'")
 ```
 
-Jede Zeile steht für ein Shopping-Verhalten.
+Jede Zeile steht für einen Einkauf.
 
 Variable                    |Typ    |Bedeutung
 :---------------------------|:------|:------------------------------------
@@ -123,7 +86,7 @@ Variable                    |Typ    |Bedeutung
 describe_tbl(shopping_behavior)
 ```
 
-Im Datensatz "Shoping_behavior" gibt es ebenfalls **`r nrow(shopping_behavior)`** Instazen (Beobachtungen). Zudem gibt es keine Instanz, welche Werte ohne Angabe (NA) enthalten. Daher müssen wir, wie beim vorherigen Datensatz  keine fehlenden Variablen aufbereiten.
+Im Datensatz gibt es **`r nrow(shopping_behavior)`** Instazen (Beobachtungen). Zudem gibt es keine Instanz, welche Werte ohne Angabe (NA) enthalten. Daher müssen wir keine fehlenden Variablen aufbereiten.
 
 ## Thesen aufstellen
 
@@ -195,19 +158,15 @@ Zunächst schauen wir uns einmal alle vorhandenen Orte an:
 shopping_behavior |> distinct(Location)
 ```
 
-Wir sehen, dass es 50 Orte gibt. Nun schauen wir uns die Häufigkeit der Orte an, sortiert nach der Häufigkeit:
+Wir sehen, dass es 50 Orte gibt. Nun schauen wir uns die Häufigkeit der Orte an:
 
 ```{r}
 shopping_behavior |> count(Location) |> arrange(desc(n))
 ```
 
-
-
-Nun erstellen wir eine Heatmap über dieHäufigkeit der Locations:
+Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
 
 ```{r}
-library(usmap)
-
 df <- data.frame(
   state  = c("Montana", "California", "Idaho", "Illinois", "Alabama", "Minnesota", "Nebraska", "Nevada", "New York", "Delaware",
              "Maryland", "Vermont", "Louisiana", "North Dakota", "Missouri", "New Mexico", "West Virginia","Mississippi", "Arkansas", "Georgia",
@@ -228,11 +187,6 @@ plot_usmap(data = df, values = "occurrence", color = "black", labels = TRUE) +
     low = "white", high = "red", name = "Häufigkeit", label = scales::comma
   ) + theme(legend.position = "right")
 ```
-
-
-
-
-
 
 
 ## These 8 (Sörn)
