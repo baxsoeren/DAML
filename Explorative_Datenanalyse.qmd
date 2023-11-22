@@ -37,13 +37,13 @@ Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Anspre
 
 # Aufgabe und Daten verstehen
 
-In dieser Arbeit soll untersucht werden, wie das Kaufverhalten und die Kauftrends der Kunden in den USA ist. Anschließend sollen mehrere Modelle entwickelt werden, welche Beispielsweise voraussagen, ob <mark>[...].</mark>
+In dieser Arbeit soll untersucht werden, wie das Kaufverhalten und die Kauftrends der Kunden in den USA ist. Anschließend sollen mehrere Modelle entwickelt werden, welche Beispielsweise voraussagen, ob `[...].`
 
-Hierzu steht ein Dataset zu dem Kaufverhalten der Verbraucher in den USA zur Verfügung, das unter https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data abgerufen werden kann.
+Hierzu steht ein Dataset zu dem Kaufverhalten der Verbraucher in den USA zur Verfügung, das unter <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> abgerufen werden kann.
 
-Dieses Datenset beinhaltet insgesamt zwei CSV-Dateien....
+Dieses Datenset beinhaltet insgesamt zwei CSV-Dateien `[...].`
 
-# Beschreibung der Datenquelle
+## Beschreibung der Datenquelle
 
 Laden wir zuerst die beiden Datensets:
 
@@ -125,6 +125,8 @@ describe_tbl(shopping_behavior)
 
 Im Datensatz "Shoping_behavior" gibt es ebenfalls **`r nrow(shopping_behavior)`** Instazen (Beobachtungen). Zudem gibt es keine Instanz, welche Werte ohne Angabe (NA) enthalten. Daher müssen wir, wie beim vorherigen Datensatz  keine fehlenden Variablen aufbereiten.
 
+## Thesen aufstellen
+
 **These 1: Die meisten Personen kaufen wöchentlich ein.**
 
 **These 2: Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**
@@ -156,6 +158,24 @@ Drucke das Histogramm und die Zusammenfassung
 
 ## These 2 (Ole)
 
+Zunächst schauen wir uns einmal alle vorhandenen Farben an:
+
+```{r}
+shopping_behavior |> distinct(Color)
+```
+
+Wir sehen, dass es 50 Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
+
+```{r}
+shopping_behavior |> count(Color)
+```
+
+Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:
+
+```{r}
+shopping_behavior |> filter(Color != "Black" & Color != "White" & Color != "Grey") |> count(Color)
+```
+
 ## These 3 (Ole)
 
 ## These 4 (Fabian)
@@ -169,7 +189,56 @@ In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauf
 
 ## These 7 (Sörn)
 
+Zunächst schauen wir uns einmal alle vorhandenen Orte an:
+
+```{r}
+shopping_behavior |> distinct(Location)
+```
+
+Wir sehen, dass es 50 Orte gibt. Nun schauen wir uns die Häufigkeit der Orte an:
+
+```{r}
+shopping_behavior |> count(Location)
+```
+
+
+
+
+```{r}
+library(usmap)
+
+plot_usmap(regions = "states") + 
+  labs(title = "U.S. States",
+       subtitle = "This is a blank map of the United States.") + 
+  theme(panel.background=element_blank())
+```
+
+
+
+
+
+
+
+
+
+
 ## These 8 (Sörn)
+
+Zunächst schauen wir uns einmal alle vorhandenen Kategorien an:
+
+```{r}
+shopping_behavior |> distinct(Category)
+```
+
+Wir sehen, dass es 4 Kategorien gibt: Klamotten, Schuhe, Accessoires und Oberbekleidung Nun schauen wir uns die Häufigkeit der Kategorien an:
+
+```{r}
+shopping_behavior |> count(Category)
+
+shopping_behavior |> count(Category) |> ggplot(aes(x = Category, y = n)) + geom_col()
+```
+
+Wir sehen, dass die Kategorie "Klamotten" mit 1737 Instanzen am häufigsten vorkommt.Danach folgt die Kategorie "Accessoires" mit 1240 Instanzen. Am seltensten kommen die Kategorien "Schuhe" mit 599 und "Oberbekleidung" mit 324 Instanzen vor.
 
 ## These 9 (Sörn)
 
@@ -209,10 +278,17 @@ max(shopping_behavior$Age) - min(shopping_behavior$Age)
 Nun erstellen wir einen Boxplot für das Alter:
 
 ```{r}
-ggplot(shopping_behavior, aes(x = "", y = Age)) +
+ggplot(shopping_behavior, aes(x = Age)) + 
   geom_boxplot() +
-  labs(x = NULL, y = "Alter")
-
+  coord_flip() +
+  labs(
+    x = "Alter",
+    title = "Boxplot der Lebensjahre der Kunden", 
+  ) +
+  scale_y_discrete(labels = NULL, breaks = NULL)  +
+  scale_x_continuous(
+    labels = comma_format(big.mark = ".", 
+                          decimal.mark = ","))
 ```
 
 
@@ -264,14 +340,13 @@ Ich finde das sehr Kritisch und nicht schön
 
 # Quellen
 
-Datenset: <a href="https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data">
-                 https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data</a>
+Datenset: <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data>
 
 # Ehrenwörtliche Erklärung
 Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.
 
 <!-- Unterschriften in HTML -->
-<img src="./signatures/OleKepa.png" height="50" width="100"> <img src="./signatures/FabianElsner.png" height="50" width="100"> <img src="./signatures/SoerenBax.png" height="50" width="100">
+<img src="./signatures/OleKepa.png" height="50" width="150"> <img src="./signatures/FabianElsner.png" height="50" width="150"> <img src="./signatures/SoerenBax.png" height="50" width="150">
 
 <!-- Unterschriften in PDF einbinden -->
 \includegraphics{"./signatures/OleKepa.png"} \includegraphics{"./signatures/OleKepa.png"} \includegraphics{"./signatures/OleKepa.png"}
