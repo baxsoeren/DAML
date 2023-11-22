@@ -1,6 +1,5 @@
 ---
 title: "Einkaufsgewohnheiten in den USA"
-subtitle: ""
 title-block-banner: true
 lang: de
 author: Ole Kepa,<br>
@@ -38,27 +37,27 @@ Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Anspre
 
 # Aufgabe und Daten verstehen
 
-In dieser Arbeit soll untersucht werden, wie das Kaufverhalten und die Kauftrends der Kunden in den USA ist. Anschließend sollen mehrere Modelle entwickelt werden, welche Beispielsweise voraussagen, ob `[...].`
+In dieser Arbeit soll untersucht werden, wie das Kaufverhalten der Käufer in den USA ist. Anschließend sollen mehrere Modelle entwickelt werden, welche Beispielsweise voraussagen, ob `[...].`
 
-Hierzu steht ein Dataset zu dem Kaufverhalten der Verbraucher in den USA zur Verfügung, das unter <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> abgerufen werden kann.
+Hierzu steht ein Dataset zu dem Kaufverhalten von Verbrauchern in den USA zur Verfügung, das unter <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> abgerufen werden kann.
 
-Dieses Datenset beinhaltet insgesamt zwei CSV-Dateien `[...].`
+Dieses Datenset beinhaltet insgesamt zwei CSV-Dateien, welche sich jedoch nur in einem Spaltennamen und nicht in den Daten unterscheiden. Die Spalte zur Zahlungsmethode heißt in der Datei "shopping_behavior_updated.csv" "Payment Method" und in der Datei "shopping_trend.csv" "Preferred Payment Method". Wir nutzen daher nur die CSV-Datei "shopping_behavior_updated.csv".
 
 ## Beschreibung der Datenquelle
 
 Laden wir zuerst die Daten:
 
 ```{r, message=FALSE}
-shopping_behavior <- read_csv('./data/shopping_behavior_updated.csv')
+raw_shopping_behavior <- read_csv('./data/shopping_behavior_updated.csv')
 ```
 
-Nun werfen wir einen kurzen Blick auf die Datenstruktur des Datensets "shopping_behavior":
+Nun werfen wir einen kurzen Blick auf die Daten und das Spaltenformat:
 
 ```{r}
-knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des Datensatzes'shopping_behavior'")
+knitr::kable(head(raw_shopping_behavior), caption = "Das Spaltenformat des Datensatzes 'shopping_behavior'")
 ```
 
-Jede Zeile steht für einen Einkauf.
+Jede Zeile steht für einen Einkauf. Die Spalten sind wie folgt definiert:
 
 Variable                    |Typ    |Bedeutung
 :---------------------------|:------|:------------------------------------
@@ -78,17 +77,21 @@ Variable                    |Typ    |Bedeutung
 **Shipping Type**           |chr    | Versandart
 **Discount Applied**        |chr    | Rabattcode genutzt?
 **Promo Code Used**         |chr    | Werbecode genutzt?
-**Previous Purchases**      |dbl    | Vorherige Käufe
+**Previous Purchases**      |dbl    | Anzahl vorheriger Käufe
 **Payment Method**          |chr    | Bevorzugte Zahlungsmethode
 **Frequency of Purchases**  |chr    | Häufigkeit von Käufen
 
+
+
 ```{r}
-describe_tbl(shopping_behavior)
+describe_tbl(raw_shopping_behavior)
 ```
 
-Im Datensatz gibt es **`r nrow(shopping_behavior)`** Instazen (Beobachtungen). Zudem gibt es keine Instanz, welche Werte ohne Angabe (NA) enthalten. Daher müssen wir keine fehlenden Variablen aufbereiten.
+Im Datensatz gibt es **`r nrow(raw_shopping_behavior)`** Instazen (Beobachtungen) und **`r ncol(raw_shopping_behavior)`** Spalten. Die Daten sind bereits *tidy*, was bedeutet, dass jede Variable ihre eigene Spalte, jede Beobachtung seine eigene Zeile und jeder Wert seine eigene Zelle hat. Die Daten sind bereits *bereinigt*, was bedeutet, dass sie keine fehlenden Werte enthalten.
 
-## Thesen aufstellen
+## Thesen
+
+Wir möchten insbesondere folgende Thesen in dieser Arbeit untersuchen:
 
 **These 1: Die meisten Personen kaufen wöchentlich ein.**
 
@@ -108,9 +111,45 @@ Im Datensatz gibt es **`r nrow(shopping_behavior)`** Instazen (Beobachtungen). Z
 
 **These 9: Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.**
 
-# Untersuchung der Daten (Auf ausreißer)
+# Untersuchung der Daten
 
-# Untersuchung der Thesen (mit Methoden der EDA)
+## Untersuchung auf Außreißer
+
+Um die Daten auf außreiser zu untersuchen schauen wir uns zunächst eine Zusammenfassung der Daten an:
+
+```{r}
+summary(raw_shopping_behavior)
+```
+
+```{r}
+raw_shopping_behavior %>% describe()
+```
+
+Die Customer ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten Schritt löschen. 
+
+## Datenaufbereitung
+
+Nun erstellen wir den finalen Datensatz, welcher die Basis für die weitere Analyse bildet. Zunächst löschen wir die Spalte "Customer ID", da diese für Analysen nicht verwertbar ist:
+
+```{r}
+shopping_behavior <- raw_shopping_behavior |> select(-"Customer ID")
+```
+
+**MUSS HIER WAS KONVERTIERT WERDEN?**
+
+**PREISGURPPEN BILDEN**
+
+Werfen wir einen Blick auf das finale Datenset.
+
+```{r}
+#final_shopping_behavior
+knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen Datensatzes")
+```
+
+
+# Untersuchung der Thesen
+
+Im folgenden werden die Thesen mit den Methoden der emploraitven Datenanalyse untersucht.
 
 ## These 1 (Ole)
 
