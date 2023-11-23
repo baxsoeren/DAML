@@ -149,7 +149,7 @@ knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen D
 
 # Untersuchung der Thesen
 
-Im folgenden werden die Thesen mit den Methoden der emploraitven Datenanalyse untersucht.
+Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse untersucht.
 
 ## These 1 (Ole)
 
@@ -166,7 +166,7 @@ Zunächst schauen wir uns einmal alle vorhandenen Farben an:
 shopping_behavior |> distinct(Color)
 ```
 
-Wir sehen, dass es 50 Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
+Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
 
 ```{r}
 shopping_behavior |> count(Color)
@@ -206,6 +206,7 @@ shopping_behavior |> count(Location) |> arrange(desc(n))
 Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
 
 ```{r}
+# Werte aus der Tabelle shopping_behavior übernommen
 df <- data.frame(
   state  = c("Montana", "California", "Idaho", "Illinois", "Alabama", "Minnesota", "Nebraska", "Nevada", "New York", "Delaware",
              "Maryland", "Vermont", "Louisiana", "North Dakota", "Missouri", "New Mexico", "West Virginia","Mississippi", "Arkansas", "Georgia",
@@ -324,7 +325,7 @@ ggplot(shopping_behavior, aes(x = Age)) +
 
 ### Beurteilung
 
-## Modell 5 (Sörn)
+## Modell 5 (Sörn) -- Entscheidungsbaum über das Alter & der Kauf einer Kategorie
 
 ### Anwendung
 
