@@ -137,6 +137,11 @@ shopping_behavior <- raw_shopping_behavior |> select(-"Customer ID")
 
 **MUSS HIER WAS KONVERTIERT WERDEN?**
 
+Season in numerisch umwandeln (1, 2, 3, 4)
+
+Frequency of Purchases umwandeln in Zahl
+
+
 **PREISGURPPEN BILDEN**
 
 Werfen wir einen Blick auf das finale Datenset.
@@ -156,7 +161,6 @@ Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse un
 Histogramm für die Häufigkeit von Einkäufen
 Zusammenfassende Statistiken
 Drucke das Histogramm und die Zusammenfassung
-
 
 ## These 2 (Ole)
 
@@ -200,7 +204,8 @@ shopping_behavior |> distinct(Location)
 Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der  einzelnen Orte an:
 
 ```{r}
-shopping_behavior |> count(Location) |> arrange(desc(n))
+rows <- nrow(shopping_behavior |> distinct(Location))
+print(shopping_behavior |> count(Location) |> arrange(desc(n)) , n = rows)
 ```
 
 Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
@@ -347,9 +352,9 @@ Ich finde das sehr Kritisch und nicht schön
 
 # Quellen
 
-Datenset: <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data>
-US-Map: <https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html>
-US-Map 2: <https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html>
+Datenset: <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> <br>
+US-Map: <https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html> <br>
+US-Map 2: <https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html> <br>
 
 # Ehrenwörtliche Erklärung
 Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.

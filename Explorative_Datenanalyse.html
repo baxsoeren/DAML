@@ -3552,6 +3552,8 @@ THEMES: https://quarto.org/docs/output-formats/html-themes.html -->
 </details>
 </div>
 <p><strong>MUSS HIER WAS KONVERTIERT WERDEN?</strong></p>
+<p>Season in numerisch umwandeln (1, 2, 3, 4)</p>
+<p>Frequency of Purchases umwandeln in Zahl</p>
 <p><strong>PREISGURPPEN BILDEN</strong></p>
 <p>Werfen wir einen Blick auf das finale Datenset.</p>
 <div class="cell">
@@ -3847,23 +3849,63 @@ THEMES: https://quarto.org/docs/output-formats/html-themes.html -->
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>shopping_behavior <span class="sc">|&gt;</span> <span class="fu">count</span>(Location) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>rows <span class="ot">&lt;-</span> <span class="fu">nrow</span>(shopping_behavior <span class="sc">|&gt;</span> <span class="fu">distinct</span>(Location))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(shopping_behavior <span class="sc">|&gt;</span> <span class="fu">count</span>(Location) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(n)) , <span class="at">n =</span> rows)</span></code><button title="In die Zwischenablage kopieren" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 50 × 2
-   Location       n
-   &lt;chr&gt;      &lt;int&gt;
- 1 Montana       96
- 2 California    95
- 3 Idaho         93
- 4 Illinois      92
- 5 Alabama       89
- 6 Minnesota     88
- 7 Nebraska      87
- 8 Nevada        87
- 9 New York      87
-10 Delaware      86
-# ℹ 40 more rows</code></pre>
+   Location           n
+   &lt;chr&gt;          &lt;int&gt;
+ 1 Montana           96
+ 2 California        95
+ 3 Idaho             93
+ 4 Illinois          92
+ 5 Alabama           89
+ 6 Minnesota         88
+ 7 Nebraska          87
+ 8 Nevada            87
+ 9 New York          87
+10 Delaware          86
+11 Maryland          86
+12 Vermont           85
+13 Louisiana         84
+14 North Dakota      83
+15 Missouri          81
+16 New Mexico        81
+17 West Virginia     81
+18 Mississippi       80
+19 Arkansas          79
+20 Georgia           79
+21 Indiana           79
+22 Kentucky          79
+23 Connecticut       78
+24 North Carolina    78
+25 Maine             77
+26 Ohio              77
+27 Tennessee         77
+28 Texas             77
+29 Virginia          77
+30 South Carolina    76
+31 Colorado          75
+32 Oklahoma          75
+33 Wisconsin         75
+34 Oregon            74
+35 Pennsylvania      74
+36 Michigan          73
+37 Washington        73
+38 Alaska            72
+39 Massachusetts     72
+40 New Hampshire     71
+41 Utah              71
+42 Wyoming           71
+43 South Dakota      70
+44 Iowa              69
+45 Florida           68
+46 New Jersey        67
+47 Arizona           65
+48 Hawaii            65
+49 Kansas            63
+50 Rhode Island      63</code></pre>
 </div>
 </div>
 <p>Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:</p>
@@ -4106,7 +4148,7 @@ THEMES: https://quarto.org/docs/output-formats/html-themes.html -->
 </section>
 <section id="quellen" class="level1" data-number="7">
 <h1 data-number="7"><span class="header-section-number">7</span> Quellen</h1>
-<p>Datenset: <a href="https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data" class="uri">https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data</a> US-Map: <a href="https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html" class="uri">https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html</a> US-Map 2: <a href="https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html" class="uri">https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html</a></p>
+<p>Datenset: <a href="https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data" class="uri">https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data</a> <br> US-Map: <a href="https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html" class="uri">https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html</a> <br> US-Map 2: <a href="https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html" class="uri">https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html</a> <br></p>
 </section>
 <section id="ehrenwörtliche-erklärung" class="level1" data-number="8">
 <h1 data-number="8"><span class="header-section-number">8</span> Ehrenwörtliche Erklärung</h1>
