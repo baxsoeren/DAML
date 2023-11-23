@@ -7,7 +7,7 @@ author: Ole Kepa,<br>
         Sören Bax
 format: 
   html: 
-    theme: flatly 
+    theme: yeti 
     toc: true
     toc_float: true
     number-sections: true
@@ -147,7 +147,7 @@ Frequency of Purchases umwandeln in Zahl
 Werfen wir einen Blick auf das finale Datenset.
 
 ```{r}
-#final_shopping_behavior
+
 knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen Datensatzes")
 ```
 
@@ -201,18 +201,16 @@ result <- shopping_behavior %>%
     Anteil_Weiß = sum(Percentage[Color == "White"])
   )
 
-# Ergebnis anzeigen
+
 print(result)
 ```
 
 Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.
 
 ```{r}
-## Daten vorbereiten (falls nicht bereits vorhanden)
 data <- shopping_behavior %>%
   count(Color)
 
-# Farbpalette erstellen
 color_palette <- c(
   "Gray" = "#808080",
   "Maroon" = "#800000",
@@ -241,7 +239,6 @@ color_palette <- c(
   "Blue" = "#0000FF"
 )
 
-# Balkendiagramm erstellen
 ggplot(data, aes(x = Color, y = n, fill = Color)) +
   geom_bar(stat = "identity") +
   labs(title = "Häufigkeit der Farben", x = "Farbe", y = "Häufigkeit") +
@@ -255,6 +252,50 @@ ggplot(data, aes(x = Color, y = n, fill = Color)) +
 
 
 ## These 3 (Ole)
+
+Wir betrachten die verscheidenen Bezahlarten 
+
+```{r}
+unique_payment_methods <- unique(shopping_behavior$`Payment Method`)
+cat("Zahlungsmethoden:", toString(unique_payment_methods), "\n")
+```
+
+Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden
+
+```{r}
+count_cash_payments <- sum(shopping_behavior$`Payment Method` %in% c("Bar", "Cash"), na.rm = TRUE)
+cat("Anzahl der Barzahlungen:", count_cash_payments, "\n")
+
+```
+
+Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen 
+
+```{r}
+percentage_cash <- count_cash_payments / nrow(shopping_behavior) * 100
+cat("Prozentsatz der Barzahlungen:", percentage_cash, "%\n")
+```
+
+Anzahl aller Zahlungen 
+
+```{r}
+total_payments <- nrow(raw_shopping_behavior)
+
+cat("Alle Zahlungen :", total_payments, "%\n")
+```
+
+
+Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an 
+
+```{r}
+payment_data <- raw_shopping_behavior %>%
+  group_by(`Payment Method`) %>%
+  summarise(TotalAmount = sum(`Purchase Amount (USD)`)) %>%
+  ungroup() %>%
+  mutate(Percentage = TotalAmount / sum(TotalAmount) * 100)
+
+payment_data %>%
+  select(`Payment Method`, Percentage)
+```
 
 ## These 4 (Fabian)
 In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. 
