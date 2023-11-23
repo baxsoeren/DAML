@@ -167,20 +167,92 @@ Drucke das Histogramm und die Zusammenfassung
 Zunächst schauen wir uns einmal alle vorhandenen Farben an:
 
 ```{r}
-shopping_behavior |> distinct(Color)
+rows <- nrow(shopping_behavior |> distinct(Color))
+print(shopping_behavior |> distinct(Color), n = rows)
 ```
 
 Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
 
 ```{r}
-shopping_behavior |> count(Color)
+rows <- nrow(shopping_behavior |> distinct(Color))
+print(shopping_behavior |> count(Color) |> arrange(desc(n)) , n = rows)
+
 ```
 
 Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:
 
 ```{r}
-shopping_behavior |> filter(Color != "Black" & Color != "White" & Color != "Grey") |> count(Color)
+rows <- nrow(shopping_behavior |> distinct(Color))
+print(shopping_behavior |> filter(Color != "Black" & Color != "White" & Color != "Gray") |> count(Color) |> arrange(desc(n)) , n = rows)
+
 ```
+
+Wir sehen, dass die Farben Schwarz, Grau und Weiß <Prozent> an der gesamten Farbauswahl einnehmen
+
+```{r}
+result <- shopping_behavior %>%
+  count(Color) %>%
+  mutate(Percentage = n / sum(n) * 100) %>%
+  filter(Color %in% c("Black", "Gray", "White")) %>%
+  summarize(
+    Gesamtanteil = sum(Percentage),
+    Anteil_Schwarz = sum(Percentage[Color == "Black"]),
+    Anteil_Grau = sum(Percentage[Color == "Gray"]),
+    Anteil_Weiß = sum(Percentage[Color == "White"])
+  )
+
+# Ergebnis anzeigen
+print(result)
+```
+
+Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.
+
+```{r}
+## Daten vorbereiten (falls nicht bereits vorhanden)
+data <- shopping_behavior %>%
+  count(Color)
+
+# Farbpalette erstellen
+color_palette <- c(
+  "Gray" = "#808080",
+  "Maroon" = "#800000",
+  "Turquoise" = "#40E0D0",
+  "White" = "#FFFFFF",
+  "Charcoal" = "#36454F",
+  "Silver" = "#C0C0C0",
+  "Pink" = "#FFC0CB",
+  "Purple" = "#800080",
+  "Olive" = "#808000",
+  "Gold" = "#FFD700",
+  "Violet" = "#EE82EE",
+  "Teal" = "#008080",
+  "Lavender" = "#E6E6FA",
+  "Black" = "#000000",
+  "Green" = "#008000",
+  "Peach" = "#FFDAB9",
+  "Red" = "#FF0000",
+  "Cyan" = "#00FFFF",
+  "Brown" = "#A52A2A",
+  "Beige" = "#F5F5DC",
+  "Orange" = "#FFA500",
+  "Indigo" = "#4B0082",
+  "Yellow" = "#FFFF00",
+  "Magenta" = "#FF00FF",
+  "Blue" = "#0000FF"
+)
+
+# Balkendiagramm erstellen
+ggplot(data, aes(x = Color, y = n, fill = Color)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Häufigkeit der Farben", x = "Farbe", y = "Häufigkeit") +
+  scale_fill_manual(values = color_palette) +
+  theme_minimal() + 
+  theme(axis.text.x = element_blank())
+
+
+
+```
+
 
 ## These 3 (Ole)
 
