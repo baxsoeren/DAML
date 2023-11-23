@@ -7,7 +7,7 @@ author: Ole Kepa,<br>
         Sören Bax
 format: 
   html: 
-    theme: flatly 
+    theme: Minty 
     toc: true
     toc_float: true
     number-sections: true
@@ -139,7 +139,37 @@ shopping_behavior <- raw_shopping_behavior |> select(-"Customer ID")
 
 Season in numerisch umwandeln (1, 2, 3, 4)
 
-Frequency of Purchases umwandeln in Zahl
+Nun wandeln wir "Frequency of Purchases" um. Und zwar werden die Werte zu folgenden Zahlen: "Fortnightly" = 2, "Weekly" = 1, "Annually" = 3
+
+Nun wandeln wir Previous Purchases in den Typen dbl um:
+
+```{r}
+shopping_behavior$"Previous Purchases" = as.numeric(shopping_behavior$"Previous Purchases")
+```
+
+Nun wandeln wir Previous Purchases in den Typen dbl und geben jeder Häufgkeit eine Zahl:
+
+```{r}
+shopping_behavior$"Frequency of Purchases" = as.numeric(case_when(
+  shopping_behavior$"Frequency of Purchases" == "Annually" ~ 1,
+  shopping_behavior$"Frequency of Purchases" == "Bi-Weekly" ~ 2,
+  shopping_behavior$"Frequency of Purchases" == "Every 3 Months" ~ 3,
+  shopping_behavior$"Frequency of Purchases" == "Fortnightly" ~ 4,
+  shopping_behavior$"Frequency of Purchases" == "Monthly" ~ 5,
+  shopping_behavior$"Frequency of Purchases" == "Quarterly" ~ 6,
+  shopping_behavior$"Frequency of Purchases" == "Weekly" ~ 7))
+```
+
+Nun wandeln wir die Seasons in Zahlen um:
+
+```{r}
+shopping_behavior$"Season" = as.numeric(case_when(
+  shopping_behavior$"Season" == "Winter" ~ 1,
+  shopping_behavior$"Season" == "Spring" ~ 2,
+  shopping_behavior$"Season" == "Summer" ~ 3,
+  shopping_behavior$"Season" == "Fall" ~ 4))
+
+```
 
 
 **PREISGURPPEN BILDEN**
@@ -287,7 +317,7 @@ Die Spannweite des Alters ist:
 max(shopping_behavior$Age) - min(shopping_behavior$Age)
 ```
 
-Nun erstellen wir einen Boxplot für das Alter:
+Nun erstellen wir einen Boxplot für das Alter der Kunden:
 
 ```{r}
 ggplot(shopping_behavior, aes(x = Age)) + 
@@ -302,6 +332,10 @@ ggplot(shopping_behavior, aes(x = Age)) +
     labels = comma_format(big.mark = ".", 
                           decimal.mark = ","))
 ```
+
+
+
+
 
 
 # Anwendung und Beurteilung von Machine-Learning-Modellen
@@ -336,11 +370,6 @@ ggplot(shopping_behavior, aes(x = Age)) +
 
 ### Beurteilung
 
-## Modell 6 (Sörn)
-
-### Anwendung
-
-### Beurteilung
 
 # Fazit
 
