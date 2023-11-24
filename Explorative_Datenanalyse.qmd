@@ -7,7 +7,7 @@ author: Ole Kepa,<br>
         Sören Bax
 format: 
   html: 
-    theme: yeti 
+    theme: minty
     toc: true
     toc_float: true
     number-sections: true
@@ -16,6 +16,18 @@ format:
     code-summary: "Code anzeigen"
 date: 2023-12-23
 ---
+
+<style>
+  hr.section-divider1 {
+    border-top: 15px solid #0000FF; 
+  }
+
+  hr.section-divider2 {
+    border-top: 10px solid #000; 
+  }
+</style>
+
+
 <!-- 
   pdf: 
     toc: true
@@ -29,6 +41,8 @@ library(tidymodels)
 library(explore)
 library(ggplot2)
 library(usmap)
+library(dplyr)
+library(kableExtra)
 ```
 
 
@@ -92,24 +106,26 @@ Im Datensatz gibt es **`r nrow(raw_shopping_behavior)`** Instazen (Beobachtungen
 ## Thesen
 
 Wir möchten insbesondere folgende Thesen in dieser Arbeit untersuchen:
+<div class="d-grid gap-2">
 
-**These 1: Die meisten Personen kaufen wöchentlich ein.**
+<button type="button" onclick="window.location.href='#these1'" class="btn btn-primary">**These 1: Die meisten Personen kaufen wöchentlich ein.**</button>
+  
+<button type="button" onclick="window.location.href='#these2'" class="btn btn-primary">**These 2: Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**</button>
 
-**These 2: Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**
+<button type="button" onclick="window.location.href='#these3'" class="btn btn-primary">**These 3: Die meisten Kunden zahlen Bar.**</button>
 
-**These 3: Die meisten Kunden zahlen Bar.**
+<button type="button" onclick="window.location.href='#these4'" class="btn btn-primary">**These 4: Die meisten Kunden nutzen keinen Rabattcode.**</button>
 
-**These 4: Die meisten Kunden nutzen keinen Rabattcode.**
+<button type="button" onclick="window.location.href='#these5'" class="btn btn-primary">**These 5: Männer kaufen weniger ein als Frauen.**</button>
 
-**These 5: Männer kaufen weniger ein als Frauen.**
+<button type="button" onclick="window.location.href='#these6'" class="btn btn-primary">**These 6: Es werden mehr Winter als Sommerklamotten gekauft.**</button>
 
-**These 6: Es werden mehr Winter als Sommerklamotten gekauft.**
+<button type="button" onclick="window.location.href='#these7'" class="btn btn-primary">**These 7: Die meisten Klamotten werden im Norden gekauft.**</button>
 
-**These 7: Die meisten Klamotten werden im Norden gekauft.**
+<button type="button" onclick="window.location.href='#these8'" class="btn btn-primary">**These 8: Die Kategorie "Klamotten" wird am meisten gekauft.**</button>
 
-**These 8: Die Kategorie "Klamotten" wird am meisten gekauft.**
-
-**These 9: Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.**
+<button type="button" onclick="window.location.href='#these9'" class="btn btn-primary">**These 9: Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.**</button>
+</div>
 
 # Untersuchung der Daten
 
@@ -151,27 +167,77 @@ Werfen wir einen Blick auf das finale Datenset.
 knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen Datensatzes")
 ```
 
+<hr class="section-divider1">
 
 # Untersuchung der Thesen
 
 Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse untersucht.
 
-## These 1 (Ole)
+## These 1:
 
-Histogramm für die Häufigkeit von Einkäufen
-Zusammenfassende Statistiken
-Drucke das Histogramm und die Zusammenfassung
+<div id="these1">
+  <h2>Die meisten Personen kaufen wöchentlich ein.</h2>
+</div>
 
-## These 2 (Ole)
+<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
 
-Zunächst schauen wir uns einmal alle vorhandenen Farben an:
+  <div class="card-body">
+  <p class="card-text">Es wird analysiert, wie oft Personen wöchentlich einkaufen, wobei der Fokus auf den verschiedenen Häufigkeiten liegt.</p>
+```{r}
+
+
+frequency_counts <- shopping_behavior %>%
+  count(`Frequency of Purchases`) %>%
+  arrange(`Frequency of Purchases`)
+
+frequency_counts %>%
+  kable() %>%
+  kable_styling(
+    full_width = FALSE,
+    position = "center",
+    font_size = 16,
+    latex_options = c("striped", "hold_position")
+  ) %>%
+  column_spec(1, color = "white")
+```
+
+  <p class="card-text">Wir stellen diesse Daten im nächsten Schritt aufbereitet in einem Diagramm da</p>
+```{r}
+frequency_mapping <- c("Fortnightly" = 2, "Weekly" = 1, "Annually" = 3,
+                        "Quarterly" = 4, "Bi-Weekly" = 5, "Monthly" = 6, "Every 3 Months" = 7)
+frequency_colors <- c("Fortnightly" = "blue", "Weekly" = "green", "Annually" = "red",
+                      "Quarterly" = "orange", "Bi-Weekly" = "purple", "Monthly" = "pink", "Every 3 Months" = "brown")
+
+shopping_behavior$`Frequency of Purchases` <- factor(shopping_behavior$`Frequency of Purchases`, levels = names(frequency_mapping))
+
+unique_values <- unique(shopping_behavior$`Frequency of Purchases`)
+
+
+ggplot(shopping_behavior, aes(x = `Frequency of Purchases`, fill = `Frequency of Purchases`)) +
+  geom_bar(stat = "count") +
+  labs(title = "Häufigkeit der Einkaufshäufigkeit", x = "Einkaufshäufigkeit", y = "Anzahl der Einkäufe") +
+  scale_fill_manual(values = frequency_colors) +
+  theme_minimal()
+```
+  </div>
+  </div>
+## These 2:
+
+<div id="these2">
+  <h2>Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.</h2>
+</div>
+
+<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
+  
+  <div class="card-body">
+  <p class="card-text">Zuerst schauen wir, welche Farben alle vorhanden sind.</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
 print(shopping_behavior |> distinct(Color), n = rows)
 ```
 
-Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
+<p class="card-text">Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -179,7 +245,7 @@ print(shopping_behavior |> count(Color) |> arrange(desc(n)) , n = rows)
 
 ```
 
-Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:
+<p class="card-text">Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -187,25 +253,27 @@ print(shopping_behavior |> filter(Color != "Black" & Color != "White" & Color !=
 
 ```
 
-Wir sehen, dass die Farben Schwarz, Grau und Weiß <Prozent> an der gesamten Farbauswahl einnehmen
+<p class="card-text">Wir sehen, dass die Farben Schwarz, Grau und Weiß r Kumulierter_Anteil_Schwarz_Weiß_Grau = max(Cumulative_Percentage)` an der gesamten Farbauswahl einnehmen</p>
 
 ```{r}
 result <- shopping_behavior %>%
   count(Color) %>%
   mutate(Percentage = n / sum(n) * 100) %>%
   filter(Color %in% c("Black", "Gray", "White")) %>%
+  arrange(desc(Percentage)) %>%
+  mutate(Cumulative_Percentage = cumsum(Percentage)) %>%
   summarize(
     Gesamtanteil = sum(Percentage),
     Anteil_Schwarz = sum(Percentage[Color == "Black"]),
     Anteil_Grau = sum(Percentage[Color == "Gray"]),
-    Anteil_Weiß = sum(Percentage[Color == "White"])
+    Anteil_Weiß = sum(Percentage[Color == "White"]),
+    Kumulierter = max(Cumulative_Percentage)
   )
-
 
 print(result)
 ```
 
-Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.
+<p class="card-text">Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.</p>
 
 ```{r}
 data <- shopping_behavior %>%
@@ -249,18 +317,27 @@ ggplot(data, aes(x = Color, y = n, fill = Color)) +
 
 
 ```
+  </div>
+  </div>
+  
+## These 3:
+
+<div id="these3">
+  <h2>Die meisten Kunden zahlen Bar.</h2>
+</div>
 
 
-## These 3 (Ole)
-
-Wir betrachten die verscheidenen Bezahlarten 
+<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
+  
+  <div class="card-body">
+  <p class="card-text">Wir betrachten die verscheidenen Bezahlarten</p>
 
 ```{r}
 unique_payment_methods <- unique(shopping_behavior$`Payment Method`)
 cat("Zahlungsmethoden:", toString(unique_payment_methods), "\n")
 ```
 
-Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden
+<p class="card-text">Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden</p>
 
 ```{r}
 count_cash_payments <- sum(shopping_behavior$`Payment Method` %in% c("Bar", "Cash"), na.rm = TRUE)
@@ -268,23 +345,23 @@ cat("Anzahl der Barzahlungen:", count_cash_payments, "\n")
 
 ```
 
-Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen 
+<p class="card-text">Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen</p>
 
 ```{r}
 percentage_cash <- count_cash_payments / nrow(shopping_behavior) * 100
 cat("Prozentsatz der Barzahlungen:", percentage_cash, "%\n")
 ```
 
-Anzahl aller Zahlungen 
+<p class="card-text">Anzahl aller Zahlungen</p>
 
 ```{r}
 total_payments <- nrow(raw_shopping_behavior)
 
-cat("Alle Zahlungen :", total_payments, "%\n")
+cat("Alle Zahlungen :", total_payments)
 ```
 
 
-Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an 
+<p class="card-text">Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an</p>
 
 ```{r}
 payment_data <- raw_shopping_behavior %>%
@@ -296,32 +373,60 @@ payment_data <- raw_shopping_behavior %>%
 payment_data %>%
   select(`Payment Method`, Percentage)
 ```
+  </div>
+  </div>
+## These 4:
 
-## These 4 (Fabian)
+<div id="these4">
+  <h2>Die meisten Kunden nutzen keinen Rabattcode.</h2>
+</div>
+
+
 In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. 
 
-## These 5 (Fabian)
+## These 5:
+
+<div id="these5">
+  <h2>Männer kaufen weniger ein als Frauen.</h2>
+</div>
+
+
 In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen. 
 
-## These 6 (Fabian)
+## These 6:
+
+<div id="these6">
+  <h2>Es werden mehr Winter als Sommerklamotten gekauft.</h2>
+</div>
+
+
+
 In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauft wird als im Sommer.
 
-## These 7 (Sörn)
+## These 7:
 
-Zunächst schauen wir uns  einmal alle vorhandenen Orte an:
+<div id="these7">
+  <h2>Die meisten Klamotten werden im Norden gekauft.</h2>
+</div>
+
+
+<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
+  
+  <div class="card-body">
+  <p class="card-text">Zunächst schauen wir uns  einmal alle vorhandenen Orte an:</p>
 
 ```{r}
 shopping_behavior |> distinct(Location)
 ```
 
-Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der  einzelnen Orte an:
+<p class="card-text">Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der  einzelnen Orte an:</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Location))
 print(shopping_behavior |> count(Location) |> arrange(desc(n)) , n = rows)
 ```
 
-Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
+<p class="card-text">Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:</p>
 
 ```{r}
 # Werte aus der Tabelle shopping_behavior übernommen
@@ -342,12 +447,20 @@ df <- data.frame(
 
 plot_usmap(data = df, values = "occurrence", color = "black", labels = TRUE) + 
   scale_fill_continuous(
-    low = "white", high = "red", name = "Häufigkeit", label = scales::comma
+    low = "white", high = "#80c4ac", name = "Häufigkeit", label = scales::comma
   ) + theme(legend.position = "right")
 ```
+  </div>
+  </div>
+
+## These 8: 
+
+<div id="these8">
+    <h2>Die Kategorie "Klamotten" wird am meisten gekauft.</h2>
+</div>
 
 
-## These 8 (Sörn)
+
 
 Zunächst schauen wir uns einmal alle vorhandenen Kategorien an:
 
@@ -365,7 +478,12 @@ shopping_behavior |> count(Category) |> ggplot(aes(x = Category, y = n)) + geom_
 
 Wir sehen, dass die Kategorie "Klamotten" mit 1737 Instanzen am häufigsten vorkommt.Danach folgt die Kategorie "Accessoires" mit 1240 Instanzen. Am seltensten kommen die Kategorien "Schuhe" mit 599 und "Oberbekleidung" mit 324 Instanzen vor.
 
-## These 9 (Sörn)
+## These 9: 
+
+<div id="these9">
+  <h2>Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.</h2>
+</div>
+
 
 ```{r}
 hist(shopping_behavior$Age)
