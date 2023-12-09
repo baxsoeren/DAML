@@ -336,13 +336,12 @@ ggplot(data, aes(x = Color, y = n, fill = Color)) +
 <div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
   
   <div class="card-body">
-  <p class="card-text">Wir betrachten die verscheidenen Bezahlarten</p>
+<p class="card-text">Wir betrachten die verscheidenen Bezahlarten</p>
 
 ```{r}
 unique_payment_methods <- unique(shopping_behavior$`Payment_Method`)
 cat("Zahlungsmethoden:", toString(unique_payment_methods), "\n")
 ```
-
 <p class="card-text">Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden</p>
 
 ```{r}
@@ -385,29 +384,101 @@ payment_data %>%
 
 <div id="these4">
   <h2>Die meisten Kunden nutzen keinen Rabattcode.</h2>
+  
+<p>In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. Unter dem Begriff "Rabattcodes" sind hier sowohl übliche Rabattcodes aber ebenso Promo-Codes gemeint. Zunächst schauen wir uns an wie oft der Wert "yes" in der Spalte "Discount Applied" vorkommt:</p>
+  
+```{r}
+shopping_behavior |> count(`Discount_Applied`)
+```
+<p>Die Analyse zeigt, dass bei 2223 Einkäufen kein Rabattcode genutzt wurde. Bei 1677 wurde hingegen ein Rabattcode genutzt.
+
+Im zweiten Schritt schauen wir uns an wie oft der Wert "yes" in der Spalte "Promo Code Used" vorkommt:</p>
+
+```{r}
+shopping_behavior |> count(`Promo_Code_Used`)
+```
+
+<p>Das Ergebnis dieser Abfrage zeigt, dass bei 2223 Einkäufen kein Promo-Code verwendet wurde. Bei 1677 wurde hingegen ein Promo-Code verwendet.</p>
+  
+```{r}
+colnames(shopping_behavior)[colnames(shopping_behavior) == "Discount Applied"] <- "yes"
+colnames(shopping_behavior)[colnames(shopping_behavior) == "Discount Applied"] <- "no"
+
+shopping_behavior$Combined_Discount <- paste(shopping_behavior$`Discount_Applied`, shopping_behavior$`Promo_Code_Used`)
+
+ggplot(shopping_behavior, aes(x = Combined_Discount)) +
+  geom_bar(stat = "count", fill = "steelblue") +
+  labs(title = "Discount and Promo Code Usage",
+      x = "Combined Status",
+      y = "Count")
+```
+    
+<p>Zusammenfassend lässt sich also sagen, dass die Hypothese, dass die meisten Kunden keinen Rabattcode nutzen würden, bestätigt werden kann. Insgesamt wurden bei 2223 Einkäufen kein Rabattcode genutzt. Bei 1677 wurde hingegen ein Rabattcode genutzt.</p>
+
 </div>
-
-
-In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. 
 
 ## These 5:
 
 <div id="these5">
   <h2>Männer kaufen weniger ein als Frauen.</h2>
 </div>
+<p>
+  In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen. 
 
-
-In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen. 
-
+  Hierzu analysieren wir zunächst wie häufig die Werte "male" und "femal" in der Spalte "Gender" vorkommt:</p>
+  
+```{r}
+shopping_behavior |> filter(Gender != "male") |> count(Gender)
+shopping_behavior |> filter(Gender != "female") |> count(Gender)
+```
+    
+<p>Das Ergebnis der Auswertung ist, dass Personend des männlichen Geschlechtes 2652 Produkte kauften. Personen des weiblichen         Geschlechts hingegen kauften nur 1248 Produkte. Selbes Ergebnis kann visuell der folgenden Grafik entnommen werden:</p>
+  
+```{r}
+shopping_behavior |> count(Gender) |> ggplot(aes(x = Gender, y = n)) + geom_col()
+```
+    
 ## These 6:
 
 <div id="these6">
   <h2>Es werden mehr Winter als Sommerklamotten gekauft.</h2>
 </div>
+ <p>In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauft wird als im Sommer.
 
+  Hierzu analysieren wir zunächst wie häufig der Wert "Winter" in der Spalte "Season" vorkommt:
 
+```{r}
+shopping_behavior |> filter(Season == "Winter") |> count(Season)
+```
+    
+<p>
+    Das Ergebnis der Analyse zeigt, dass `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte im         Winter gekauft wurden. Nun schauen wir uns an wie häufig der Wert "Summer" in der Spalte "Season" vorkommt:
+</p>
 
-In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauft wird als im Sommer.
+```{r}
+shopping_behavior |> filter(Season == "Summer") |> count(Season)
+```
+    
+<p>
+Das Ergebnis der Analyse zeigt, dass `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte im Sommer gekauft wurden.
+
+Somit lässt sich die Hypothese belegen, dass im Winter mehr Kleidung gekauft wird als im Sommer, belegen. Im Winter werden `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte gekauft. Im Sommer hingegen werden `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte gekauft. (Vgl. Grafik)
+</p>
+
+```{r}
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2")
+}
+
+library(ggplot2)
+
+ggplot(shopping_behavior, aes(x = Season, fill = Season)) +
+  geom_bar() +
+  labs(title = "Histogramm der Jahreszeiten",
+      x = "Jahreszeiten",
+      y = "Anzahl") +
+  scale_fill_manual(values = c("Summer" = "orange", "Winter" = "blue"))
+```
 
 ## These 7:
 
