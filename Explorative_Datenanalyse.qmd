@@ -132,7 +132,7 @@ Die Customer ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten
 Nun erstellen wir den finalen Datensatz, welcher die Basis für die weitere Analyse bildet. Zunächst löschen wir die Spalte "Customer ID", da diese für Analysen nicht verwertbar ist:
 
 ```{r}
-shopping_behavior <- raw_shopping_behavior |> select(-"Customer ID")
+shopping_behavior <- raw_shopping_behavior |> select(-"Customer_ID")
 ```
 
 **MUSS HIER WAS KONVERTIERT WERDEN?**
@@ -185,7 +185,7 @@ shopping_behavior |> filter(Color != "Black" & Color != "White" & Color != "Grey
 In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. Unter dem Begriff "Rabattcodes" sind hier sowohl übliche Rabattcodes aber ebenso Promo-Codes gemeint. Zunächst schauen wir uns an wie oft der Wert "yes" in der Spalte "Discount Applied" vorkommt:
 
 ```{r}
-shopping_behavior |> count(`Discount Applied`)
+shopping_behavior |> count(`Discount_Applied`)
 ```
 
 Die Analyse zeigt, dass bei 2223 Einkäufen kein Rabattcode genutzt wurde. Bei 1677 wurde hingegen ein Rabattcode genutzt.
@@ -193,7 +193,7 @@ Die Analyse zeigt, dass bei 2223 Einkäufen kein Rabattcode genutzt wurde. Bei 1
 Im zweiten Schritt schauen wir uns an wie oft der Wert "yes" in der Spalte "Promo Code Used" vorkommt:
 
 ```{r}
-shopping_behavior |> count(`Promo Code Used`)
+shopping_behavior |> count(`Promo_Code_Used`)
 ```
 
 Das Ergebnis dieser Abfrage zeigt, dass bei 2223 Einkäufen kein Promo-Code verwendet wurde. Bei 1677 wurde hingegen ein Promo-Code verwendet. 
@@ -202,7 +202,7 @@ Das Ergebnis dieser Abfrage zeigt, dass bei 2223 Einkäufen kein Promo-Code verw
 colnames(shopping_behavior)[colnames(shopping_behavior) == "Discount Applied"] <- "yes"
 colnames(shopping_behavior)[colnames(shopping_behavior) == "Discount Applied"] <- "no"
 
-shopping_behavior$Combined_Discount <- paste(shopping_behavior$`Discount Applied`, shopping_behavior$`Promo Code Used`)
+shopping_behavior$Combined_Discount <- paste(shopping_behavior$`Discount_Applied`, shopping_behavior$`Promo_Code_Used`)
 
 ggplot(shopping_behavior, aes(x = Combined_Discount)) +
   geom_bar(stat = "count", fill = "steelblue") +
