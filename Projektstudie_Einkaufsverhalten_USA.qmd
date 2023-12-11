@@ -17,6 +17,7 @@ format:
 date: 2023-12-23
 ---
 
+```{=html}
 <style>
   hr.section-divider1 {
     border-top: 15px solid #0000FF; 
@@ -26,15 +27,15 @@ date: 2023-12-23
     border-top: 10px solid #000; 
   }
 </style>
-
-
+```
+```{=html}
 <!-- 
   pdf: 
     toc: true
     number-sections: true
     
 THEMES: https://quarto.org/docs/output-formats/html-themes.html -->
-
+```
 ```{r, message=FALSE, include = FALSE}
 library(tidyverse) 
 library(tidymodels)
@@ -53,6 +54,7 @@ library(rpart)
 <!-- Farbcode Türkis: #80c4ac -->
 
 # Gendererklärung
+
 Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Ansprechweisen, sei es divers, männlich oder weiblich verzichtet. Alle Formulierungen sprechen gleichermaßen alle Geschlechter an.
 
 # Aufgabe und Daten verstehen
@@ -79,29 +81,27 @@ knitr::kable(head(raw_shopping_behavior), caption = "Das Spaltenformat des Daten
 
 Jede Zeile steht für einen Einkauf. Die Spalten sind wie folgt definiert:
 
-Variable                    |Typ    |Bedeutung
-:---------------------------|:------|:------------------------------------
-**Customer_ID**             |dbl    | Eindeutige Kunden Identifikationsnummer
-**Age**                     |dbl    | Alter des Kundens
-**Gender**                  |chr    | Geschlecht des Kundens
-**Item_Purchased**          |chr    | Gekauftes Produkt
-**Category**                |chr    | Kategorie des gekauften Produkts
-**Purchase_Amount**         |dbl    | Bezahlter Preis
-**Location**                |chr    | Ort des Kaufes
-**Size**                    |chr    | Konfektionsgröße des gekauften Produkts
-**Color**                   |chr    | Farbe des gekauften Produkts
-**Season**                  |chr    | Jahreszeit, in welcher der Kauf getätigt wurde
-**Review_Rating**           |dbl    | Kundenbewertungen zum Produkt
-**Subscription_Status**     |chr    | Status des Abonnements
-**Payment_Method**          |chr    | Zahlungsmethode
-**Shipping_Type**           |chr    | Versandart
-**Discount_Applied**        |chr    | Rabattcode genutzt?
-**Promo_Code_Used**         |chr    | Werbecode genutzt?
-**Previous_Purchases**      |dbl    | Anzahl vorheriger Käufe
-**Payment_Method**          |chr    | Bevorzugte Zahlungsmethode
-**Frequency_of_Purchases**  |chr    | Häufigkeit von Käufen
-
-
+| Variable                   | Typ | Bedeutung                                      |
+|:-----------------------|:--------------|:--------------------------------|
+| **Customer_ID**            | dbl | Eindeutige Kunden Identifikationsnummer        |
+| **Age**                    | dbl | Alter des Kundens                              |
+| **Gender**                 | chr | Geschlecht des Kundens                         |
+| **Item_Purchased**         | chr | Gekauftes Produkt                              |
+| **Category**               | chr | Kategorie des gekauften Produkts               |
+| **Purchase_Amount**        | dbl | Bezahlter Preis                                |
+| **Location**               | chr | Ort des Kaufes                                 |
+| **Size**                   | chr | Konfektionsgröße des gekauften Produkts        |
+| **Color**                  | chr | Farbe des gekauften Produkts                   |
+| **Season**                 | chr | Jahreszeit, in welcher der Kauf getätigt wurde |
+| **Review_Rating**          | dbl | Kundenbewertungen zum Produkt                  |
+| **Subscription_Status**    | chr | Status des Abonnements                         |
+| **Payment_Method**         | chr | Zahlungsmethode                                |
+| **Shipping_Type**          | chr | Versandart                                     |
+| **Discount_Applied**       | chr | Rabattcode genutzt?                            |
+| **Promo_Code_Used**        | chr | Werbecode genutzt?                             |
+| **Previous_Purchases**     | dbl | Anzahl vorheriger Käufe                        |
+| **Payment_Method**         | chr | Bevorzugte Zahlungsmethode                     |
+| **Frequency_of_Purchases** | chr | Häufigkeit von Käufen                          |
 
 ```{r}
 describe_tbl(raw_shopping_behavior)
@@ -112,26 +112,62 @@ Im Datensatz gibt es **`r nrow(raw_shopping_behavior)`** Instazen (Beobachtungen
 ## Thesen
 
 Wir möchten insbesondere folgende Thesen in dieser Arbeit untersuchen:
-<div class="d-grid gap-2">
 
-<button type="button" onclick="window.location.href='#these1'" class="btn btn-primary">**These 1: Die meisten Personen kaufen wöchentlich ein.**</button>
-  
-<button type="button" onclick="window.location.href='#these2'" class="btn btn-primary">**These 2: Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**</button>
+::: {.d-grid .gap-2}
+<button type="button" onclick="window.location.href=&#39;#these1&#39;" class="btn btn-primary">
 
-<button type="button" onclick="window.location.href='#these3'" class="btn btn-primary">**These 3: Die meisten Kunden zahlen Bar.**</button>
+**These 1: Die meisten Personen kaufen wöchentlich ein.**
 
-<button type="button" onclick="window.location.href='#these4'" class="btn btn-primary">**These 4: Die meisten Kunden nutzen keinen Rabattcode.**</button>
+</button>
 
-<button type="button" onclick="window.location.href='#these5'" class="btn btn-primary">**These 5: Männer kaufen weniger ein als Frauen.**</button>
+<button type="button" onclick="window.location.href=&#39;#these2&#39;" class="btn btn-primary">
 
-<button type="button" onclick="window.location.href='#these6'" class="btn btn-primary">**These 6: Es werden mehr Winter als Sommerklamotten gekauft.**</button>
+**These 2: Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**
 
-<button type="button" onclick="window.location.href='#these7'" class="btn btn-primary">**These 7: Die meisten Klamotten werden im Norden gekauft.**</button>
+</button>
 
-<button type="button" onclick="window.location.href='#these8'" class="btn btn-primary">**These 8: Die Kategorie "Klamotten" wird am meisten gekauft.**</button>
+<button type="button" onclick="window.location.href=&#39;#these3&#39;" class="btn btn-primary">
 
-<button type="button" onclick="window.location.href='#these9'" class="btn btn-primary">**These 9: Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.**</button>
-</div>
+**These 3: Die meisten Kunden zahlen Bar.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these4&#39;" class="btn btn-primary">
+
+**These 4: Die meisten Kunden nutzen keinen Rabattcode.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these5&#39;" class="btn btn-primary">
+
+**These 5: Männer kaufen weniger ein als Frauen.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these6&#39;" class="btn btn-primary">
+
+**These 6: Es werden mehr Winter als Sommerklamotten gekauft.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these7&#39;" class="btn btn-primary">
+
+**These 7: Die meisten Klamotten werden im Norden gekauft.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these8&#39;" class="btn btn-primary">
+
+**These 8: Die Kategorie "Klamotten" wird am meisten gekauft.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these9&#39;" class="btn btn-primary">
+
+**These 9: Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.**
+
+</button>
+:::
 
 # Untersuchung der Daten
 
@@ -147,7 +183,7 @@ summary(raw_shopping_behavior)
 raw_shopping_behavior %>% describe()
 ```
 
-Die Customer_ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten Schritt löschen. 
+Die Customer_ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten Schritt löschen.
 
 ## Datenaufbereitung
 
@@ -163,7 +199,6 @@ Season in numerisch umwandeln (1, 2, 3, 4)
 
 Frequency_of_Purchases umwandeln in Zahl
 
-
 **PREISGURPPEN BILDEN**
 
 Werfen wir einen Blick auf das finale Datenset.
@@ -173,22 +208,24 @@ Werfen wir einen Blick auf das finale Datenset.
 knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen Datensatzes")
 ```
 
-
-
 # Untersuchung der Thesen
 
 Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse untersucht.
 
 ## These 1:
 
-<div id="these1">
-  <h2>Die meisten Personen kaufen wöchentlich ein.</h2>
-</div>
+::: {#these1}
+<h2>Die meisten Personen kaufen wöchentlich ein.</h2>
+:::
 
-<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
 
-  <div class="card-body">
-  <p class="card-text">Es wird analysiert, wie oft Personen wöchentlich einkaufen, wobei der Fokus auf den verschiedenen Häufigkeiten liegt.</p>
+Es wird analysiert, wie oft Personen wöchentlich einkaufen, wobei der Fokus auf den verschiedenen Häufigkeiten liegt.
+
+</p>
+
 ```{r}
 
 
@@ -207,7 +244,12 @@ frequency_counts %>%
   column_spec(1, color = "white")
 ```
 
-  <p class="card-text">Wir stellen diesse Daten im nächsten Schritt aufbereitet in einem Diagramm da</p>
+<p class="card-text">
+
+Wir stellen diesse Daten im nächsten Schritt aufbereitet in einem Diagramm da
+
+</p>
+
 ```{r}
 frequency_mapping <- c("Fortnightly" = 2, "Weekly" = 1, "Annually" = 3,
                         "Quarterly" = 4, "Bi-Weekly" = 5, "Monthly" = 6, "Every 3 Months" = 7)
@@ -225,25 +267,33 @@ ggplot(shopping_behavior, aes(x = `Frequency_of_Purchases`, fill = `Frequency_of
   scale_fill_manual(values = frequency_colors) +
   theme_minimal()
 ```
-  </div>
-  </div>
+:::
+:::
+
 ## These 2:
 
-<div id="these2">
-  <h2>Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.</h2>
-</div>
+::: {#these2}
+<h2>Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.</h2>
+:::
 
-<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
-  
-  <div class="card-body">
-  <p class="card-text">Zuerst schauen wir, welche Farben alle vorhanden sind.</p>
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
+
+Zuerst schauen wir, welche Farben alle vorhanden sind.
+
+</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
 print(shopping_behavior |> distinct(Color), n = rows)
 ```
 
-<p class="card-text">Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:</p>
+<p class="card-text">
+
+Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
+
+</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -251,7 +301,11 @@ print(shopping_behavior |> count(Color) |> arrange(desc(n)) , n = rows)
 
 ```
 
-<p class="card-text">Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:</p>
+<p class="card-text">
+
+Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:
+
+</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -259,7 +313,11 @@ print(shopping_behavior |> filter(Color != "Black" & Color != "White" & Color !=
 
 ```
 
-<p class="card-text">Wir sehen, dass die Farben Schwarz, Grau und Weiß r Kumulierter_Anteil_Schwarz_Weiß_Grau = max(Cumulative_Percentage)` an der gesamten Farbauswahl einnehmen</p>
+<p class="card-text">
+
+Wir sehen, dass die Farben Schwarz, Grau und Weiß r Kumulierter_Anteil_Schwarz_Weiß_Grau = max(Cumulative_Percentage)\` an der gesamten Farbauswahl einnehmen
+
+</p>
 
 ```{r}
 result <- shopping_behavior %>%
@@ -279,7 +337,11 @@ result <- shopping_behavior %>%
 print(result)
 ```
 
-<p class="card-text">Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.</p>
+<p class="card-text">
+
+Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.
+
+</p>
 
 ```{r}
 data <- shopping_behavior %>%
@@ -323,26 +385,33 @@ ggplot(data, aes(x = Color, y = n, fill = Color)) +
 
 
 ```
-  </div>
-  </div>
-  
+:::
+:::
+
 ## These 3:
 
-<div id="these3">
-  <h2>Die meisten Kunden zahlen Bar.</h2>
-</div>
+::: {#these3}
+<h2>Die meisten Kunden zahlen Bar.</h2>
+:::
 
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
 
-<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
-  
-  <div class="card-body">
-<p class="card-text">Wir betrachten die verscheidenen Bezahlarten</p>
+Wir betrachten die verscheidenen Bezahlarten
+
+</p>
 
 ```{r}
 unique_payment_methods <- unique(shopping_behavior$`Payment_Method`)
 cat("Zahlungsmethoden:", toString(unique_payment_methods), "\n")
 ```
-<p class="card-text">Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden</p>
+
+<p class="card-text">
+
+Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden
+
+</p>
 
 ```{r}
 count_cash_payments <- sum(shopping_behavior$`Payment_Method` %in% c("Bar", "Cash"), na.rm = TRUE)
@@ -350,14 +419,22 @@ cat("Anzahl der Barzahlungen:", count_cash_payments, "\n")
 
 ```
 
-<p class="card-text">Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen</p>
+<p class="card-text">
+
+Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen
+
+</p>
 
 ```{r}
 percentage_cash <- count_cash_payments / nrow(shopping_behavior) * 100
 cat("Prozentsatz der Barzahlungen:", percentage_cash, "%\n")
 ```
 
-<p class="card-text">Anzahl aller Zahlungen</p>
+<p class="card-text">
+
+Anzahl aller Zahlungen
+
+</p>
 
 ```{r}
 total_payments <- nrow(raw_shopping_behavior)
@@ -365,8 +442,11 @@ total_payments <- nrow(raw_shopping_behavior)
 cat("Alle Zahlungen :", total_payments)
 ```
 
+<p class="card-text">
 
-<p class="card-text">Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an</p>
+Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an
+
+</p>
 
 ```{r}
 payment_data <- raw_shopping_behavior %>%
@@ -378,28 +458,41 @@ payment_data <- raw_shopping_behavior %>%
 payment_data %>%
   select(`Payment_Method`, Percentage)
 ```
-  </div>
-  </div>
+:::
+:::
+
 ## These 4:
 
-<div id="these4">
-  <h2>Die meisten Kunden nutzen keinen Rabattcode.</h2>
-  
+::: {#these2}
+<h2>Die meisten Kunden nutzen keinen Rabattcode</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+<p class="card-text">
+</p>
+
 <p>In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. Unter dem Begriff "Rabattcodes" sind hier sowohl übliche Rabattcodes aber ebenso Promo-Codes gemeint. Zunächst schauen wir uns an wie oft der Wert "yes" in der Spalte "Discount Applied" vorkommt:</p>
-  
+
 ```{r}
 shopping_behavior |> count(`Discount_Applied`)
 ```
-<p>Die Analyse zeigt, dass bei 2223 Einkäufen kein Rabattcode genutzt wurde. Bei 1677 wurde hingegen ein Rabattcode genutzt.
 
-Im zweiten Schritt schauen wir uns an wie oft der Wert "yes" in der Spalte "Promo Code Used" vorkommt:</p>
+<p>
+
+Die Analyse zeigt, dass bei 2223 Einkäufen kein Rabattcode genutzt wurde. Bei 1677 wurde hingegen ein Rabattcode genutzt.
+
+Im zweiten Schritt schauen wir uns an wie oft der Wert "yes" in der Spalte "Promo Code Used" vorkommt:
+
+</p>
 
 ```{r}
 shopping_behavior |> count(`Promo_Code_Used`)
 ```
 
 <p>Das Ergebnis dieser Abfrage zeigt, dass bei 2223 Einkäufen kein Promo-Code verwendet wurde. Bei 1677 wurde hingegen ein Promo-Code verwendet.</p>
-  
+
 ```{r}
 colnames(shopping_behavior)[colnames(shopping_behavior) == "Discount Applied"] <- "yes"
 colnames(shopping_behavior)[colnames(shopping_behavior) == "Discount Applied"] <- "no"
@@ -412,58 +505,68 @@ ggplot(shopping_behavior, aes(x = Combined_Discount)) +
       x = "Combined Status",
       y = "Count")
 ```
-    
-<p>Zusammenfassend lässt sich also sagen, dass die Hypothese, dass die meisten Kunden keinen Rabattcode nutzen würden, bestätigt werden kann. Insgesamt wurden bei 2223 Einkäufen kein Rabattcode genutzt. Bei 1677 wurde hingegen ein Rabattcode genutzt.</p>
 
-</div>
+<p>Zusammenfassend lässt sich also sagen, dass die Hypothese, dass die meisten Kunden keinen Rabattcode nutzen würden, bestätigt werden kann. Insgesamt wurden bei 2223 Einkäufen kein Rabattcode genutzt. Bei 1677 wurde hingegen ein Rabattcode genutzt.</p>
+:::
+:::
 
 ## These 5:
 
-<div id="these5">
-  <h2>Männer kaufen weniger ein als Frauen.</h2>
-</div>
-<p>
-  In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen. 
+::: {#these2}
+<h2>Männer kaufen weniger Produkte als Frauen.</h2>
+:::
 
-  Hierzu analysieren wir zunächst wie häufig die Werte "male" und "femal" in der Spalte "Gender" vorkommt:</p>
-  
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+<p>
+
+In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen.
+
+Hierzu analysieren wir zunächst wie häufig die Werte "male" und "femal" in der Spalte "Gender" vorkommt:
+
+</p>
+
 ```{r}
 shopping_behavior |> filter(Gender != "male") |> count(Gender)
 shopping_behavior |> filter(Gender != "female") |> count(Gender)
 ```
-    
-<p>Das Ergebnis der Auswertung ist, dass Personend des männlichen Geschlechtes 2652 Produkte kauften. Personen des weiblichen         Geschlechts hingegen kauften nur 1248 Produkte. Selbes Ergebnis kann visuell der folgenden Grafik entnommen werden:</p>
-  
+
+<p>Das Ergebnis der Auswertung ist, dass Personend des männlichen Geschlechtes 2652 Produkte kauften. Personen des weiblichen Geschlechts hingegen kauften nur 1248 Produkte. Selbes Ergebnis kann visuell der folgenden Grafik entnommen werden:</p>
+
 ```{r}
 shopping_behavior |> count(Gender) |> ggplot(aes(x = Gender, y = n)) + geom_col()
 ```
-    
+:::
+:::
+
 ## These 6:
 
-<div id="these6">
-  <h2>Es werden mehr Winter als Sommerklamotten gekauft.</h2>
-</div>
- <p>In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauft wird als im Sommer.
+::: {#these2}
+<h2>Im Winter werden mehr Produkte gekauft als im Sommer.</h2>
+:::
 
-  Hierzu analysieren wir zunächst wie häufig der Wert "Winter" in der Spalte "Season" vorkommt:
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p>In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauft wird als im Sommer.
+
+Hierzu analysieren wir zunächst wie häufig der Wert "Winter" in der Spalte "Season" vorkommt: </p>
 
 ```{r}
 shopping_behavior |> filter(Season == "Winter") |> count(Season)
 ```
-    
-<p>
-    Das Ergebnis der Analyse zeigt, dass `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte im         Winter gekauft wurden. Nun schauen wir uns an wie häufig der Wert "Summer" in der Spalte "Season" vorkommt:
-</p>
+
+<p>Das Ergebnis der Analyse zeigt, dass `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte im Winter gekauft wurden. Nun schauen wir uns an wie häufig der Wert "Summer" in der Spalte "Season" vorkommt:</p>
 
 ```{r}
 shopping_behavior |> filter(Season == "Summer") |> count(Season)
 ```
-    
+
 <p>
+
 Das Ergebnis der Analyse zeigt, dass `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte im Sommer gekauft wurden.
 
-Somit lässt sich die Hypothese belegen, dass im Winter mehr Kleidung gekauft wird als im Sommer, belegen. Im Winter werden `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte gekauft. Im Sommer hingegen werden `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte gekauft. (Vgl. Grafik)
-</p>
+Somit lässt sich die Hypothese belegen, dass im Winter mehr Kleidung gekauft wird als im Sommer, belegen. Im Winter werden `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte gekauft. Im Sommer hingegen werden `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte gekauft. (Vgl. Grafik)</p>
 
 ```{r}
 if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -479,31 +582,43 @@ ggplot(shopping_behavior, aes(x = Season, fill = Season)) +
       y = "Anzahl") +
   scale_fill_manual(values = c("Summer" = "orange", "Winter" = "blue"))
 ```
+:::
+:::
 
 ## These 7:
 
-<div id="these7">
-  <h2>Die meisten Klamotten werden im Norden gekauft.</h2>
-</div>
+::: {#these7}
+<h2>Die meisten Klamotten werden im Norden gekauft.</h2>
+:::
 
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
 
-<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
-  
-  <div class="card-body">
-  <p class="card-text">Zunächst schauen wir uns  einmal alle vorhandenen Orte an:</p>
+Zunächst schauen wir uns einmal alle vorhandenen Orte an:
+
+</p>
 
 ```{r}
 shopping_behavior |> distinct(Location)
 ```
 
-<p class="card-text">Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der  einzelnen Orte an:</p>
+<p class="card-text">
+
+Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
+
+</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Location))
 print(shopping_behavior |> count(Location) |> arrange(desc(n)) , n = rows)
 ```
 
-<p class="card-text">Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:</p>
+<p class="card-text">
+
+Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
+
+</p>
 
 ```{r}
 # Werte aus der Tabelle shopping_behavior übernommen
@@ -527,17 +642,16 @@ plot_usmap(data = df, values = "occurrence", color = "black", labels = TRUE) +
     low = "white", high = "#80c4ac", name = "Häufigkeit", label = scales::comma
   ) + theme(legend.position = "right")
 ```
-  </div>
-  </div>
+:::
+:::
 
-## These 8: 
+## These 8:
 
-<div id="these8">
-    <h2>Die Kategorie "Klamotten" wird am meisten gekauft.</h2>
-</div>
-
-
-
+::: {#these8}
+```         
+<h2>Die Kategorie "Klamotten" wird am meisten gekauft.</h2>
+```
+:::
 
 Zunächst schauen wir uns einmal alle vorhandenen Kategorien an:
 
@@ -555,12 +669,11 @@ shopping_behavior |> count(Category) |> ggplot(aes(x = Category, y = n)) + geom_
 
 Wir sehen, dass die Kategorie "Klamotten" mit 1737 Instanzen am häufigsten vorkommt.Danach folgt die Kategorie "Accessoires" mit 1240 Instanzen. Am seltensten kommen die Kategorien "Schuhe" mit 599 und "Oberbekleidung" mit 324 Instanzen vor.
 
-## These 9: 
+## These 9:
 
-<div id="these9">
-  <h2>Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.</h2>
-</div>
-
+::: {#these9}
+<h2>Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.</h2>
+:::
 
 ```{r}
 hist(shopping_behavior$Age)
@@ -611,7 +724,6 @@ ggplot(shopping_behavior, aes(x = Age)) +
                           decimal.mark = ","))
 ```
 
-
 # Anwendung und Beurteilung von Machine-Learning-Modellen
 
 ## Modell 1 (Ole)
@@ -620,10 +732,14 @@ ggplot(shopping_behavior, aes(x = Age)) +
 
 Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersagen, wie viele Einkäufe es in den einzelnen Altersgruppen geben wird. Dafür erstellen wir ein Modell.
 
-<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
-  
-  <div class="card-body">
-  <p class="card-text">Daten gruppieren und Zusammenzählen</p>
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
+
+Daten gruppieren und Zusammenzählen
+
+</p>
+
 ```{r}
 # Daten gruppieren und die Anzahl der Einkäufe pro Altersgruppe zusammenzählen
 purchase_count_by_age <- shopping_behavior %>%
@@ -633,8 +749,8 @@ purchase_count_by_age <- shopping_behavior %>%
 print(purchase_count_by_age)
 ```
 
-
 <p>Daten aufteilen und Modell erstellen</p>
+
 ```{r}
 
 # Modell erstellen (lineare Regression)
@@ -645,6 +761,7 @@ print(linear_model)
 ```
 
 <p>Vorhersagen für Testdaten</p>
+
 ```{r}
 # Vorhersagen für alle Altersgruppen im vorhandenen Datenbereich
 age_range <- seq(min(purchase_count_by_age$Age), max(purchase_count_by_age$Age), length.out = 10)
@@ -659,6 +776,7 @@ print(predictions)
 ```
 
 <p>Daten gruppieren und Vorhersagen zusammenzählen:</p>
+
 ```{r}
 # Daten für den Plot vorbereiten und auf 2 nachkommastellen runden
 plot_data <- data.frame(Age = age_range, Predicted_Purchases = predictions[, 1], 
@@ -672,8 +790,8 @@ plot_data <- data.frame(Age = age_range, Predicted_Purchases = predictions[, 1],
 print(plot_data)
 ```
 
-
 <p>Scatterplot mit Konfidenzintervall erstellen</p>
+
 ```{r}
 
 # Scatterplot mit Konfidenzintervall erstellen
@@ -688,22 +806,24 @@ ggplot() +
   ) +
   theme_minimal()
 ```
-  </div>
-  </div>
+:::
+:::
 
 ### Bewertung
 
 Es wurde ein lineares Regressionsmodell erstellt, um die Beziehung zwischen Alter und Gesamtanzahl der Einkäufe zu untersuchen. Die Vorhersagen für Testdaten wurden mit Konfidenzintervallen präsentiert. Danach wurde ein Scatterplot erstellt, der die tatsächlichen und vorhergesagten Einkaufszahlen mit Konfidenzintervallen für verschiedene Altersgruppen vergleicht.
 
-
 ## Modell 2 (Ole)
 
 Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetrag (Purchase_Amount) und der vorherigen Anzahl von Käufen (Previous_Purchases).
 
-<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
-  
-  <div class="card-body">
-  <p class="card-text">Anwendung</p>
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
+
+Anwendung
+
+</p>
 
 ```{r}
 
@@ -742,45 +862,262 @@ ggplot(prediction_table, aes(x = Discount_Applied, y = Predicted_Probability)) +
 
 <p>Kommulierte Ausgabe der Warscheinlichkeiten, dass ein Rabattcode genutzt wird oder nicht (als Wert zwischen 0 und 1).</p>
 
-```{r}
-
-cumulative_prediction_table <- prediction_table %>%
-  group_by(Discount_Applied) %>%
-  summarize(Distribution = mean(Predicted_Probability))
-
-
-colnames(cumulative_prediction_table) <- c("Rabatt Angewandt", "Prognostizierte Wahrscheinlichkeit")
-
-
-print(cumulative_prediction_table)
-```
-
-<p>SÖRN STINKT</p>
-
-  </div>
-  </div>
-
-Bewertung der Vorhersagen
-
-
-
-### Anwendung
-
-### Beurteilung
-
 ## Modell 3 (Fabian)
 
+<p> Wir analysieren Daten mittels eines Machine-Learning-Modell, basierend auf Random Forests, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€. </p>
+
 ### Anwendung
 
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+Zunächst wird sichergestellt, dass das erforderliche Paket installiert ist.</p>
+
+```{r}
+
+if (!requireNamespace("randomForest", quietly = TRUE)) {
+  install.packages("randomForest")
+}
+
+library(randomForest)
+```
+
+<p>Im Anschluss wird ein Data-Frame erstellt:</p>
+
+```{r}
+set.seed(42)
+df <- data.frame(
+  Age = sample(18:65, 100, replace = TRUE),
+  Purchase_Amount = runif(100, min = 50, max = 200),
+  Shipping_Type = ifelse(runif(100) > 0.5, "Standard", "Express"),
+  Gender = sample(c("Male", "Female"), 100, replace = TRUE),
+  Item_Purchased = sample(c("Product_A", "Product_B", "Product_C"), 100, replace = TRUE),
+  Category = sample(c("Electronics", "Clothing", "Food"), 100, replace = TRUE),
+  Location = sample(c("City", "Suburb", "Rural"), 100, replace = TRUE),
+  Size = sample(c("S", "M", "L", "XL"), 100, replace = TRUE),
+  Color = sample(c("Red", "Blue", "Green", "Black"), 100, replace = TRUE),
+  Season = sample(c("Spring", "Summer", "Autumn", "Winter"), 100, replace = TRUE),
+  Review_Rating = runif(100, min = 3, max = 5),
+  Subscription_Status = sample(c("Subscribed", "Not Subscribed"), 100, replace = TRUE),
+  Promo_Code_Used = sample(c("Code1", "Code2", "None"), 100, replace = TRUE),
+  Previous_Purchase = sample(c("Yes", "No"), 100, replace = TRUE),
+  Payment_Method = sample(c("Credit Card", "PayPal"), 100, replace = TRUE)
+)
+```
+
+<p>Nun werden die Daten in den richtigen Datentypen gespeichert und die Variable "Express_Shipping_Used" erstellt.</p>
+
+```{r}
+
+df$Express_Shipping_Used <- ifelse(df$Purchase_Amount > 100 & df$Shipping_Type == "Express", "Yes", "No")
+
+df$Gender <- as.factor(df$Gender)
+df$Item_Purchased <- as.factor(df$Item_Purchased)
+df$Category <- as.factor(df$Category)
+df$Location <- as.factor(df$Location)
+df$Size <- as.factor(df$Size)
+df$Color <- as.factor(df$Color)
+df$Season <- as.factor(df$Season)
+df$Subscription_Status <- as.factor(df$Subscription_Status)
+df$Promo_Code_Used <- as.factor(df$Promo_Code_Used)
+df$Previous_Purchase <- as.factor(df$Previous_Purchase)
+df$Payment_Method <- as.factor(df$Payment_Method)
+df$Express_Shipping_Used <- as.factor(df$Express_Shipping_Used)
+```
+
+<p>Die Daten werden in Trainings- und Testdaten aufgeteilt.</p>
+
+```{r}
+
+split_index <- sample(1:nrow(df), 0.8 * nrow(df))
+train_data <- df[split_index, ]
+test_data <- df[-split_index, ]
+```
+
+<p>Da nun die erforderlichen Datensätze existieren, wird nun das Modell erstellt.</p>
+
+```{r}
+
+rf_model <- randomForest(Express_Shipping_Used ~ . - Purchase_Amount - Shipping_Type - Express_Shipping_Used, data = train_data)
+```
+
+<p>Die Vorhersagen, welche von dem Modell getroffen werden, werden in einer Tabelle zusammengefasst.</p>
+
+```{r}
+
+prediction_table <- data.frame(Express_Shipping_Used = test_data$Express_Shipping_Used, Predicted_Probability = predictions)
+
+print(head(prediction_table, 10))
+```
+
+<p>Im Folgenden werden die Testdaten genommen und es werden Vorhersagen mit dem Random-Forest Modell getroffen.
+Außerdem werden die Werte für die Confusion-Matrix errechnet.</p>
+
+```{r}
+predictions <- predict(rf_model, newdata = test_data)
+
+confusion_matrix <- table(predictions, test_data$Express_Shipping_Used)
+
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+cat("Accuracy:", accuracy, "\n")
+cat("Confusion Matrix:\n", confusion_matrix, "\n")
+```
+
+<p>Die Confusion-Matrix wird nun als Heatmap dargestellt.</p>
+
+```{r}
+conf_matrix <- matrix(c(3, 8, 7, 2), nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Tatsächlich 0", "Tatsächlich 1"), c("Vorhergesagt 0", "Vorhergesagt 1")))
+
+if (!requireNamespace("heatmaply", quietly = TRUE)) {
+  install.packages("heatmaply")
+}
+
+library(heatmaply)
+
+heatmaply(conf_matrix, 
+          colors = c("green", "yellow", "red"), 
+          main = "Confusion Matrix")
+```
 ### Beurteilung
+
+:::
+:::
 
 ## Modell 4 (Fabian)
+<p> Wir analysieren Daten mittels eines Machine-Learning-Modells, basierend auf neuronalen Netzen, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€ . </p>
 
 ### Anwendung
 
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+<p>Das verwendete Paket erfordert für die initiale Ausführung eine CRANmirror Verbindung um einwandfrei zu funkionieren. Diese wird zunächst initialisiert.</p>
+
+```{r}
+options(repos = c(CRAN = "https://cran.uni-muenster.de/"))
+```
+
+<p>Für den Fall, dass das Paket neuralnet noch nicht installiert ist, wird es hier heruntergeladen.</p>
+
+```{r}
+
+if (!requireNamespace("neuralnet", quietly = TRUE)) {
+  install.packages("neuralnet")
+}
+
+library(neuralnet)
+```
+
+<p>Zunächst wird ein Data-Frame erstellt und die Daten in Test- und Trainingsdaten aufgeteilt.</p>
+
+```{r}
+
+set.seed(42)
+df <- data.frame(
+  Age = sample(18:65, 100, replace = TRUE),
+  Purchase_Amount = runif(100, min = 50, max = 200),
+  Shipping_Type = ifelse(runif(100) > 0.5, "Standard", "Express"),
+  Gender = sample(c("Male", "Female"), 100, replace = TRUE),
+  Item_Purchased = sample(c("Product_A", "Product_B", "Product_C"), 100, replace = TRUE),
+  Category = sample(c("Electronics", "Clothing", "Food"), 100, replace = TRUE),
+  Location = sample(c("City", "Suburb", "Rural"), 100, replace = TRUE),
+  Size = sample(c("S", "M", "L", "XL"), 100, replace = TRUE),
+  Color = sample(c("Red", "Blue", "Green", "Black"), 100, replace = TRUE),
+  Season = sample(c("Spring", "Summer", "Autumn", "Winter"), 100, replace = TRUE),
+  Review_Rating = runif(100, min = 3, max = 5),
+  Subscription_Status = sample(c("Subscribed", "Not Subscribed"), 100, replace = TRUE),
+  Promo_Code_Used = sample(c("Code1", "Code2", "None"), 100, replace = TRUE),
+  Previous_Purchase = sample(c("Yes", "No"), 100, replace = TRUE),
+  Payment_Method = sample(c("Credit Card", "PayPal"), 100, replace = TRUE)
+)
+
+#print(df)
+
+df$Express_Shipping_Used <- ifelse(df$Purchase_Amount > 100 & df$Shipping_Type == "Express", 1, 0)
+
+df$Gender <- as.factor(df$Gender)
+df$Item_Purchased <- as.factor(df$Item_Purchased)
+df$Category <- as.factor(df$Category)
+df$Location <- as.factor(df$Location)
+df$Size <- as.factor(df$Size)
+df$Color <- as.factor(df$Color)
+df$Season <- as.factor(df$Season)
+df$Subscription_Status <- as.factor(df$Subscription_Status)
+df$Promo_Code_Used <- as.factor(df$Promo_Code_Used)
+df$Previous_Purchase <- as.factor(df$Previous_Purchase)
+df$Payment_Method <- as.factor(df$Payment_Method)
+df$Express_Shipping_Used <- as.factor(df$Express_Shipping_Used)
+
+set.seed(42)
+split_index <- sample(1:nrow(df), 0.8 * nrow(df))
+
+train_data <- df[split_index, ]
+#print(train_data)
+
+test_data <- df[-split_index, ]
+#print(test_data)
+```
+
+<p>Das Modell wird nun erstellt und die Vorhersagen getroffen.</p>
+
+```{r}
+nn_model <- neuralnet(
+  Express_Shipping_Used ~ Purchase_Amount,
+  data = train_data, 
+  hidden = c(5),
+  linear.output = TRUE
+)
+
+predictions <- predict(nn_model, newdata = test_data)
+```
+
+<p>Die Vorhersagen werden nun ausgewertet. Hierfür werden die Wahrscheinlichkeiten für das Ergebnis "Express genutzt" (Wert 1) extrahiert. Außerdem werden die Werte auf genau 1 oder 0 gerundet.</p>
+
+```{r}
+# Extrahiere die Wahrscheinlichkeiten für die Klasse 1 (Express genutzt)
+express_used_probabilities <- predictions[, 2]
+
+# Runden der Wahrscheinlichkeit auf genau 1 oder 0 (Express genutzt oder nicht)
+rounded_predictions <- ifelse(express_used_probabilities > 0.5, 1, 0)
+```
+
+<p>Die Genauigkeit des Modells wird nun berechnet und die Confusion Matrix erstellt.</p>
+
+```{r}
+confusion_matrix <- table(rounded_predictions, test_data$Express_Shipping_Used)
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+cat("Accuracy:", accuracy, "\n")
+cat("Confusion Matrix:\n", confusion_matrix, "\n")
+
+conf_matrix <- matrix(c(3, 4, 0, 13), nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Tatsächlich 0", "Tatsächlich 1"), c("Vorhergesagt 0", "Vorhergesagt 1")))
+```
+
+<p>Die Confusion Matrix wird nun als Heatmap dargestellt.</p>
+
+```{r}
+# Installiere das Paket "heatmaply", falls es noch nicht installiert ist
+if (!requireNamespace("heatmaply", quietly = TRUE)) {
+  install.packages("heatmaply")
+}
+
+# Lade das Paket "heatmaply"
+library(heatmaply)
+
+# Plot als Heatmap
+heatmaply(conf_matrix, 
+          colors = c("green", "yellow", "red"), 
+          main = "Confusion Matrix")
+```
+
 ### Beurteilung
 
+:::
+:::
+
 ## Modell 5 (Sörn) -- Entscheidungsbaum ob eine person abonennt ist oder nicht die knoten sind Gender und Age
+
 ```{r}
 
 shopping_behavior$Subscription_Status <- as.factor(shopping_behavior$Subscription_Status)
@@ -843,8 +1180,6 @@ rpart.plot::rpart.plot(tree_fit_1$fit, extra = 102, fallen.leaves = FALSE)
 
 ```
 
-
-
 ### Anwendung
 
 ### Beurteilung
@@ -859,15 +1194,16 @@ Ich finde das sehr Kritisch und nicht schön
 
 # Quellen
 
-Datenset: <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> <br>
-US-Map: <https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html> <br>
-US-Map 2: <https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html> <br>
+Datenset: <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> <br> US-Map: <https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html> <br> US-Map 2: <https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html> <br>
 
 # Ehrenwörtliche Erklärung
+
 Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.
 
 <!-- Unterschriften in HTML -->
-<img src="./signatures/OleKepa.png" height="50" width="150"> <img src="./signatures/FabianElsner.png" height="50" width="150"> <img src="./signatures/SoerenBax.png" height="50" width="150">
+
+<img src="./signatures/OleKepa.png" height="50" width="150"/> <img src="./signatures/FabianElsner.png" height="50" width="150"/> <img src="./signatures/SoerenBax.png" height="50" width="150"/>
 
 <!-- Unterschriften in PDF einbinden -->
+
 \includegraphics{"./signatures/OleKepa.png"} \includegraphics{"./signatures/OleKepa.png"} \includegraphics{"./signatures/OleKepa.png"}
