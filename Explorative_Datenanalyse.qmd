@@ -17,6 +17,7 @@ format:
 date: 2023-12-23
 ---
 
+```{=html}
 <style>
   hr.section-divider1 {
     border-top: 15px solid #0000FF; 
@@ -26,15 +27,15 @@ date: 2023-12-23
     border-top: 10px solid #000; 
   }
 </style>
-
-
+```
+```{=html}
 <!-- 
   pdf: 
     toc: true
     number-sections: true
     
 THEMES: https://quarto.org/docs/output-formats/html-themes.html -->
-
+```
 ```{r, message=FALSE, include = FALSE}
 library(tidyverse) 
 library(tidymodels)
@@ -43,10 +44,17 @@ library(ggplot2)
 library(usmap)
 library(dplyr)
 library(kableExtra)
+library(coefplot)
+library(broom)
+library(rpart.plot)
+library(parsnip)
+library(rpart)
 ```
 
+<!-- Farbcode Türkis: #80c4ac -->
 
 # Gendererklärung
+
 Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Ansprechweisen, sei es divers, männlich oder weiblich verzichtet. Alle Formulierungen sprechen gleichermaßen alle Geschlechter an.
 
 # Aufgabe und Daten verstehen
@@ -55,7 +63,7 @@ In dieser Arbeit soll untersucht werden, wie das Kaufverhalten der Käufer in de
 
 Hierzu steht ein Dataset zu dem Kaufverhalten von Verbrauchern in den USA zur Verfügung, das unter <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> abgerufen werden kann.
 
-Dieses Datenset beinhaltet insgesamt zwei CSV-Dateien, welche sich jedoch nur in einem Spaltennamen und nicht in den Daten unterscheiden. Die Spalte zur Zahlungsmethode heißt in der Datei "shopping_behavior_updated.csv" "Payment Method" und in der Datei "shopping_trend.csv" "Preferred Payment Method". Wir nutzen daher nur die CSV-Datei "shopping_behavior_updated.csv".
+Dieses Datenset beinhaltet insgesamt zwei CSV-Dateien, welche sich jedoch nur in einem Spaltennamen und nicht in den Daten unterscheiden. Die Spalte zur Zahlungsmethode heißt in der Datei "shopping_behavior_updated.csv" "Payment_Method" und in der Datei "shopping_trend.csv" "Preferred Payment_Method". Wir nutzen daher nur die CSV-Datei "shopping_behavior_updated.csv".
 
 ## Beschreibung der Datenquelle
 
@@ -73,29 +81,27 @@ knitr::kable(head(raw_shopping_behavior), caption = "Das Spaltenformat des Daten
 
 Jede Zeile steht für einen Einkauf. Die Spalten sind wie folgt definiert:
 
-Variable                    |Typ    |Bedeutung
-:---------------------------|:------|:------------------------------------
-**Customer ID**             |dbl    | Eindeutige Kunden Identifikationsnummer
-**Age**                     |dbl    | Alter des Kundens
-**Gender**                  |chr    | Geschlecht des Kundens
-**Item Purchased**          |chr    | Gekauftes Produkt
-**Category**                |chr    | Kategorie des gekauften Produkts
-**Purchase Amount**         |dbl    | Bezahlter Preis
-**Location**                |chr    | Ort des Kaufes
-**Size**                    |chr    | Konfektionsgröße des gekauften Produkts
-**Color**                   |chr    | Farbe des gekauften Produkts
-**Season**                  |chr    | Jahreszeit, in welcher der Kauf getätigt wurde
-**Review Rating**           |dbl    | Kundenbewertungen zum Produkt
-**Subscription Status**     |chr    | Status des Abonnements
-**Payment Method**          |chr    | Zahlungsmethode
-**Shipping Type**           |chr    | Versandart
-**Discount Applied**        |chr    | Rabattcode genutzt?
-**Promo Code Used**         |chr    | Werbecode genutzt?
-**Previous Purchases**      |dbl    | Anzahl vorheriger Käufe
-**Payment Method**          |chr    | Bevorzugte Zahlungsmethode
-**Frequency of Purchases**  |chr    | Häufigkeit von Käufen
-
-
+| Variable                   | Typ | Bedeutung                                      |
+|:----------------------|:-----------------|:-------------------------------|
+| **Customer_ID**            | dbl | Eindeutige Kunden Identifikationsnummer        |
+| **Age**                    | dbl | Alter des Kundens                              |
+| **Gender**                 | chr | Geschlecht des Kundens                         |
+| **Item_Purchased**         | chr | Gekauftes Produkt                              |
+| **Category**               | chr | Kategorie des gekauften Produkts               |
+| **Purchase_Amount**        | dbl | Bezahlter Preis                                |
+| **Location**               | chr | Ort des Kaufes                                 |
+| **Size**                   | chr | Konfektionsgröße des gekauften Produkts        |
+| **Color**                  | chr | Farbe des gekauften Produkts                   |
+| **Season**                 | chr | Jahreszeit, in welcher der Kauf getätigt wurde |
+| **Review_Rating**          | dbl | Kundenbewertungen zum Produkt                  |
+| **Subscription_Status**    | chr | Status des Abonnements                         |
+| **Payment_Method**         | chr | Zahlungsmethode                                |
+| **Shipping_Type**          | chr | Versandart                                     |
+| **Discount_Applied**       | chr | Rabattcode genutzt?                            |
+| **Promo_Code_Used**        | chr | Werbecode genutzt?                             |
+| **Previous_Purchases**     | dbl | Anzahl vorheriger Käufe                        |
+| **Payment_Method**         | chr | Bevorzugte Zahlungsmethode                     |
+| **Frequency_of_Purchases** | chr | Häufigkeit von Käufen                          |
 
 ```{r}
 describe_tbl(raw_shopping_behavior)
@@ -106,26 +112,62 @@ Im Datensatz gibt es **`r nrow(raw_shopping_behavior)`** Instazen (Beobachtungen
 ## Thesen
 
 Wir möchten insbesondere folgende Thesen in dieser Arbeit untersuchen:
-<div class="d-grid gap-2">
 
-<button type="button" onclick="window.location.href='#these1'" class="btn btn-primary">**These 1: Die meisten Personen kaufen wöchentlich ein.**</button>
-  
-<button type="button" onclick="window.location.href='#these2'" class="btn btn-primary">**These 2: Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**</button>
+::: {.d-grid .gap-2}
+<button type="button" onclick="window.location.href=&#39;#these1&#39;" class="btn btn-primary">
 
-<button type="button" onclick="window.location.href='#these3'" class="btn btn-primary">**These 3: Die meisten Kunden zahlen Bar.**</button>
+**These 1: Die meisten Personen kaufen wöchentlich ein.**
 
-<button type="button" onclick="window.location.href='#these4'" class="btn btn-primary">**These 4: Die meisten Kunden nutzen keinen Rabattcode.**</button>
+</button>
 
-<button type="button" onclick="window.location.href='#these5'" class="btn btn-primary">**These 5: Männer kaufen weniger ein als Frauen.**</button>
+<button type="button" onclick="window.location.href=&#39;#these2&#39;" class="btn btn-primary">
 
-<button type="button" onclick="window.location.href='#these6'" class="btn btn-primary">**These 6: Es werden mehr Winter als Sommerklamotten gekauft.**</button>
+**These 2: Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**
 
-<button type="button" onclick="window.location.href='#these7'" class="btn btn-primary">**These 7: Die meisten Klamotten werden im Norden gekauft.**</button>
+</button>
 
-<button type="button" onclick="window.location.href='#these8'" class="btn btn-primary">**These 8: Die Kategorie "Klamotten" wird am meisten gekauft.**</button>
+<button type="button" onclick="window.location.href=&#39;#these3&#39;" class="btn btn-primary">
 
-<button type="button" onclick="window.location.href='#these9'" class="btn btn-primary">**These 9: Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.**</button>
-</div>
+**These 3: Die meisten Kunden zahlen Bar.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these4&#39;" class="btn btn-primary">
+
+**These 4: Die meisten Kunden nutzen keinen Rabattcode.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these5&#39;" class="btn btn-primary">
+
+**These 5: Männer kaufen weniger ein als Frauen.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these6&#39;" class="btn btn-primary">
+
+**These 6: Es werden mehr Winter als Sommerklamotten gekauft.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these7&#39;" class="btn btn-primary">
+
+**These 7: Die meisten Klamotten werden im Norden gekauft.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these8&#39;" class="btn btn-primary">
+
+**These 8: Die Kategorie "Klamotten" wird am meisten gekauft.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these9&#39;" class="btn btn-primary">
+
+**These 9: Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.**
+
+</button>
+:::
 
 # Untersuchung der Daten
 
@@ -141,22 +183,21 @@ summary(raw_shopping_behavior)
 raw_shopping_behavior %>% describe()
 ```
 
-Die Customer ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten Schritt löschen. 
+Die Customer_ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten Schritt löschen.
 
 ## Datenaufbereitung
 
-Nun erstellen wir den finalen Datensatz, welcher die Basis für die weitere Analyse bildet. Zunächst löschen wir die Spalte "Customer ID", da diese für Analysen nicht verwertbar ist:
+Nun erstellen wir den finalen Datensatz, welcher die Basis für die weitere Analyse bildet. Zunächst löschen wir die Spalte "Customer_ID", da diese für Analysen nicht verwertbar ist:
 
 ```{r}
-shopping_behavior <- raw_shopping_behavior |> select(-"Customer ID")
+shopping_behavior <- raw_shopping_behavior |> select(-"Customer_ID")
 ```
 
 **MUSS HIER WAS KONVERTIERT WERDEN?**
 
 Season in numerisch umwandeln (1, 2, 3, 4)
 
-Frequency of Purchases umwandeln in Zahl
-
+Frequency_of_Purchases umwandeln in Zahl
 
 **PREISGURPPEN BILDEN**
 
@@ -167,28 +208,30 @@ Werfen wir einen Blick auf das finale Datenset.
 knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen Datensatzes")
 ```
 
-<hr class="section-divider1">
-
 # Untersuchung der Thesen
 
 Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse untersucht.
 
 ## These 1:
 
-<div id="these1">
-  <h2>Die meisten Personen kaufen wöchentlich ein.</h2>
-</div>
+::: {#these1}
+<h2>Die meisten Personen kaufen wöchentlich ein.</h2>
+:::
 
-<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
 
-  <div class="card-body">
-  <p class="card-text">Es wird analysiert, wie oft Personen wöchentlich einkaufen, wobei der Fokus auf den verschiedenen Häufigkeiten liegt.</p>
+Es wird analysiert, wie oft Personen wöchentlich einkaufen, wobei der Fokus auf den verschiedenen Häufigkeiten liegt.
+
+</p>
+
 ```{r}
 
 
 frequency_counts <- shopping_behavior %>%
-  count(`Frequency of Purchases`) %>%
-  arrange(`Frequency of Purchases`)
+  count(`Frequency_of_Purchases`) %>%
+  arrange(`Frequency_of_Purchases`)
 
 frequency_counts %>%
   kable() %>%
@@ -201,43 +244,66 @@ frequency_counts %>%
   column_spec(1, color = "white")
 ```
 
-  <p class="card-text">Wir stellen diesse Daten im nächsten Schritt aufbereitet in einem Diagramm da</p>
+<p class="card-text">
+
+Wir stellen diesse Daten im nächsten Schritt aufbereitet in einem Diagramm da
+
+</p>
+
 ```{r}
 frequency_mapping <- c("Fortnightly" = 2, "Weekly" = 1, "Annually" = 3,
                         "Quarterly" = 4, "Bi-Weekly" = 5, "Monthly" = 6, "Every 3 Months" = 7)
 frequency_colors <- c("Fortnightly" = "blue", "Weekly" = "green", "Annually" = "red",
                       "Quarterly" = "orange", "Bi-Weekly" = "purple", "Monthly" = "pink", "Every 3 Months" = "brown")
 
-shopping_behavior$`Frequency of Purchases` <- factor(shopping_behavior$`Frequency of Purchases`, levels = names(frequency_mapping))
+shopping_behavior$`Frequency_of_Purchases` <- factor(shopping_behavior$`Frequency_of_Purchases`, levels = names(frequency_mapping))
 
-unique_values <- unique(shopping_behavior$`Frequency of Purchases`)
+unique_values <- unique(shopping_behavior$`Frequency_of_Purchases`)
 
 
-ggplot(shopping_behavior, aes(x = `Frequency of Purchases`, fill = `Frequency of Purchases`)) +
+ggplot(shopping_behavior, aes(x = `Frequency_of_Purchases`, fill = `Frequency_of_Purchases`)) +
   geom_bar(stat = "count") +
   labs(title = "Häufigkeit der Einkaufshäufigkeit", x = "Einkaufshäufigkeit", y = "Anzahl der Einkäufe") +
   scale_fill_manual(values = frequency_colors) +
   theme_minimal()
+
+# Den höchsten Wert aller Einkaufshäufigkeiten ermitteln
+max_count_freq <- max(frequency_counts$n)
+
 ```
-  </div>
-  </div>
+
+<p class="card-text">
+
+Wir sehen, dass die meisten Personen "`r frequency_counts$Frequency_of_Purchases[frequency_counts$n == max_count_freq]`" einkaufen, mit einer Häufigkeit von `r max_count_freq`. Sommit wurde die erste These wiederlegt.
+
+</p>
+:::
+:::
+
 ## These 2:
 
-<div id="these2">
-  <h2>Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.</h2>
-</div>
+::: {#these2}
+<h2>Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.</h2>
+:::
 
-<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
-  
-  <div class="card-body">
-  <p class="card-text">Zuerst schauen wir, welche Farben alle vorhanden sind.</p>
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
+
+Zuerst schauen wir, welche Farben alle vorhanden sind.
+
+</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
 print(shopping_behavior |> distinct(Color), n = rows)
 ```
 
-<p class="card-text">Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:</p>
+<p class="card-text">
+
+Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
+
+</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -245,7 +311,11 @@ print(shopping_behavior |> count(Color) |> arrange(desc(n)) , n = rows)
 
 ```
 
-<p class="card-text">Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:</p>
+<p class="card-text">
+
+Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:
+
+</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -253,7 +323,11 @@ print(shopping_behavior |> filter(Color != "Black" & Color != "White" & Color !=
 
 ```
 
-<p class="card-text">Wir sehen, dass die Farben Schwarz, Grau und Weiß r Kumulierter_Anteil_Schwarz_Weiß_Grau = max(Cumulative_Percentage)` an der gesamten Farbauswahl einnehmen</p>
+<p class="card-text">
+
+Wir sehen, dass die Farben Schwarz, Grau und Weiß r Kumulierter_Anteil_Schwarz_Weiß_Grau = max(Cumulative_Percentage)\` an der gesamten Farbauswahl einnehmen
+
+</p>
 
 ```{r}
 result <- shopping_behavior %>%
@@ -273,7 +347,11 @@ result <- shopping_behavior %>%
 print(result)
 ```
 
-<p class="card-text">Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.</p>
+<p class="card-text">
+
+Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.
+
+</p>
 
 ```{r}
 data <- shopping_behavior %>%
@@ -314,45 +392,66 @@ ggplot(data, aes(x = Color, y = n, fill = Color)) +
   theme_minimal() + 
   theme(axis.text.x = element_blank())
 
-
+# Den höchsten Wert aller Farben ermitteln
+max_count <- max(data$n)
 
 ```
-  </div>
-  </div>
-  
+
+<p class="card-text">
+
+Wir sehen, dass die Farbe `r data$Color[data$n == max_count]` am häufigsten gekauft wird, mit einer Stückzahl von `r max_count`. Somit lässt sich die These wiederlegen.
+
+</p>
+:::
+:::
+
 ## These 3:
 
-<div id="these3">
-  <h2>Die meisten Kunden zahlen Bar.</h2>
-</div>
+::: {#these3}
+<h2>Die meisten Kunden zahlen Bar.</h2>
+:::
 
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
 
-<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
-  
-  <div class="card-body">
-  <p class="card-text">Wir betrachten die verscheidenen Bezahlarten</p>
+Wir betrachten die verscheidenen Bezahlarten
+
+</p>
 
 ```{r}
-unique_payment_methods <- unique(shopping_behavior$`Payment Method`)
+unique_payment_methods <- unique(shopping_behavior$`Payment_Method`)
 cat("Zahlungsmethoden:", toString(unique_payment_methods), "\n")
 ```
 
-<p class="card-text">Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden</p>
+<p class="card-text">
+
+Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden
+
+</p>
 
 ```{r}
-count_cash_payments <- sum(shopping_behavior$`Payment Method` %in% c("Bar", "Cash"), na.rm = TRUE)
+count_cash_payments <- sum(shopping_behavior$`Payment_Method` %in% c("Bar", "Cash"), na.rm = TRUE)
 cat("Anzahl der Barzahlungen:", count_cash_payments, "\n")
 
 ```
 
-<p class="card-text">Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen</p>
+<p class="card-text">
+
+Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen
+
+</p>
 
 ```{r}
 percentage_cash <- count_cash_payments / nrow(shopping_behavior) * 100
 cat("Prozentsatz der Barzahlungen:", percentage_cash, "%\n")
 ```
 
-<p class="card-text">Anzahl aller Zahlungen</p>
+<p class="card-text">
+
+Anzahl aller Zahlungen
+
+</p>
 
 ```{r}
 total_payments <- nrow(raw_shopping_behavior)
@@ -360,73 +459,94 @@ total_payments <- nrow(raw_shopping_behavior)
 cat("Alle Zahlungen :", total_payments)
 ```
 
+<p class="card-text">
 
-<p class="card-text">Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an</p>
+Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an
+
+</p>
 
 ```{r}
 payment_data <- raw_shopping_behavior %>%
-  group_by(`Payment Method`) %>%
-  summarise(TotalAmount = sum(`Purchase Amount (USD)`)) %>%
+  group_by(`Payment_Method`) %>%
+  summarise(TotalAmount = sum(`Purchase_Amount`)) %>%
   ungroup() %>%
   mutate(Percentage = TotalAmount / sum(TotalAmount) * 100)
 
 payment_data %>%
-  select(`Payment Method`, Percentage)
+  select(`Payment_Method`, Percentage)
+
+  
+# Den höchsten Wert aller Zahlungsmethoden ermitteln und den Prozentwert auf 2 Nachkommastellen runden 
+max_percentage_payment <- max(payment_data$Percentage)
+max_percentage_payment_rounded <- round(max_percentage_payment, 2)
 ```
-  </div>
-  </div>
+
+<p class="card-text">
+
+Wir sehen, dass die meisten Kunden via "`r payment_data$Payment_Method[payment_data$Percentage == max_percentage_payment]`" zahlen, mit einem Anteil von `r max_percentage_payment_rounded` % an allen Zahlungen.
+
+</p>
+:::
+:::
+
 ## These 4:
 
-<div id="these4">
-  <h2>Die meisten Kunden nutzen keinen Rabattcode.</h2>
-</div>
+::: {#these4}
+<h2>Die meisten Kunden nutzen keinen Rabattcode.</h2>
+:::
 
-
-In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. 
+In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden.
 
 ## These 5:
 
-<div id="these5">
-  <h2>Männer kaufen weniger ein als Frauen.</h2>
-</div>
+::: {#these5}
+<h2>Männer kaufen weniger ein als Frauen.</h2>
+:::
 
-
-In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen. 
+In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen.
 
 ## These 6:
 
-<div id="these6">
-  <h2>Es werden mehr Winter als Sommerklamotten gekauft.</h2>
-</div>
-
-
+::: {#these6}
+<h2>Es werden mehr Winter als Sommerklamotten gekauft.</h2>
+:::
 
 In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauft wird als im Sommer.
 
 ## These 7:
 
-<div id="these7">
-  <h2>Die meisten Klamotten werden im Norden gekauft.</h2>
-</div>
+::: {#these7}
+<h2>Die meisten Klamotten werden im Norden gekauft.</h2>
+:::
 
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
 
-<div class="card text-white bg-primary mb-3" style="max-width: 90rem;">
-  
-  <div class="card-body">
-  <p class="card-text">Zunächst schauen wir uns  einmal alle vorhandenen Orte an:</p>
+Zunächst schauen wir uns einmal alle vorhandenen Orte an:
+
+</p>
 
 ```{r}
 shopping_behavior |> distinct(Location)
 ```
 
-<p class="card-text">Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der  einzelnen Orte an:</p>
+<p class="card-text">
+
+Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
+
+</p>
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Location))
 print(shopping_behavior |> count(Location) |> arrange(desc(n)) , n = rows)
 ```
 
-<p class="card-text">Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:</p>
+<p class="card-text">
+
+Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
+
+</p>
 
 ```{r}
 # Werte aus der Tabelle shopping_behavior übernommen
@@ -450,17 +570,16 @@ plot_usmap(data = df, values = "occurrence", color = "black", labels = TRUE) +
     low = "white", high = "#80c4ac", name = "Häufigkeit", label = scales::comma
   ) + theme(legend.position = "right")
 ```
-  </div>
-  </div>
+:::
+:::
 
-## These 8: 
+## These 8:
 
-<div id="these8">
-    <h2>Die Kategorie "Klamotten" wird am meisten gekauft.</h2>
-</div>
-
-
-
+::: {#these8}
+```         
+<h2>Die Kategorie "Klamotten" wird am meisten gekauft.</h2>
+```
+:::
 
 Zunächst schauen wir uns einmal alle vorhandenen Kategorien an:
 
@@ -478,12 +597,11 @@ shopping_behavior |> count(Category) |> ggplot(aes(x = Category, y = n)) + geom_
 
 Wir sehen, dass die Kategorie "Klamotten" mit 1737 Instanzen am häufigsten vorkommt.Danach folgt die Kategorie "Accessoires" mit 1240 Instanzen. Am seltensten kommen die Kategorien "Schuhe" mit 599 und "Oberbekleidung" mit 324 Instanzen vor.
 
-## These 9: 
+## These 9:
 
-<div id="these9">
-  <h2>Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.</h2>
-</div>
-
+::: {#these9}
+<h2>Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.</h2>
+:::
 
 ```{r}
 hist(shopping_behavior$Age)
@@ -534,16 +652,162 @@ ggplot(shopping_behavior, aes(x = Age)) +
                           decimal.mark = ","))
 ```
 
-
 # Anwendung und Beurteilung von Machine-Learning-Modellen
 
 ## Modell 1 (Ole)
 
 ### Anwendung
 
-### Beurteilung
+Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersagen, wie viele Einkäufe es in den einzelnen Altersgruppen geben wird. Dafür erstellen wir ein Modell.
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+<p class="card-text">
+
+Daten gruppieren und Zusammenzählen
+
+</p>
+
+```{r}
+# Daten gruppieren und die Anzahl der Einkäufe pro Altersgruppe zusammenzählen
+purchase_count_by_age <- shopping_behavior %>%
+  group_by(Age) %>%
+  summarize(Total_Purchases = n())
+
+print(purchase_count_by_age)
+```
+
+<p>Daten aufteilen und Modell erstellen</p>
+
+```{r}
+
+# Modell erstellen (lineare Regression)
+linear_model <- lm(Total_Purchases ~ Age, data = purchase_count_by_age)
+
+print(linear_model)
+
+```
+
+<p>Vorhersagen mit Testdaten</p>
+
+```{r}
+# Vorhersagen für alle Altersgruppen im vorhandenen Datenbereich
+age_range <- seq(min(purchase_count_by_age$Age), max(purchase_count_by_age$Age), length.out = 10)
+predictions <- predict(linear_model, newdata = data.frame(Age = age_range), interval = "confidence")
+
+# Spalten umbenennen und auf 2 Nachkommastellen runden
+colnames(predictions) <- c("Vorhergesagte Einkäufe", "Unteres Konfidenzintervall", "Oberes Konfidenzintervall")
+predictions <- round(predictions, 2)
+
+# Tabelle anzeigen
+print(predictions)
+```
+
+<p>Daten gruppieren und Vorhersagen zusammenzählen:</p>
+
+```{r}
+# Daten für den Plot vorbereiten und auf 2 nachkommastellen runden
+plot_data <- data.frame(Age = age_range, Predicted_Purchases = predictions[, 1], 
+                        Lower = predictions[, 2], Upper = predictions[, 3]) %>%
+  mutate(Age = round(Age, 2), Predicted_Purchases = round(Predicted_Purchases, 2),
+         Lower = round(Lower, 2), Upper = round(Upper, 2))
+
+
+
+# Tabelle anzeigen
+print(plot_data)
+```
+
+<p>Scatterplot mit Konfidenzintervall erstellen</p>
+
+```{r}
+
+# Scatterplot mit Konfidenzintervall erstellen
+ggplot() +
+  geom_point(data = purchase_count_by_age, aes(x = Age, y = Total_Purchases), color = "black", size = 3, alpha = 0.5) +
+  geom_line(data = plot_data, aes(x = Age, y = Predicted_Purchases), color = "#80c4ac", linewidth = 1) +
+  geom_ribbon(data = plot_data, aes(x = Age, ymin = Lower, ymax = Upper), fill = "#80c4ac", alpha = 0.4) +
+  labs(
+    title = "Vorhersage der Einkäufe nach Alter",
+    x = "Alter",
+    y = "Anzahl der Einkäufe"
+  ) +
+  theme_minimal()
+```
+:::
+:::
+
+### Bewertung
+
+Es wurde ein lineares Regressionsmodell erstellt, um die Beziehung zwischen Alter und Gesamtanzahl der Einkäufe zu untersuchen. Die Vorhersagen mit Testdaten wurden mit Konfidenzintervallen erstellt. Danach wurde ein Scatterplot erstellt, der die tatsächlichen (Grau) und vorhergesagten (Türkis) Einkaufszahlen mit Konfidenzintervallen für alle Altersgruppen von 18 bis 70 vergleicht. Das Modell ist für jeden einzelnen einkäufer nicht sehr genau, jedoch sagt es einen Durchschnitt der Altergurppen vorher. Das Modell ist also für die Vorhersage der Einkäufe in den einzelnen Altersgruppen geeignet.
 
 ## Modell 2 (Ole)
+
+Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetrag (Purchase_Amount) und der vorherigen Anzahl von Käufen (Previous_Purchases).
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}   
+::: card-body
+<p class="card-text">
+
+Aufbereitung der Testdaten und deren Ausgabe. Die Daten werden in Trainings- und Testdaten aufgeteilt. Die Trainingsdaten werden für das Modell verwendet und die Testdaten für die Vorhersage.
+
+</p>
+
+```{r}
+
+shopping_behavior$Discount_Applied <- as.factor(shopping_behavior$Discount_Applied)
+
+# Daten aufteilen
+set.seed(123)
+training_rows <- sample(1:nrow(shopping_behavior), 0.8 * nrow(shopping_behavior))
+training_data <- shopping_behavior[training_rows, ]
+test_data <- shopping_behavior[-training_rows, ]
+
+# Modell erstellen (logistische Regression)
+logistic_model <- glm(Discount_Applied ~ Purchase_Amount + Previous_Purchases, data = training_data, family = "binomial")
+
+# Vorhersagen für Testdaten
+predictions <- predict(logistic_model, newdata = test_data, type = "response")
+
+# Vorhersagen in Tabelle zusammenfassen
+prediction_table <- data.frame(Discount_Applied = test_data$Discount_Applied, Predicted_Probability = predictions)
+
+# Tabelle ausgeben mit 10 ergebnissen und vermerken, dass es mehr gibt.
+print(head(prediction_table, 10))
+
+
+# visuelle Darstellung der Vorhersagen
+ggplot(prediction_table, aes(x = Discount_Applied, y = Predicted_Probability)) +
+  geom_boxplot() +
+  labs(
+    title = "Vorhersage der Wahrscheinlichkeit, dass ein Rabattcode genutzt wird",
+    x = "Rabattcode genutzt",
+    y = "Vorhergesagte Wahrscheinlichkeit"
+  ) +
+  theme_minimal()
+
+```
+
+<p>Kommulierte Ausgabe der Warscheinlichkeiten, dass ein Rabattcode genutzt wird oder nicht (als Wert zwischen 0 und 1).</p>
+
+```{r}
+
+cumulative_prediction_table <- prediction_table %>%
+  group_by(Discount_Applied) %>%
+  summarize(Distribution = mean(Predicted_Probability))
+
+
+colnames(cumulative_prediction_table) <- c("Rabatt Angewandt", "Prognostizierte Wahrscheinlichkeit")
+
+
+print(cumulative_prediction_table)
+```
+
+<p> Das Modell zeigt, dass der Vorhersage nach zwischen dem nutzen von Rabattcodes und nicht, kein starker Unterschied ist. Lediglich 0,01%.</p>
+:::
+:::
+
+Bewertung der Vorhersagen
 
 ### Anwendung
 
@@ -561,13 +825,18 @@ ggplot(shopping_behavior, aes(x = Age)) +
 
 ### Beurteilung
 
-## Modell 5 (Sörn) -- Entscheidungsbaum über das Alter & der Kauf einer Kategorie
+## Modell 5 (Sörn) -- Entscheidungsbaum ob eine person abonennt ist oder nicht die knoten sind Gender und Age
 
-### Anwendung
 
-### Beurteilung
 
 ## Modell 6 (Sörn)
+
+```{r}
+names(shopping_behavior)
+
+sum(is.na(shopping_behavior))
+
+```
 
 ### Anwendung
 
@@ -583,15 +852,16 @@ Ich finde das sehr Kritisch und nicht schön
 
 # Quellen
 
-Datenset: <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> <br>
-US-Map: <https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html> <br>
-US-Map 2: <https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html> <br>
+Datenset: <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> <br> US-Map: <https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html> <br> US-Map 2: <https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html> <br>
 
 # Ehrenwörtliche Erklärung
+
 Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.
 
 <!-- Unterschriften in HTML -->
-<img src="./signatures/OleKepa.png" height="50" width="150"> <img src="./signatures/FabianElsner.png" height="50" width="150"> <img src="./signatures/SoerenBax.png" height="50" width="150">
+
+<img src="./signatures/OleKepa.png" height="50" width="150"/> <img src="./signatures/FabianElsner.png" height="50" width="150"/> <img src="./signatures/SoerenBax.png" height="50" width="150"/>
 
 <!-- Unterschriften in PDF einbinden -->
+
 \includegraphics{"./signatures/OleKepa.png"} \includegraphics{"./signatures/OleKepa.png"} \includegraphics{"./signatures/OleKepa.png"}
