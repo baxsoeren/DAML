@@ -748,7 +748,7 @@ under_forty <- as.integer(shopping_behavior |> filter(Age <= 40) |> count())
 
 # Anwendung und Beurteilung von Machine-Learning-Modellen
 
-## Modell 1 (Ole)
+## Modell 1 (Ole Kepa)
 
 ### Anwendung
 
@@ -835,7 +835,7 @@ ggplot() +
 
 Es wurde ein lineares Regressionsmodell erstellt, um die Beziehung zwischen Alter und Gesamtanzahl der Einkäufe zu untersuchen. Die Vorhersagen für Testdaten wurden mit Konfidenzintervallen präsentiert. Danach wurde ein Scatterplot erstellt, der die tatsächlichen und vorhergesagten Einkaufszahlen mit Konfidenzintervallen für verschiedene Altersgruppen vergleicht.
 
-## Modell 2 (Ole)
+## Modell 2 (Ole Kepa)
 
 Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetrag (Purchase_Amount) und der vorherigen Anzahl von Käufen (Previous_Purchases).
 
@@ -884,7 +884,7 @@ ggplot(prediction_table, aes(x = Discount_Applied, y = Predicted_Probability)) +
 
 <p>Kommulierte Ausgabe der Warscheinlichkeiten, dass ein Rabattcode genutzt wird oder nicht (als Wert zwischen 0 und 1).</p>
 
-## Modell 3 (Fabian)
+## Modell 3 (Fabian Elsner)
 
 <p> Wir analysieren Daten mittels eines Machine-Learning-Modell, basierend auf Random Forests, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€. </p>
 
@@ -1006,7 +1006,7 @@ heatmaply(conf_matrix,
 :::
 :::
 
-## Modell 4 (Fabian)
+## Modell 4 (Fabian Elsner)
 <p> Wir analysieren Daten mittels eines Machine-Learning-Modells, basierend auf neuronalen Netzen, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€ . </p>
 
 ### Anwendung
