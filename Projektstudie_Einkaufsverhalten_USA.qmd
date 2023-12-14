@@ -212,7 +212,7 @@ knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen D
 
 Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse untersucht.
 
-## These 1:
+## These 1 (Ole Kepa)
 
 ::: {#these1}
 <h2>Die meisten Personen kaufen wöchentlich ein.</h2>
@@ -270,7 +270,7 @@ ggplot(shopping_behavior, aes(x = `Frequency_of_Purchases`, fill = `Frequency_of
 :::
 :::
 
-## These 2:
+## These 2 (Ole Kepa)
 
 ::: {#these2}
 <h2>Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.</h2>
@@ -388,7 +388,7 @@ ggplot(data, aes(x = Color, y = n, fill = Color)) +
 :::
 :::
 
-## These 3:
+## These 3 (Ole Kepa)
 
 ::: {#these3}
 <h2>Die meisten Kunden zahlen Bar.</h2>
@@ -461,7 +461,7 @@ payment_data %>%
 :::
 :::
 
-## These 4:
+## These 4 (Fabian Elsner)
 
 ::: {#these2}
 <h2>Die meisten Kunden nutzen keinen Rabattcode</h2>
@@ -510,7 +510,7 @@ ggplot(shopping_behavior, aes(x = Combined_Discount)) +
 :::
 :::
 
-## These 5:
+## These 5 (Fabian Elsner)
 
 ::: {#these2}
 <h2>Männer kaufen weniger Produkte als Frauen.</h2>
@@ -540,7 +540,7 @@ shopping_behavior |> count(Gender) |> ggplot(aes(x = Gender, y = n)) + geom_col(
 :::
 :::
 
-## These 6:
+## These 6 (Fabian Elsner)
 
 ::: {#these2}
 <h2>Im Winter werden mehr Produkte gekauft als im Sommer.</h2>
@@ -585,7 +585,7 @@ ggplot(shopping_behavior, aes(x = Season, fill = Season)) +
 :::
 :::
 
-## These 7:
+## These 7 (Sören Bax)
 
 ::: {#these7}
 <h2>Die meisten Klamotten werden im Norden gekauft.</h2>
@@ -645,7 +645,7 @@ plot_usmap(data = df, values = "occurrence", color = "black", labels = TRUE) +
 :::
 :::
 
-## These 8:
+## These 8 (Sören Bax)
 
 ::: {#these8}
 ```         
@@ -669,7 +669,7 @@ shopping_behavior |> count(Category) |> ggplot(aes(x = Category, y = n)) + geom_
 
 Wir sehen, dass die Kategorie "Klamotten" mit 1737 Instanzen am häufigsten vorkommt.Danach folgt die Kategorie "Accessoires" mit 1240 Instanzen. Am seltensten kommen die Kategorien "Schuhe" mit 599 und "Oberbekleidung" mit 324 Instanzen vor.
 
-## These 9:
+## These 9 (Sören Bax)
 
 ::: {#these9}
 <h2>Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.</h2>
