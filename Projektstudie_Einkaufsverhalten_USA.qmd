@@ -1138,69 +1138,97 @@ heatmaply(conf_matrix,
 :::
 :::
 
-## Modell 5 (Sörn) -- Entscheidungsbaum ob eine person abonennt ist oder nicht die knoten sind Gender und Age
+## Modell 5 (Sören Bax)
 
+In diesem Modell wird ein Entscheidungsbaum erstellt, der vorhersagt, ob eine Person ein Abonnement hat oder nicht. Die Vorhersage basiert auf dem Alter und dem Geschlecht der Person.
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+Nun erstellen wir einen Trainingsdatensatz:
+    
 ```{r}
+library(rpart)
+library(rpart.plot)
 
-shopping_behavior$Subscription_Status <- as.factor(shopping_behavior$Subscription_Status)
-
-# Daten aufteilen
-set.seed(123)
-training_rows <- sample(1:nrow(shopping_behavior), 0.8 * nrow(shopping_behavior))
-training_data <- shopping_behavior[training_rows, ]
-test_data <- shopping_behavior[-training_rows, ]
-
-# Modell erstellen
-tree_model <- rpart(Subscription_Status ~  Gender, data = training_data, method = "class")
-
-# Vorhersagen für Testdaten
-tree_predictions <- predict(tree_model, newdata = test_data, type = "class")
-
-# Confusion Matrix
-tree_cm <- table(test_data$Gender, tree_predictions)
-print(tree_cm)
-
-# Accuracy
-tree_accuracy <- sum(diag(tree_cm)) / sum(tree_cm)
-print(tree_accuracy)
-
-# Plot des Entscheidungsbaums
-rpart.plot(tree_model)
-```
-
-### Anwendung
-
-### Beurteilung
-
-## Modell 6 (Sörn)
-
-```{r}
-names(shopping_behavior)
-
-sum(is.na(shopping_behavior))
-
-
-# Neue Variable erstellen
-shopping_behavior$Combined_Gender <- ifelse(shopping_behavior$Gender == "Male", "Male", "Female")
-
-# Datentyp der Zielvariable ändern
-shopping_behavior$Combined_Gender <- as.factor(shopping_behavior$Combined_Gender)
-
-# Entscheidungsbaummodell erstellen
-tree_mod <- decision_tree(mode = "classification")
-tree_fit_1 <- tree_mod %>% 
-  fit(Combined_Gender ~ Gender + Age, data = shopping_behavior)
-
-# Zusammenfassung des erstellten Modells anzeigen
-summary(tree_fit_1$fit)
-
-# Entscheidungsbaum visualisieren
-rpart.plot::rpart.plot(tree_fit_1$fit, extra = 102, fallen.leaves = FALSE)
-
-
-
+set.seed(501)
+shopping_behavior_split <- initial_split(shopping_behavior, prop = 0.80, strata = Subscription_Status)
+shopping_behavior_split
 
 ```
+      
+```{r}
+train_data <- training(shopping_behavior_split)
+test_data <- testing(shopping_behavior_split)
+
+train_data$Subscription_Status <- as.factor(train_data$Subscription_Status)
+test_data$Subscription_Status <- as.factor(test_data$Subscription_Status)
+```
+
+
+Modell initialisieren:
+
+```{r}
+tree_mod <- decision_tree(mode = "classification", 
+                          min_n = 2,
+                          cost_complexity = 0)
+```
+
+Modell Trainieren:
+
+```{r}
+tree_fit_1 <- tree_mod |> 
+  fit(Subscription_Status ~ Age + Gender, data = train_data)
+```
+
+
+Modell Ansehen:
+
+```{r}
+tree_fit_1 |> 
+  extract_fit_engine() 
+```
+
+Interpretation der Ausgabe:
+
+node) die Nummerierung des Knoten/Blattes, hierbei wird der nachfolgende Knoten des aktuellen Knotens Nr.x mit 2x und 2x+1 nummeriert. D.h. aus dem Startknoten Nr.1 enstehen die Knoten mit Nr. 2 und 3, auf Nr. 2 folgen die Knoten mit Nr. 4 und 5, auf Nr. 3 die Knoten mit Nr. 6 und 7 usw.
+
+split gibt die letzte Merkmalsbedingung an, die zu diesem Knoten/Blatt geführt hat.
+
+n gibt die Anzahl aller Beobachtungen aus den Trainingsdaten an, die die Merkmalskombinationen, die bis hierhin führen, erfüllen.
+
+loss gibt die falschen Zuordnungen in dem Knoten/Blatt an
+
+yval gibt den Wert der Vorhersagevariablen gemäß des Baums/Modells in diesem Knoten an.
+
+(yprob) gibt die Wahrscheinlichkeiten einer korrekten bzw. einer falschen Zuordnung an, aufgeteilt auf die Klassen und bezogen auf die Vorhersage yval.
+
+    bedeutet, dass dieser Knoten ein Endknoten bzw. ein Blatt des Baumes ist und danach kein weiterer Knoten bzw. keine Merkmalsbedingung im Baum mehr erfolgt.
+
+
+
+Plotten:
+
+extra=2 prints for each leaf node the number of correctly classified objects from data and the total number of objects from the training data falling into that node (correct/total).
+
++100 Add 100 to any value of extra to also display the percentage of observations in the node.
+
+```{r}
+tree_fit_1 |> 
+  extract_fit_engine() |> 
+  rpart.plot(extra = 102, roundint = FALSE)
+```
+
+Bestimmen des Trainingsfehlers:
+
+```{r}
+pred <- predict(tree_fit_1, new_data = train_data)
+results1 <- train_data |> select(Subscription_Status) |> bind_cols(pred)
+accuracy(data = results1, truth = Subscription_Status, estimate = .pred_class)
+conf_mat(data = results1, truth = Subscription_Status, estimate = .pred_class)
+```
+:::
+:::
 
 ### Anwendung
 
