@@ -678,28 +678,28 @@ Wir sehen, dass die Kategorie "Klamotten" mit 1737 Instanzen am häufigsten vork
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-<p>Zunächst suchen wir den Eintrag mit dem höchsten Alter heraus:</p>
+Zunächst suchen wir den Eintrag mit dem höchsten Alter heraus:
 
 ```{r}
 high_age <- shopping_behavior |> arrange(desc(Age)) |> head(1)
 knitr::kable(head(high_age), caption = "Der Eintrag mit dem höchsten Alter")
 ```
 
-<p>Nun suchen wir den Einkauf mit dem niedrigsten Alter heraus:</p>
+Nun suchen wir den Einkauf mit dem niedrigsten Alter heraus:
 
 ```{r}
 low_age <- shopping_behavior |> arrange(Age) |> head(1)
 knitr::kable(head(low_age), caption = "Der Eintrag mit dem niedrigsten Alter")
 ```
 
-<p>Nun berechnen wir die Spanne der Lebensjahre:</p>
+Nun berechnen wir die Spanne der Lebensjahre:
 
 ```{r}
 span_age <- as.integer(max(shopping_behavior$Age) - min(shopping_behavior$Age))
 ```
 
-<p>Die Spanne der Lebensjahre beträgt `r span_age` Jahre.
-Nun erstellen wir einen Boxplot über die Lebensjahre der Kunden:</p>
+Die Spanne der Lebensjahre beträgt `r span_age` Jahre.
+Nun erstellen wir einen Boxplot über die Lebensjahre der Kunden:
 
 ```{r}
 ggplot(shopping_behavior, aes(x = Age)) + 
@@ -715,34 +715,34 @@ ggplot(shopping_behavior, aes(x = Age)) +
                           decimal.mark = ","))
 ```
 
-<p>Durch den Boxplot erkennen wir, dass die meisten Kunden ungefähhr zwischen 31 und 57 Jahre alt sind.
+Durch den Boxplot erkennen wir, dass die meisten Kunden ungefähhr zwischen 31 und 57 Jahre alt sind.
 Da der meiste Teil des Boxplots jedoch Oberhalb der 40 liegt, lässt sich zum ersten Mal erahnen, dass die These wahr ist.
-Zudem ist in dem Boxplot der Mittelwert eingezeichnet. Dieser schein bei ungefähr 44 Jahren zu liegen. Um dies zu überprüfen, berechnen wir nun den Mittelwert und Median der Lebensjahre.</p>
+Zudem ist in dem Boxplot der Mittelwert eingezeichnet. Dieser schein bei ungefähr 44 Jahren zu liegen. Um dies zu überprüfen, berechnen wir nun den Mittelwert und Median der Lebensjahre.
 
 ```{r}
 mean_age <- as.double(mean(shopping_behavior$Age))
 med_age <- as.integer(median(shopping_behavior$Age))
 ```
 
-<p>Der Mittelwert ist `r mean_age` und liegt somit nur knapp neben 44. Der Median hingegen ist genau `r med_age`. Die beiden Werte liegen sehr nah beieinander. Dadurch können wir schließen, dass die Daten normalverteilt sind und keine Ausreißer (Beziehungsweise keine Nennenswerten Ausreißer) vorhanden sind. Vor allem der Mittelwert wäre sehr anfällig gegenüber Ausreißern.
+Der Mittelwert ist `r mean_age` und liegt somit nur knapp neben 44. Der Median hingegen ist genau `r med_age`. Die beiden Werte liegen sehr nah beieinander. Dadurch können wir schließen, dass die Daten normalverteilt sind und keine Ausreißer (Beziehungsweise keine Nennenswerten Ausreißer) vorhanden sind. Vor allem der Mittelwert wäre sehr anfällig gegenüber Ausreißern.
 
 Mithilfe der beiden Werte können wir nun die These bestätigen. Die meisten Einkäufe wurden von Einkäufern über 40 Jahren durchgeführt.
 Um allerdings ganz sicher zu sein berechnen wir noch einmal die Anzahl der Personen, die über 40 Jahre alt sind und die Anzahl der Personen, die unter (und gleich) 40 Jahre alt sind.
 
-Berechnen wir zunächst die Anzahl der Personen, die über 40 Jahre alt sind:</p>
+Berechnen wir zunächst die Anzahl der Personen, die über 40 Jahre alt sind:
 
 ```{r}
 over_forty <- as.integer(shopping_behavior |> filter(Age > 40) |> count())
 ```
 
-<p>Nun berechnen wir die Anzahl der Personen, die unter (und gleich) 40 Jahre alt sind:</p>
+Nun berechnen wir die Anzahl der Personen, die unter (und gleich) 40 Jahre alt sind:
 
 ```{r}
 #logischer Operater <=, da die These den Operator > beinhaltet, wodruch Personen = 40 gegen die These sprechen würden
 under_forty <- as.integer(shopping_behavior |> filter(Age <= 40) |> count())
 ```
 
-<p>Es sind **`r over_forty`** Einkäufer über 40 Jahre alt und **`r under_forty`** Einkäufer unter 40 Jahre alt. Das bedeutet, dass insgesamt **`r over_forty - under_forty`** Personen mehr eingekauft haben, die über 40 Jahre alt waren. Somit ist die These erneut bestätigt.</p>
+Es sind **`r over_forty`** Einkäufer über 40 Jahre alt und **`r under_forty`** Einkäufer unter 40 Jahre alt. Das bedeutet, dass insgesamt **`r over_forty - under_forty`** Personen mehr eingekauft haben, die über 40 Jahre alt waren. Somit ist die These erneut bestätigt.
 :::
 :::
 
@@ -1142,6 +1142,8 @@ heatmaply(conf_matrix,
 
 In diesem Modell wird ein Entscheidungsbaum erstellt, der vorhersagt, ob eine Person ein Abonnement hat oder nicht. Die Vorhersage basiert auf dem Alter und dem Geschlecht der Person.
 
+### Anwendung
+
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
@@ -1229,8 +1231,6 @@ conf_mat(data = results1, truth = Subscription_Status, estimate = .pred_class)
 ```
 :::
 :::
-
-### Anwendung
 
 ### Beurteilung
 
