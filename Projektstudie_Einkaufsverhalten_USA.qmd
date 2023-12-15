@@ -224,7 +224,7 @@ Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse un
 
 Es wird analysiert, wie oft Personen wöchentlich einkaufen, wobei der Fokus auf den verschiedenen Häufigkeiten liegt.
 
-</p>
+
 
 ```{r}
 
@@ -248,7 +248,7 @@ frequency_counts %>%
 
 Wir stellen diesse Daten im nächsten Schritt aufbereitet in einem Diagramm da
 
-</p>
+
 
 ```{r}
 frequency_mapping <- c("Fortnightly" = 2, "Weekly" = 1, "Annually" = 3,
@@ -282,7 +282,7 @@ ggplot(shopping_behavior, aes(x = `Frequency_of_Purchases`, fill = `Frequency_of
 
 Zuerst schauen wir, welche Farben alle vorhanden sind.
 
-</p>
+
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -293,7 +293,7 @@ print(shopping_behavior |> distinct(Color), n = rows)
 
 Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
 
-</p>
+
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -305,7 +305,7 @@ print(shopping_behavior |> count(Color) |> arrange(desc(n)) , n = rows)
 
 Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:
 
-</p>
+
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -317,7 +317,7 @@ print(shopping_behavior |> filter(Color != "Black" & Color != "White" & Color !=
 
 Wir sehen, dass die Farben Schwarz, Grau und Weiß r Kumulierter_Anteil_Schwarz_Weiß_Grau = max(Cumulative_Percentage)\` an der gesamten Farbauswahl einnehmen
 
-</p>
+
 
 ```{r}
 result <- shopping_behavior %>%
@@ -341,7 +341,7 @@ print(result)
 
 Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.
 
-</p>
+
 
 ```{r}
 data <- shopping_behavior %>%
@@ -400,7 +400,7 @@ ggplot(data, aes(x = Color, y = n, fill = Color)) +
 
 Wir betrachten die verscheidenen Bezahlarten
 
-</p>
+
 
 ```{r}
 unique_payment_methods <- unique(shopping_behavior$`Payment_Method`)
@@ -411,7 +411,7 @@ cat("Zahlungsmethoden:", toString(unique_payment_methods), "\n")
 
 Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden
 
-</p>
+
 
 ```{r}
 count_cash_payments <- sum(shopping_behavior$`Payment_Method` %in% c("Bar", "Cash"), na.rm = TRUE)
@@ -423,7 +423,7 @@ cat("Anzahl der Barzahlungen:", count_cash_payments, "\n")
 
 Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen
 
-</p>
+
 
 ```{r}
 percentage_cash <- count_cash_payments / nrow(shopping_behavior) * 100
@@ -434,7 +434,7 @@ cat("Prozentsatz der Barzahlungen:", percentage_cash, "%\n")
 
 Anzahl aller Zahlungen
 
-</p>
+
 
 ```{r}
 total_payments <- nrow(raw_shopping_behavior)
@@ -446,7 +446,7 @@ cat("Alle Zahlungen :", total_payments)
 
 Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an
 
-</p>
+
 
 ```{r}
 payment_data <- raw_shopping_behavior %>%
@@ -471,27 +471,27 @@ payment_data %>%
 ::: card-body
 
 <p class="card-text">
-</p>
 
-<p>In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. Unter dem Begriff "Rabattcodes" sind hier sowohl übliche Rabattcodes aber ebenso Promo-Codes gemeint. Zunächst schauen wir uns an wie oft der Wert "yes" in der Spalte "Discount Applied" vorkommt:</p>
+
+In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. Unter dem Begriff "Rabattcodes" sind hier sowohl übliche Rabattcodes aber ebenso Promo-Codes gemeint. Zunächst schauen wir uns an wie oft der Wert "yes" in der Spalte "Discount Applied" vorkommt:
 
 ```{r}
 shopping_behavior |> count(`Discount_Applied`)
 ```
 
-<p>
+
 
 Die Analyse zeigt, dass bei 2223 Einkäufen kein Rabattcode genutzt wurde. Bei 1677 wurde hingegen ein Rabattcode genutzt.
 
 Im zweiten Schritt schauen wir uns an wie oft der Wert "yes" in der Spalte "Promo Code Used" vorkommt:
 
-</p>
+
 
 ```{r}
 shopping_behavior |> count(`Promo_Code_Used`)
 ```
 
-<p>Das Ergebnis dieser Abfrage zeigt, dass bei 2223 Einkäufen kein Promo-Code verwendet wurde. Bei 1677 wurde hingegen ein Promo-Code verwendet.</p>
+Das Ergebnis dieser Abfrage zeigt, dass bei 2223 Einkäufen kein Promo-Code verwendet wurde. Bei 1677 wurde hingegen ein Promo-Code verwendet.
 
 ```{r}
 colnames(shopping_behavior)[colnames(shopping_behavior) == "Discount Applied"] <- "yes"
@@ -506,7 +506,7 @@ ggplot(shopping_behavior, aes(x = Combined_Discount)) +
       y = "Count")
 ```
 
-<p>Zusammenfassend lässt sich also sagen, dass die Hypothese, dass die meisten Kunden keinen Rabattcode nutzen würden, bestätigt werden kann. Insgesamt wurden bei 2223 Einkäufen kein Rabattcode genutzt. Bei 1677 wurde hingegen ein Rabattcode genutzt.</p>
+Zusammenfassend lässt sich also sagen, dass die Hypothese, dass die meisten Kunden keinen Rabattcode nutzen würden, bestätigt werden kann. Insgesamt wurden bei 2223 Einkäufen kein Rabattcode genutzt. Bei 1677 wurde hingegen ein Rabattcode genutzt.
 :::
 :::
 
@@ -519,20 +519,20 @@ ggplot(shopping_behavior, aes(x = Combined_Discount)) +
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-<p>
+
 
 In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen.
 
 Hierzu analysieren wir zunächst wie häufig die Werte "male" und "femal" in der Spalte "Gender" vorkommt:
 
-</p>
+
 
 ```{r}
 shopping_behavior |> filter(Gender != "male") |> count(Gender)
 shopping_behavior |> filter(Gender != "female") |> count(Gender)
 ```
 
-<p>Das Ergebnis der Auswertung ist, dass Personend des männlichen Geschlechtes 2652 Produkte kauften. Personen des weiblichen Geschlechts hingegen kauften nur 1248 Produkte. Selbes Ergebnis kann visuell der folgenden Grafik entnommen werden:</p>
+Das Ergebnis der Auswertung ist, dass Personend des männlichen Geschlechtes 2652 Produkte kauften. Personen des weiblichen Geschlechts hingegen kauften nur 1248 Produkte. Selbes Ergebnis kann visuell der folgenden Grafik entnommen werden:
 
 ```{r}
 shopping_behavior |> count(Gender) |> ggplot(aes(x = Gender, y = n)) + geom_col()
@@ -548,25 +548,25 @@ shopping_behavior |> count(Gender) |> ggplot(aes(x = Gender, y = n)) + geom_col(
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-<p>In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauft wird als im Sommer.
+In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauft wird als im Sommer.
 
-Hierzu analysieren wir zunächst wie häufig der Wert "Winter" in der Spalte "Season" vorkommt: </p>
+Hierzu analysieren wir zunächst wie häufig der Wert "Winter" in der Spalte "Season" vorkommt: 
 
 ```{r}
 shopping_behavior |> filter(Season == "Winter") |> count(Season)
 ```
 
-<p>Das Ergebnis der Analyse zeigt, dass `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte im Winter gekauft wurden. Nun schauen wir uns an wie häufig der Wert "Summer" in der Spalte "Season" vorkommt:</p>
+Das Ergebnis der Analyse zeigt, dass `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte im Winter gekauft wurden. Nun schauen wir uns an wie häufig der Wert "Summer" in der Spalte "Season" vorkommt:
 
 ```{r}
 shopping_behavior |> filter(Season == "Summer") |> count(Season)
 ```
 
-<p>
+
 
 Das Ergebnis der Analyse zeigt, dass `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte im Sommer gekauft wurden.
 
-Somit lässt sich die Hypothese belegen, dass im Winter mehr Kleidung gekauft wird als im Sommer, belegen. Im Winter werden `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte gekauft. Im Sommer hingegen werden `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte gekauft. (Vgl. Grafik)</p>
+Somit lässt sich die Hypothese belegen, dass im Winter mehr Kleidung gekauft wird als im Sommer, belegen. Im Winter werden `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte gekauft. Im Sommer hingegen werden `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte gekauft. (Vgl. Grafik)
 
 ```{r}
 if (!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -597,7 +597,7 @@ ggplot(shopping_behavior, aes(x = Season, fill = Season)) +
 
 Zunächst schauen wir uns einmal alle vorhandenen Orte an:
 
-</p>
+
 
 ```{r}
 shopping_behavior |> distinct(Location)
@@ -607,7 +607,7 @@ shopping_behavior |> distinct(Location)
 
 Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
 
-</p>
+
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Location))
@@ -618,7 +618,7 @@ print(shopping_behavior |> count(Location) |> arrange(desc(n)) , n = rows)
 
 Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
 
-</p>
+
 
 ```{r}
 # Werte aus der Tabelle shopping_behavior übernommen
@@ -761,7 +761,7 @@ Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersag
 
 Daten gruppieren und Zusammenzählen
 
-</p>
+
 
 ```{r}
 # Daten gruppieren und die Anzahl der Einkäufe pro Altersgruppe zusammenzählen
@@ -772,7 +772,7 @@ purchase_count_by_age <- shopping_behavior %>%
 print(purchase_count_by_age)
 ```
 
-<p>Daten aufteilen und Modell erstellen</p>
+Daten aufteilen und Modell erstellen
 
 ```{r}
 
@@ -783,7 +783,7 @@ print(linear_model)
 
 ```
 
-<p>Vorhersagen für Testdaten</p>
+Vorhersagen für Testdaten
 
 ```{r}
 # Vorhersagen für alle Altersgruppen im vorhandenen Datenbereich
@@ -798,7 +798,7 @@ predictions <- round(predictions, 2)
 print(predictions)
 ```
 
-<p>Daten gruppieren und Vorhersagen zusammenzählen:</p>
+Daten gruppieren und Vorhersagen zusammenzählen:
 
 ```{r}
 # Daten für den Plot vorbereiten und auf 2 nachkommastellen runden
@@ -813,7 +813,7 @@ plot_data <- data.frame(Age = age_range, Predicted_Purchases = predictions[, 1],
 print(plot_data)
 ```
 
-<p>Scatterplot mit Konfidenzintervall erstellen</p>
+Scatterplot mit Konfidenzintervall erstellen
 
 ```{r}
 
@@ -846,7 +846,7 @@ Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetra
 
 Anwendung
 
-</p>
+
 
 ```{r}
 
@@ -883,18 +883,18 @@ ggplot(prediction_table, aes(x = Discount_Applied, y = Predicted_Probability)) +
 
 ```
 
-<p>Kommulierte Ausgabe der Warscheinlichkeiten, dass ein Rabattcode genutzt wird oder nicht (als Wert zwischen 0 und 1).</p>
+Kommulierte Ausgabe der Warscheinlichkeiten, dass ein Rabattcode genutzt wird oder nicht (als Wert zwischen 0 und 1).
 
 ## Modell 3 (Fabian Elsner)
 
-<p> Wir analysieren Daten mittels eines Machine-Learning-Modell, basierend auf Random Forests, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€. </p>
+ Wir analysieren Daten mittels eines Machine-Learning-Modell, basierend auf Random Forests, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€. 
 
 ### Anwendung
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-Zunächst wird sichergestellt, dass das erforderliche Paket installiert ist.</p>
+Zunächst wird sichergestellt, dass das erforderliche Paket installiert ist.
 
 ```{r}
 
@@ -905,7 +905,7 @@ if (!requireNamespace("randomForest", quietly = TRUE)) {
 library(randomForest)
 ```
 
-<p>Im Anschluss wird ein Data-Frame erstellt:</p>
+Im Anschluss wird ein Data-Frame erstellt:
 
 ```{r}
 set.seed(42)
@@ -928,7 +928,7 @@ df <- data.frame(
 )
 ```
 
-<p>Nun werden die Daten in den richtigen Datentypen gespeichert und die Variable "Express_Shipping_Used" erstellt.</p>
+Nun werden die Daten in den richtigen Datentypen gespeichert und die Variable "Express_Shipping_Used" erstellt.
 
 ```{r}
 
@@ -948,7 +948,7 @@ df$Payment_Method <- as.factor(df$Payment_Method)
 df$Express_Shipping_Used <- as.factor(df$Express_Shipping_Used)
 ```
 
-<p>Die Daten werden in Trainings- und Testdaten aufgeteilt.</p>
+Die Daten werden in Trainings- und Testdaten aufgeteilt.
 
 ```{r}
 
@@ -957,14 +957,14 @@ train_data <- df[split_index, ]
 test_data <- df[-split_index, ]
 ```
 
-<p>Da nun die erforderlichen Datensätze existieren, wird nun das Modell erstellt.</p>
+Da nun die erforderlichen Datensätze existieren, wird nun das Modell erstellt.
 
 ```{r}
 
 rf_model <- randomForest(Express_Shipping_Used ~ . - Purchase_Amount - Shipping_Type - Express_Shipping_Used, data = train_data)
 ```
 
-<p>Die Vorhersagen, welche von dem Modell getroffen werden, werden in einer Tabelle zusammengefasst.</p>
+Die Vorhersagen, welche von dem Modell getroffen werden, werden in einer Tabelle zusammengefasst.
 
 ```{r}
 
@@ -973,8 +973,8 @@ prediction_table <- data.frame(Express_Shipping_Used = test_data$Express_Shippin
 print(head(prediction_table, 10))
 ```
 
-<p>Im Folgenden werden die Testdaten genommen und es werden Vorhersagen mit dem Random-Forest Modell getroffen.
-Außerdem werden die Werte für die Confusion-Matrix errechnet.</p>
+Im Folgenden werden die Testdaten genommen und es werden Vorhersagen mit dem Random-Forest Modell getroffen.
+Außerdem werden die Werte für die Confusion-Matrix errechnet.
 
 ```{r}
 predictions <- predict(rf_model, newdata = test_data)
@@ -986,7 +986,7 @@ cat("Accuracy:", accuracy, "\n")
 cat("Confusion Matrix:\n", confusion_matrix, "\n")
 ```
 
-<p>Die Confusion-Matrix wird nun als Heatmap dargestellt.</p>
+Die Confusion-Matrix wird nun als Heatmap dargestellt.
 
 ```{r}
 conf_matrix <- matrix(c(3, 8, 7, 2), nrow = 2, byrow = TRUE,
@@ -1008,20 +1008,20 @@ heatmaply(conf_matrix,
 :::
 
 ## Modell 4 (Fabian Elsner)
-<p> Wir analysieren Daten mittels eines Machine-Learning-Modells, basierend auf neuronalen Netzen, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€ . </p>
+ Wir analysieren Daten mittels eines Machine-Learning-Modells, basierend auf neuronalen Netzen, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€ . 
 
 ### Anwendung
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-<p>Das verwendete Paket erfordert für die initiale Ausführung eine CRANmirror Verbindung um einwandfrei zu funkionieren. Diese wird zunächst initialisiert.</p>
+Das verwendete Paket erfordert für die initiale Ausführung eine CRANmirror Verbindung um einwandfrei zu funkionieren. Diese wird zunächst initialisiert.
 
 ```{r}
 options(repos = c(CRAN = "https://cran.uni-muenster.de/"))
 ```
 
-<p>Für den Fall, dass das Paket neuralnet noch nicht installiert ist, wird es hier heruntergeladen.</p>
+Für den Fall, dass das Paket neuralnet noch nicht installiert ist, wird es hier heruntergeladen.
 
 ```{r}
 
@@ -1032,7 +1032,7 @@ if (!requireNamespace("neuralnet", quietly = TRUE)) {
 library(neuralnet)
 ```
 
-<p>Zunächst wird ein Data-Frame erstellt und die Daten in Test- und Trainingsdaten aufgeteilt.</p>
+Zunächst wird ein Data-Frame erstellt und die Daten in Test- und Trainingsdaten aufgeteilt.
 
 ```{r}
 
@@ -1082,7 +1082,7 @@ test_data <- df[-split_index, ]
 #print(test_data)
 ```
 
-<p>Das Modell wird nun erstellt und die Vorhersagen getroffen.</p>
+Das Modell wird nun erstellt und die Vorhersagen getroffen.
 
 ```{r}
 nn_model <- neuralnet(
@@ -1095,7 +1095,7 @@ nn_model <- neuralnet(
 predictions <- predict(nn_model, newdata = test_data)
 ```
 
-<p>Die Vorhersagen werden nun ausgewertet. Hierfür werden die Wahrscheinlichkeiten für das Ergebnis "Express genutzt" (Wert 1) extrahiert. Außerdem werden die Werte auf genau 1 oder 0 gerundet.</p>
+Die Vorhersagen werden nun ausgewertet. Hierfür werden die Wahrscheinlichkeiten für das Ergebnis "Express genutzt" (Wert 1) extrahiert. Außerdem werden die Werte auf genau 1 oder 0 gerundet.
 
 ```{r}
 # Extrahiere die Wahrscheinlichkeiten für die Klasse 1 (Express genutzt)
@@ -1105,7 +1105,7 @@ express_used_probabilities <- predictions[, 2]
 rounded_predictions <- ifelse(express_used_probabilities > 0.5, 1, 0)
 ```
 
-<p>Die Genauigkeit des Modells wird nun berechnet und die Confusion Matrix erstellt.</p>
+Die Genauigkeit des Modells wird nun berechnet und die Confusion Matrix erstellt.
 
 ```{r}
 confusion_matrix <- table(rounded_predictions, test_data$Express_Shipping_Used)
@@ -1117,7 +1117,7 @@ conf_matrix <- matrix(c(3, 4, 0, 13), nrow = 2, byrow = TRUE,
                       dimnames = list(c("Tatsächlich 0", "Tatsächlich 1"), c("Vorhergesagt 0", "Vorhergesagt 1")))
 ```
 
-<p>Die Confusion Matrix wird nun als Heatmap dargestellt.</p>
+Die Confusion Matrix wird nun als Heatmap dargestellt.
 
 ```{r}
 # Installiere das Paket "heatmaply", falls es noch nicht installiert ist
