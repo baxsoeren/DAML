@@ -220,7 +220,7 @@ Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse un
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-<p class="card-text">
+
 
 Es wird analysiert, wie oft Personen wöchentlich einkaufen, wobei der Fokus auf den verschiedenen Häufigkeiten liegt.
 
@@ -244,7 +244,7 @@ frequency_counts %>%
   column_spec(1, color = "white")
 ```
 
-<p class="card-text">
+
 
 Wir stellen diesse Daten im nächsten Schritt aufbereitet in einem Diagramm da
 
@@ -278,7 +278,7 @@ ggplot(shopping_behavior, aes(x = `Frequency_of_Purchases`, fill = `Frequency_of
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-<p class="card-text">
+
 
 Zuerst schauen wir, welche Farben alle vorhanden sind.
 
@@ -289,7 +289,7 @@ rows <- nrow(shopping_behavior |> distinct(Color))
 print(shopping_behavior |> distinct(Color), n = rows)
 ```
 
-<p class="card-text">
+
 
 Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
 
@@ -301,7 +301,7 @@ print(shopping_behavior |> count(Color) |> arrange(desc(n)) , n = rows)
 
 ```
 
-<p class="card-text">
+
 
 Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:
 
@@ -313,7 +313,7 @@ print(shopping_behavior |> filter(Color != "Black" & Color != "White" & Color !=
 
 ```
 
-<p class="card-text">
+
 
 Wir sehen, dass die Farben Schwarz, Grau und Weiß r Kumulierter_Anteil_Schwarz_Weiß_Grau = max(Cumulative_Percentage)\` an der gesamten Farbauswahl einnehmen
 
@@ -337,7 +337,7 @@ result <- shopping_behavior %>%
 print(result)
 ```
 
-<p class="card-text">
+
 
 Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.
 
@@ -396,7 +396,7 @@ ggplot(data, aes(x = Color, y = n, fill = Color)) +
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-<p class="card-text">
+
 
 Wir betrachten die verscheidenen Bezahlarten
 
@@ -407,7 +407,7 @@ unique_payment_methods <- unique(shopping_behavior$`Payment_Method`)
 cat("Zahlungsmethoden:", toString(unique_payment_methods), "\n")
 ```
 
-<p class="card-text">
+
 
 Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden
 
@@ -419,7 +419,7 @@ cat("Anzahl der Barzahlungen:", count_cash_payments, "\n")
 
 ```
 
-<p class="card-text">
+
 
 Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen
 
@@ -430,7 +430,7 @@ percentage_cash <- count_cash_payments / nrow(shopping_behavior) * 100
 cat("Prozentsatz der Barzahlungen:", percentage_cash, "%\n")
 ```
 
-<p class="card-text">
+
 
 Anzahl aller Zahlungen
 
@@ -442,7 +442,7 @@ total_payments <- nrow(raw_shopping_behavior)
 cat("Alle Zahlungen :", total_payments)
 ```
 
-<p class="card-text">
+
 
 Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an
 
@@ -470,7 +470,7 @@ payment_data %>%
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-<p class="card-text">
+
 
 
 In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. Unter dem Begriff "Rabattcodes" sind hier sowohl übliche Rabattcodes aber ebenso Promo-Codes gemeint. Zunächst schauen wir uns an wie oft der Wert "yes" in der Spalte "Discount Applied" vorkommt:
@@ -593,7 +593,7 @@ ggplot(shopping_behavior, aes(x = Season, fill = Season)) +
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-<p class="card-text">
+
 
 Zunächst schauen wir uns einmal alle vorhandenen Orte an:
 
@@ -603,7 +603,7 @@ Zunächst schauen wir uns einmal alle vorhandenen Orte an:
 shopping_behavior |> distinct(Location)
 ```
 
-<p class="card-text">
+
 
 Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
 
@@ -614,7 +614,7 @@ rows <- nrow(shopping_behavior |> distinct(Location))
 print(shopping_behavior |> count(Location) |> arrange(desc(n)) , n = rows)
 ```
 
-<p class="card-text">
+
 
 Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
 
@@ -646,30 +646,6 @@ plot_usmap(data = df, values = "occurrence", color = "black", labels = TRUE) +
 :::
 
 ## These 8 (Sören Bax)
-
-::: {#these8}
-```         
-<h2>Die Kategorie "Klamotten" wird am meisten gekauft.</h2>
-```
-:::
-
-Zunächst schauen wir uns einmal alle vorhandenen Kategorien an:
-
-```{r}
-shopping_behavior |> distinct(Category)
-```
-
-Wir sehen, dass es 4 Kategorien gibt: Klamotten, Schuhe, Accessoires und Oberbekleidung Nun schauen wir uns die Häufigkeit der Kategorien an:
-
-```{r}
-shopping_behavior |> count(Category)
-
-shopping_behavior |> count(Category) |> ggplot(aes(x = Category, y = n)) + geom_col()
-```
-
-Wir sehen, dass die Kategorie "Klamotten" mit 1737 Instanzen am häufigsten vorkommt.Danach folgt die Kategorie "Accessoires" mit 1240 Instanzen. Am seltensten kommen die Kategorien "Schuhe" mit 599 und "Oberbekleidung" mit 324 Instanzen vor.
-
-## These 9 (Sören Bax)
 
 ::: {#these8}
 <h2>Die Kategorie "Clothing" wird am meisten im Herbst gekauft.</h2>
@@ -729,7 +705,7 @@ ggplot(category_distribution_clothing, aes(x = Season, y = Percentage, fill = Se
     ylab("Prozentuale Verteilung")
 ```
 
-```{r, include = FALSE}
+```{r}
 percent_spring <- category_distribution_clothing |> filter(Season == "Spring") |> select(Percentage)
 percent_summer <- category_distribution_clothing |> filter(Season == "Summer") |> select(Percentage)
 percent_fall <- category_distribution_clothing |> filter(Season == "Fall") |> select(Percentage)
@@ -747,6 +723,82 @@ Die These ist damit widerlegt. Die meisten Einkäufe der Kategorie "Clothing" wu
 :::
 :::
 
+## These 9 (Sören Bax)
+::: {#these9}
+<h2>Die meisten Einkäufe wurden von Personen über 40 Jahre getätigt.</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+Zunächst suchen wir den Eintrag mit dem höchsten Alter heraus:
+
+```{r}
+high_age <- shopping_behavior |> arrange(desc(Age)) |> head(1)
+knitr::kable(head(high_age), caption = "Der Eintrag mit dem höchsten Alter")
+```
+
+Nun suchen wir den Einkauf mit dem niedrigsten Alter heraus:
+
+```{r}
+low_age <- shopping_behavior |> arrange(Age) |> head(1)
+knitr::kable(head(low_age), caption = "Der Eintrag mit dem niedrigsten Alter")
+```
+
+Nun berechnen wir die Spanne der Lebensjahre:
+
+```{r}
+span_age <- as.integer(max(shopping_behavior$Age) - min(shopping_behavior$Age))
+```
+
+Die Spanne der Lebensjahre beträgt `r span_age` Jahre.
+Nun erstellen wir einen Boxplot über die Lebensjahre der Kunden:
+
+```{r}
+ggplot(shopping_behavior, aes(x = Age)) + 
+  geom_boxplot() +
+  coord_flip() +
+  labs(
+    x = "Alter",
+    title = "Boxplot über die Lebensjahre der Kunden", 
+  ) +
+  scale_y_discrete(labels = NULL, breaks = NULL)  +
+  scale_x_continuous(
+    labels = comma_format(big.mark = ".", 
+                          decimal.mark = ","))
+```
+
+Durch den Boxplot erkennen wir, dass die meisten Kunden ungefähhr zwischen 31 und 57 Jahre alt sind.
+Da der meiste Teil des Boxplots jedoch Oberhalb der 40 liegt, lässt sich zum ersten Mal erahnen, dass die These wahr ist.
+Zudem ist in dem Boxplot der Mittelwert eingezeichnet. Dieser schein bei ungefähr 44 Jahren zu liegen. Um dies zu überprüfen, berechnen wir nun den Mittelwert und Median der Lebensjahre.
+
+```{r}
+mean_age <- as.double(mean(shopping_behavior$Age))
+med_age <- as.integer(median(shopping_behavior$Age))
+```
+
+Der Mittelwert ist `r mean_age` und liegt somit nur knapp neben 44. Der Median hingegen ist genau `r med_age`. Die beiden Werte liegen sehr nah beieinander. Dadurch können wir schließen, dass die Daten normalverteilt sind und keine Ausreißer (Beziehungsweise keine Nennenswerten Ausreißer) vorhanden sind. Vor allem der Mittelwert wäre sehr anfällig gegenüber Ausreißern.
+
+Mithilfe der beiden Werte können wir nun die These bestätigen. Die meisten Einkäufe wurden von Einkäufern über 40 Jahren durchgeführt.
+Um allerdings ganz sicher zu sein berechnen wir noch einmal die Anzahl der Personen, die über 40 Jahre alt sind und die Anzahl der Personen, die unter (und gleich) 40 Jahre alt sind.
+
+Berechnen wir zunächst die Anzahl der Personen, die über 40 Jahre alt sind:
+
+```{r}
+over_forty <- as.integer(shopping_behavior |> filter(Age > 40) |> count())
+```
+
+Nun berechnen wir die Anzahl der Personen, die unter (und gleich) 40 Jahre alt sind:
+
+```{r}
+#logischer Operater <=, da die These den Operator > beinhaltet, wodruch Personen = 40 gegen die These sprechen würden
+under_forty <- as.integer(shopping_behavior |> filter(Age <= 40) |> count())
+```
+
+Es sind **`r over_forty`** Einkäufer über 40 Jahre alt und **`r under_forty`** Einkäufer unter 40 Jahre alt. Das bedeutet, dass insgesamt **`r over_forty - under_forty`** Personen mehr eingekauft haben, die über 40 Jahre alt waren. Somit ist die These erneut bestätigt.
+:::
+:::
+
 # Anwendung und Beurteilung von Machine-Learning-Modellen
 
 ## Modell 1 (Ole Kepa)
@@ -757,7 +809,7 @@ Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersag
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-<p class="card-text">
+
 
 Daten gruppieren und Zusammenzählen
 
@@ -842,7 +894,7 @@ Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetra
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-<p class="card-text">
+
 
 Anwendung
 
