@@ -158,7 +158,7 @@ Wir möchten insbesondere folgende Thesen in dieser Arbeit untersuchen:
 
 <button type="button" onclick="window.location.href=&#39;#these8&#39;" class="btn btn-primary">
 
-**These 8: Die Kategorie "Klamotten" wird am meisten gekauft.**
+**These 8: Die Kategorie "Clothing" wird am meisten im Herbst gekauft.**
 
 </button>
 
@@ -671,78 +671,79 @@ Wir sehen, dass die Kategorie "Klamotten" mit 1737 Instanzen am häufigsten vork
 
 ## These 9 (Sören Bax)
 
-::: {#these9}
-<h2>Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.</h2>
+::: {#these8}
+<h2>Die Kategorie "Clothing" wird am meisten im Herbst gekauft.</h2>
 :::
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-Zunächst suchen wir den Eintrag mit dem höchsten Alter heraus:
+In dieser These wird die Hypothese geprüft, dass die Kategorie "Klamotten" am meisten im Herbst gekauft wird.
+
+Schauen wir uns daher nun noch einmal, welche Jahreszeiten im Datensatz vorhanden sind:
 
 ```{r}
-high_age <- shopping_behavior |> arrange(desc(Age)) |> head(1)
-knitr::kable(head(high_age), caption = "Der Eintrag mit dem höchsten Alter")
+shopping_behavior |> distinct(Season)
 ```
 
-Nun suchen wir den Einkauf mit dem niedrigsten Alter heraus:
+Wir sehen, dass es 4 Jahreszeiten gibt: Frühling, Sommer, Herbst und Winter.
+Erstellen wir nun zunächst ein Balkendiagramm, dass zeigt, wie viele Einkäufe der Kateogrie "Klamotten" in den einzelnen Jahreszeiten getätigt wurden:
 
 ```{r}
-low_age <- shopping_behavior |> arrange(Age) |> head(1)
-knitr::kable(head(low_age), caption = "Der Eintrag mit dem niedrigsten Alter")
+category_distribution_clothing <- shopping_behavior |> filter(Category != "Footwear" & Category != "Outerwear" & Category != "Accessories")
+category_distribution_clothing <- category_distribution_clothing |> count(Category, Season)
+category_distribution_clothing <- category_distribution_clothing |> rename(Quantity = n)
+category_distribution_clothing
+
+ggplot(category_distribution_clothing, aes(x = Season, y = Quantity, fill = Season)) +
+    geom_col() +
+    geom_text(aes(label = Quantity, y = Quantity)) +
+    ylab("Anzahl der Einkäufe")
 ```
 
-Nun berechnen wir die Spanne der Lebensjahre:
+Wir sehen, dasss die meisten Einkäufe der Kategorie "Klamotten" im Frühling getätigt wurden. Schauen wir uns nun aber noch einmal die Prozentuale verteilung an. Hierzu berechnen wir zunächst die Gesamtanzahl der Einkäufe der Kategorie "Klamotten":
 
 ```{r}
-span_age <- as.integer(max(shopping_behavior$Age) - min(shopping_behavior$Age))
+sum_clothings <- as.numeric(category_distribution_clothing |> summarise(sum(Quantity)))
 ```
 
-Die Spanne der Lebensjahre beträgt `r span_age` Jahre.
-Nun erstellen wir einen Boxplot über die Lebensjahre der Kunden:
+Wir sehen, dass es insgesamt **`r sum_clothings`** Einkäufe der Kategorie "Klamotten" gibt.
+Mithilfe dieser Summe können wir nun eine Spalte mit den prozentualen Wahrscheinlichkeiten an unsere Tabelle anhängen.
 
 ```{r}
-ggplot(shopping_behavior, aes(x = Age)) + 
-  geom_boxplot() +
-  coord_flip() +
-  labs(
-    x = "Alter",
-    title = "Boxplot über die Lebensjahre der Kunden", 
-  ) +
-  scale_y_discrete(labels = NULL, breaks = NULL)  +
-  scale_x_continuous(
-    labels = comma_format(big.mark = ".", 
-                          decimal.mark = ","))
+category_distribution_clothing <- category_distribution_clothing |> mutate(Percentage = round( (Quantity / sum_clothings * 100), 2))
 ```
 
-Durch den Boxplot erkennen wir, dass die meisten Kunden ungefähhr zwischen 31 und 57 Jahre alt sind.
-Da der meiste Teil des Boxplots jedoch Oberhalb der 40 liegt, lässt sich zum ersten Mal erahnen, dass die These wahr ist.
-Zudem ist in dem Boxplot der Mittelwert eingezeichnet. Dieser schein bei ungefähr 44 Jahren zu liegen. Um dies zu überprüfen, berechnen wir nun den Mittelwert und Median der Lebensjahre.
+Schauen wir uns nun die Tabelle an:
 
 ```{r}
-mean_age <- as.double(mean(shopping_behavior$Age))
-med_age <- as.integer(median(shopping_behavior$Age))
+knitr::kable(category_distribution_clothing, caption = "Verteilung der Einkäufe der Kategorie 'Klamotten' auf die Jahreszeiten")
 ```
 
-Der Mittelwert ist `r mean_age` und liegt somit nur knapp neben 44. Der Median hingegen ist genau `r med_age`. Die beiden Werte liegen sehr nah beieinander. Dadurch können wir schließen, dass die Daten normalverteilt sind und keine Ausreißer (Beziehungsweise keine Nennenswerten Ausreißer) vorhanden sind. Vor allem der Mittelwert wäre sehr anfällig gegenüber Ausreißern.
-
-Mithilfe der beiden Werte können wir nun die These bestätigen. Die meisten Einkäufe wurden von Einkäufern über 40 Jahren durchgeführt.
-Um allerdings ganz sicher zu sein berechnen wir noch einmal die Anzahl der Personen, die über 40 Jahre alt sind und die Anzahl der Personen, die unter (und gleich) 40 Jahre alt sind.
-
-Berechnen wir zunächst die Anzahl der Personen, die über 40 Jahre alt sind:
+Erstellen wir zudem noch einmal ein Balkendiagramm mit den prozentualen Wahrscheinlichkeiten:
 
 ```{r}
-over_forty <- as.integer(shopping_behavior |> filter(Age > 40) |> count())
+ggplot(category_distribution_clothing, aes(x = Season, y = Percentage, fill = Season)) +
+    geom_col() +
+    geom_text(aes(label = Percentage, y = Percentage)) +
+    ylab("Prozentuale Verteilung")
 ```
 
-Nun berechnen wir die Anzahl der Personen, die unter (und gleich) 40 Jahre alt sind:
+```{r, include = FALSE}
+percent_spring <- category_distribution_clothing |> filter(Season == "Spring") |> select(Percentage)
+percent_summer <- category_distribution_clothing |> filter(Season == "Summer") |> select(Percentage)
+percent_fall <- category_distribution_clothing |> filter(Season == "Fall") |> select(Percentage)
+percent_winter <- category_distribution_clothing |> filter(Season == "Winter") |> select(Percentage)
+```
+
+Insgesamt sehen wir, dass die meisten Einkäufe der Kategorie "Clothing" im Frühling gekauft wurden. Es wurden insgesamt **`r sum_clothings`** Einkäufe der Kategorie "Clothing" getätigt. Davon wurden **`r percent_spring`%** im Frühling, **`r percent_summer`%** im Sommer, **`r percent_fall` %** im Herbst und **`r percent_winter`%** im Winter getätigt. Somit wurden die meisten Einkäufe der Kategorie "Clothing" im Frühling getätigt. Zum Schluss berechnen wir noch einmal, wie viel mehr Einkäufe im Frühling getätigt wurden, als im Herbst:
 
 ```{r}
-#logischer Operater <=, da die These den Operator > beinhaltet, wodruch Personen = 40 gegen die These sprechen würden
-under_forty <- as.integer(shopping_behavior |> filter(Age <= 40) |> count())
+difference_purchases_quantity <- (category_distribution_clothing |> filter(Season == "Spring") |> select(Quantity)) - (category_distribution_clothing |> filter(Season == "Fall") |> select(Quantity))
+difference_purchases_percentage <- (category_distribution_clothing |> filter(Season == "Spring") |> select(Percentage)) - (category_distribution_clothing |> filter(Season == "Fall") |> select(Percentage))
 ```
 
-Es sind **`r over_forty`** Einkäufer über 40 Jahre alt und **`r under_forty`** Einkäufer unter 40 Jahre alt. Das bedeutet, dass insgesamt **`r over_forty - under_forty`** Personen mehr eingekauft haben, die über 40 Jahre alt waren. Somit ist die These erneut bestätigt.
+Die These ist damit widerlegt. Die meisten Einkäufe der Kategorie "Clothing" wurden nicht im Herbst, sondern im Frühling getätigt. Insgesamt wurden **`r difference_purchases_quantity`** Einkäufe mehr im Frühling getätigt, als im Herbst. Das sind **`r difference_purchases_percentage` Prozent** mehr Einkäufe.
 :::
 :::
 
