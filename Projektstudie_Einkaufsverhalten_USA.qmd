@@ -180,7 +180,7 @@ summary(raw_shopping_behavior)
 ```
 
 ```{r}
-raw_shopping_behavior %>% describe()
+raw_shopping_behavior |> describe()
 ```
 
 Die Customer_ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten Schritt löschen.
@@ -229,18 +229,18 @@ Es wird analysiert, wie oft Personen wöchentlich einkaufen, wobei der Fokus auf
 ```{r}
 
 
-frequency_counts <- shopping_behavior %>%
-  count(`Frequency_of_Purchases`) %>%
+frequency_counts <- shopping_behavior |>
+  count(`Frequency_of_Purchases`) |>
   arrange(`Frequency_of_Purchases`)
 
-frequency_counts %>%
-  kable() %>%
+frequency_counts |>
+  kable() |>
   kable_styling(
     full_width = FALSE,
     position = "center",
     font_size = 16,
     latex_options = c("striped", "hold_position")
-  ) %>%
+  ) |>
   column_spec(1, color = "white")
 ```
 
@@ -320,12 +320,12 @@ Wir sehen, dass die Farben Schwarz, Grau und Weiß r Kumulierter_Anteil_Schwarz_
 
 
 ```{r}
-result <- shopping_behavior %>%
-  count(Color) %>%
-  mutate(Percentage = n / sum(n) * 100) %>%
-  filter(Color %in% c("Black", "Gray", "White")) %>%
-  arrange(desc(Percentage)) %>%
-  mutate(Cumulative_Percentage = cumsum(Percentage)) %>%
+result <- shopping_behavior |>
+  count(Color) |>
+  mutate(Percentage = n / sum(n) * 100) |>
+  filter(Color %in% c("Black", "Gray", "White")) |>
+  arrange(desc(Percentage)) |>
+  mutate(Cumulative_Percentage = cumsum(Percentage)) |>
   summarize(
     Gesamtanteil = sum(Percentage),
     Anteil_Schwarz = sum(Percentage[Color == "Black"]),
@@ -344,7 +344,7 @@ Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häuf
 
 
 ```{r}
-data <- shopping_behavior %>%
+data <- shopping_behavior |>
   count(Color)
 
 color_palette <- c(
@@ -449,13 +449,13 @@ Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an
 
 
 ```{r}
-payment_data <- raw_shopping_behavior %>%
-  group_by(`Payment_Method`) %>%
-  summarise(TotalAmount = sum(`Purchase_Amount`)) %>%
-  ungroup() %>%
+payment_data <- raw_shopping_behavior |>
+  group_by(`Payment_Method`) |>
+  summarise(TotalAmount = sum(`Purchase_Amount`)) |>
+  ungroup() |>
   mutate(Percentage = TotalAmount / sum(TotalAmount) * 100)
 
-payment_data %>%
+payment_data |>
   select(`Payment_Method`, Percentage)
 ```
 :::
@@ -817,8 +817,8 @@ Daten gruppieren und Zusammenzählen
 
 ```{r}
 # Daten gruppieren und die Anzahl der Einkäufe pro Altersgruppe zusammenzählen
-purchase_count_by_age <- shopping_behavior %>%
-  group_by(Age) %>%
+purchase_count_by_age <- shopping_behavior |>
+  group_by(Age) |>
   summarize(Total_Purchases = n())
 
 print(purchase_count_by_age)
@@ -855,7 +855,7 @@ Daten gruppieren und Vorhersagen zusammenzählen:
 ```{r}
 # Daten für den Plot vorbereiten und auf 2 nachkommastellen runden
 plot_data <- data.frame(Age = age_range, Predicted_Purchases = predictions[, 1], 
-                        Lower = predictions[, 2], Upper = predictions[, 3]) %>%
+                        Lower = predictions[, 2], Upper = predictions[, 3]) |>
   mutate(Age = round(Age, 2), Predicted_Purchases = round(Predicted_Purchases, 2),
          Lower = round(Lower, 2), Upper = round(Upper, 2))
 
@@ -1291,22 +1291,36 @@ conf_mat(data = results1, truth = Subscription_Status, estimate = .pred_class)
 
 ## Bewertung
 
-Ich finde das sehr Kritisch und nicht schön
+Negativ: Kein Kaufdatum vorhanden
 
 ## Ideen für weitere Analysen
 
+Vorhersage von weiteren Variablen, wie z.B. die Anzahl der Bestellungen, die ein Kunde tätigt.
+
 # Quellen
 
-Datenset: <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> <br> US-Map: <https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html> <br> US-Map 2: <https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html> <br>
+Datenset: <br>
+<ul><li><https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data></li></ul>
+US-Map: <br>
+<ul><li><https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html></li>
+<li><https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html></li></ul>
+Theme: <br>
+<ul><li><https://bootswatch.com/minty/></li></ul>
+
 
 # Ehrenwörtliche Erklärung
 
 Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.
 
 <!-- Unterschriften in HTML -->
+Rietberg, den 23.12.2023 <br>
+<img src="./signatures/OleKepa.png" height="50" width="150"/> 
+<figcaption>Ole Kepa</figcaption>
 
-<img src="./signatures/OleKepa.png" height="50" width="150"/> <img src="./signatures/FabianElsner.png" height="50" width="150"/> <img src="./signatures/SoerenBax.png" height="50" width="150"/>
+Sandebeck, den 23.12.2023 <br>
+<img src="./signatures/FabianElsner.png" height="50" width="150"/>
+<figcaption>Fabian Elsner</figcaption>
 
-<!-- Unterschriften in PDF einbinden -->
-
-\includegraphics{"./signatures/OleKepa.png"} \includegraphics{"./signatures/OleKepa.png"} \includegraphics{"./signatures/OleKepa.png"}
+Langenberg, den 23.12.2023 <br>
+<img src="./signatures/SoerenBax.png" height="50" width="150"/>
+<figcaption>Sören Bax</figcaption>
