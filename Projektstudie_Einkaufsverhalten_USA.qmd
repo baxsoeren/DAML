@@ -28,27 +28,70 @@ date: 2023-12-23
   }
 </style>
 ```
-```{=html}
-<!-- 
-  pdf: 
-    toc: true
-    number-sections: true
-    
-THEMES: https://quarto.org/docs/output-formats/html-themes.html -->
-```
+
 ```{r, message=FALSE, include = FALSE}
-library(tidyverse) 
-library(tidymodels)
+if (!requireNamespace("broom", quietly = TRUE)) {
+  install.packages("broom")
+}
+if (!requireNamespace("coefplot", quietly = TRUE)) {
+  install.packages("coefplot")
+}
+if (!requireNamespace("dplyr", quietly = TRUE)) {
+  install.packages("dplyr")
+}
+if (!requireNamespace("explore", quietly = TRUE)) {
+  install.packages("explore")
+}
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2")
+}
+if (!requireNamespace("kableExtra", quietly = TRUE)) {
+  install.packages("kableExtra")
+}
+if (!requireNamespace("leaflet", quietly = TRUE)) {
+  install.packages("leaflet")
+}
+if (!requireNamespace("neuralnet", quietly = TRUE)) {
+  install.packages("neuralnet")
+}
+if (!requireNamespace("parsnip", quietly = TRUE)) {
+  install.packages("parsnip")
+}
+if (!requireNamespace("rpart", quietly = TRUE)) {
+  install.packages("rpart")
+}
+if (!requireNamespace("rpart", quietly = TRUE)) {
+  install.packages("rpart")
+}
+if (!requireNamespace("rpart.plot", quietly = TRUE)) {
+  install.packages("rpart.plot")
+}
+if (!requireNamespace("tidyverse", quietly = TRUE)) {
+  install.packages("tidyverse")
+}
+if (!requireNamespace("tidymodels", quietly = TRUE)) {
+  install.packages("tidymodels")
+}
+if (!requireNamespace("usmap", quietly = TRUE)) {
+  install.packages("usmap")
+}
+```
+
+```{r, message=FALSE, include = FALSE}
+library(broom)
+library(coefplot)
+library(dplyr)
 library(explore)
 library(ggplot2)
-library(usmap)
-library(dplyr)
 library(kableExtra)
-library(coefplot)
-library(broom)
-library(rpart.plot)
+library(leaflet)
+library(neuralnet)
 library(parsnip)
 library(rpart)
+library(rpart.plot)
+library(tidyverse) 
+library(tidymodels)
+library(usmap)
 ```
 
 <!-- Farbcode Türkis: #80c4ac -->
@@ -59,7 +102,7 @@ Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Anspre
 
 # Aufgabe und Daten verstehen
 
-In dieser Arbeit soll untersucht werden, wie das Kaufverhalten der Käufer in den USA ist. Anschließend sollen mehrere Modelle entwickelt werden, welche Beispielsweise voraussagen, ob `[...].`
+In dieser Arbeit soll untersucht werden, wie das Kaufverhalten der Käufer in den USA ist. Anschließend sollen mehrere Modelle entwickelt werden, welche Beispielsweise voraussagen, wie viel die verschiedenen Altersgruppen kaufen, ob ein Rabattcode genutzt wird oder ob ein Kunde ein Abonnement abschließt oder nicht.
 
 Hierzu steht ein Dataset zu dem Kaufverhalten von Verbrauchern in den USA zur Verfügung, das unter <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> abgerufen werden kann.
 
@@ -193,13 +236,15 @@ Nun erstellen wir den finalen Datensatz, welcher die Basis für die weitere Anal
 shopping_behavior <- raw_shopping_behavior |> select(-"Customer_ID")
 ```
 
-**MUSS HIER WAS KONVERTIERT WERDEN?**
+Des Weiteren ändern wir die Spalten Subscription_Status, Discount_Applied, Promo_Code_Used in Faktoren um, da diese nur die Werte "Yes" und "No" annehmen können:
 
-Season in numerisch umwandeln (1, 2, 3, 4)
-
-Frequency_of_Purchases umwandeln in Zahl
-
-**PREISGURPPEN BILDEN**
+```{r}
+shopping_behavior <- shopping_behavior |> mutate(
+    Subscription_Status = as_factor(Subscription_Status),
+    Discount_Applied = as_factor(Discount_Applied),
+    Promo_Code_Used = as_factor(Promo_Code_Used)
+  )
+```
 
 Werfen wir einen Blick auf das finale Datenset.
 
@@ -597,27 +642,18 @@ ggplot(shopping_behavior, aes(x = Season, fill = Season)) +
 
 Zunächst schauen wir uns einmal alle vorhandenen Orte an:
 
-
-
 ```{r}
 shopping_behavior |> distinct(Location)
 ```
 
-
-
 Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
-
-
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Location))
 print(shopping_behavior |> count(Location) |> arrange(desc(n)) , n = rows)
 ```
 
-
-
 Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
-
 
 
 ```{r}
@@ -641,6 +677,14 @@ plot_usmap(data = df, values = "occurrence", color = "black", labels = TRUE) +
   scale_fill_continuous(
     low = "white", high = "#80c4ac", name = "Häufigkeit", label = scales::comma
   ) + theme(legend.position = "right")
+
+```
+
+<img src="./pictures/USA_North_South.png"/>
+
+```{r}
+leaflet() |>
+  addTiles()
 ```
 :::
 :::
@@ -1200,28 +1244,17 @@ In diesem Modell wird ein Entscheidungsbaum erstellt, der vorhersagt, ob eine Pe
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-Nun erstellen wir einen Trainingsdatensatz:
+Nun erstellen wir einen Test- und Trainingsdatensatz:
     
 ```{r}
-library(rpart)
-library(rpart.plot)
-
-set.seed(501)
+set.seed(420)
 shopping_behavior_split <- initial_split(shopping_behavior, prop = 0.80, strata = Subscription_Status)
 shopping_behavior_split
-
-```
-      
-```{r}
 train_data <- training(shopping_behavior_split)
 test_data <- testing(shopping_behavior_split)
-
-train_data$Subscription_Status <- as.factor(train_data$Subscription_Status)
-test_data$Subscription_Status <- as.factor(test_data$Subscription_Status)
 ```
 
-
-Modell initialisieren:
+Zunächst initialisieren wir den Entscheidungsbaum:
 
 ```{r}
 tree_mod <- decision_tree(mode = "classification", 
@@ -1229,24 +1262,23 @@ tree_mod <- decision_tree(mode = "classification",
                           cost_complexity = 0)
 ```
 
-Modell Trainieren:
+Nachdem wir den Entscheidungsbaum initialisiert haben, trainieren wir diesen mit den Trainingsdaten.
 
 ```{r}
 tree_fit_1 <- tree_mod |> 
   fit(Subscription_Status ~ Age + Gender, data = train_data)
 ```
 
-
-Modell Ansehen:
+Nach dem trainieren des Modells können wir uns dieses nun anschauen:
 
 ```{r}
 tree_fit_1 |> 
   extract_fit_engine() 
 ```
 
-Interpretation der Ausgabe:
+Hinweis für die Interpretation der Ausgabe:
 
-node) die Nummerierung des Knoten/Blattes, hierbei wird der nachfolgende Knoten des aktuellen Knotens Nr.x mit 2x und 2x+1 nummeriert. D.h. aus dem Startknoten Nr.1 enstehen die Knoten mit Nr. 2 und 3, auf Nr. 2 folgen die Knoten mit Nr. 4 und 5, auf Nr. 3 die Knoten mit Nr. 6 und 7 usw.
+node) ist die Numerierung des Knoten/Blattes, hierbei wird der nachfolgende Knoten des aktuellen Knotens Nr.x mit 2x und 2x+1 nummeriert. D.h. aus dem Startknoten Nr.1 enstehen die Knoten mit Nr. 2 und 3, auf Nr. 2 folgen die Knoten mit Nr. 4 und 5, auf Nr. 3 die Knoten mit Nr. 6 und 7 usw.
 
 split gibt die letzte Merkmalsbedingung an, die zu diesem Knoten/Blatt geführt hat.
 
@@ -1258,15 +1290,9 @@ yval gibt den Wert der Vorhersagevariablen gemäß des Baums/Modells in diesem K
 
 (yprob) gibt die Wahrscheinlichkeiten einer korrekten bzw. einer falschen Zuordnung an, aufgeteilt auf die Klassen und bezogen auf die Vorhersage yval.
 
-    bedeutet, dass dieser Knoten ein Endknoten bzw. ein Blatt des Baumes ist und danach kein weiterer Knoten bzw. keine Merkmalsbedingung im Baum mehr erfolgt.
+* bedeutet, dass dieser Knoten ein Endknoten bzw. ein Blatt des Baumes ist und danach kein weiterer Knoten bzw. keine Merkmalsbedingung im Baum mehr erfolgt.
 
-
-
-Plotten:
-
-extra=2 prints for each leaf node the number of correctly classified objects from data and the total number of objects from the training data falling into that node (correct/total).
-
-+100 Add 100 to any value of extra to also display the percentage of observations in the node.
+Zu erkennen ist, dass es insgesamt nur 5 Endknoten mit der Vorhersage "Yes" gibt und 10 mit der Vorhersage "No". Die Wahrscheinlichkeit, dass jemand ein Abonnement hat, ist also relativ gering. Insgesamt ca. 2,76% (0.5897436 + 0.5454545 + 0.5348837 + 0.5294118 + 0.5581395). Zudem ist erkennbar, dass die Wahrscheinlichkeit bei Frauen bei 0% liegen. Nun schauen wir uns den Entscheidungsbaum einmal geplottet an:
 
 ```{r}
 tree_fit_1 |> 
@@ -1274,14 +1300,24 @@ tree_fit_1 |>
   rpart.plot(extra = 102, roundint = FALSE)
 ```
 
-Bestimmen des Trainingsfehlers:
+Hier ist der Entscheidungsbaum etwas schöner dargestellt, jedoch sind die Prozentzahlen mehr gerundet, weswegen für die Vorhersage für ein Abonnement nun bei 5% liegt.
+
+Bestimmen wir nun den Trainingsfehler der Vorhersage:
 
 ```{r}
 pred <- predict(tree_fit_1, new_data = train_data)
 results1 <- train_data |> select(Subscription_Status) |> bind_cols(pred)
 accuracy(data = results1, truth = Subscription_Status, estimate = .pred_class)
+```
+
+Wir sehen, dass der Trainingsfehler gerade einmal bei **0.736%** liegt und damit sehr gering ist.
+Erstellen wir nun noch einmal die Confusion-Matrix:
+
+```{r}
 conf_mat(data = results1, truth = Subscription_Status, estimate = .pred_class)
 ```
+
+Insgesamt lässt sich daher sagen, dass das Modell sehr gut trainiert wurde und eine sehr gute Vorhersage treffen kann. Zudem ist zu erkennen, dass das Alter und das Geschlecht eine sehr wichtige Rolle bei der Vorhersage spielen. Zudem ist zu erkennen, dass die Vorhersage für Frauen deutlich einfacher ist als für Männer. Jedoch ist die Vorhersage für ein Abonnement insgesamt sehr niedrig.
 :::
 :::
 
