@@ -609,7 +609,7 @@ shopping_behavior |> filter(Season == "Summer") |> count(Season)
 
 Das Ergebnis der Analyse zeigt, dass 955 Produkte im Sommer gekauft wurden.
 
-Somit lässt sich die Hypothese belegen, dass im Winter mehr Kleidung gekauft wird als im Sommer, belegen. Im Winter werden `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte gekauft. Im Sommer hingegen werden `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte gekauft. (Vgl. Grafik)
+Somit lässt sich die Hypothese belegen, dass im Winter mehr Kleidung gekauft wird als im Sommer, belegen. Im Winter werden 971 Produkte gekauft. Im Sommer hingegen werden 955 Produkte gekauft. (Vgl. Grafik)
 
 ```{r}
 if (!requireNamespace("ggplot2", quietly = TRUE)) {
