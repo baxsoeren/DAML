@@ -862,7 +862,7 @@ ggplot(prediction_table, aes(x = Discount_Applied, y = Predicted_Probability)) +
 
 <p>Kommulierte Ausgabe der Warscheinlichkeiten, dass ein Rabattcode genutzt wird oder nicht (als Wert zwischen 0 und 1).</p>
 
-## Modell 3 (Fabian)
+## Random Forests (Modell 3, Fabian)
 
 <p> Wir analysieren Daten mittels eines Machine-Learning-Modell, basierend auf Random Forests, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€. </p>
 
@@ -980,11 +980,11 @@ heatmaply(conf_matrix,
           main = "Confusion Matrix")
 ```
 ### Beurteilung
-
+<p>Die Beurteilung für dieses Modell wird zusammen mit dem Modell 4 erfolgen, da beide Modelle die identischen Thesen untersuchen.</p>
 :::
 :::
 
-## Modell 4 (Fabian)
+## Neuronales Netz (Modell 4, Fabian)
 <p> Wir analysieren Daten mittels eines Machine-Learning-Modells, basierend auf neuronalen Netzen, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€ . </p>
 
 ### Anwendung
@@ -1031,35 +1031,29 @@ df <- data.frame(
   Previous_Purchase = sample(c("Yes", "No"), 100, replace = TRUE),
   Payment_Method = sample(c("Credit Card", "PayPal"), 100, replace = TRUE)
 )
+```
 
-#print(df)
+<p>Wir schauen uns zunächst die Daten an, die wir für unser Modell verwenden wollen.</p>
 
+```{r}
+summary(df)
+```
+
+```{r}
 df$Express_Shipping_Used <- ifelse(df$Purchase_Amount > 100 & df$Shipping_Type == "Express", 1, 0)
 
-df$Gender <- as.factor(df$Gender)
-df$Item_Purchased <- as.factor(df$Item_Purchased)
-df$Category <- as.factor(df$Category)
-df$Location <- as.factor(df$Location)
-df$Size <- as.factor(df$Size)
-df$Color <- as.factor(df$Color)
-df$Season <- as.factor(df$Season)
-df$Subscription_Status <- as.factor(df$Subscription_Status)
-df$Promo_Code_Used <- as.factor(df$Promo_Code_Used)
-df$Previous_Purchase <- as.factor(df$Previous_Purchase)
-df$Payment_Method <- as.factor(df$Payment_Method)
-df$Express_Shipping_Used <- as.factor(df$Express_Shipping_Used)
+set.seed(245)
+data <- floor(0.8 * nrow(df))
+data_rows <- sample(1:nrow(df), data)
 
-set.seed(42)
-split_index <- sample(1:nrow(df), 0.8 * nrow(df))
-
-train_data <- df[split_index, ]
+train_data <- df[data_rows,]
 #print(train_data)
 
-test_data <- df[-split_index, ]
+test_data <- df[-data_rows,]
 #print(test_data)
 ```
 
-<p>Das Modell wird nun erstellt und die Vorhersagen getroffen.</p>
+<p>Das Modell wird nun erstellt und die Vorhersagen getroffen. Zum tieferen Verständnis werden die Layer geplotet.</p>
 
 ```{r}
 nn_model <- neuralnet(
@@ -1069,50 +1063,53 @@ nn_model <- neuralnet(
   linear.output = TRUE
 )
 
-predictions <- predict(nn_model, newdata = test_data)
+plot(nn_model, rep = "best")
 ```
 
-<p>Die Vorhersagen werden nun ausgewertet. Hierfür werden die Wahrscheinlichkeiten für das Ergebnis "Express genutzt" (Wert 1) extrahiert. Außerdem werden die Werte auf genau 1 oder 0 gerundet.</p>
+<p>Da das Modell erstellt wurde, ist es nun an der Zeit das Modell zu evaluieren. Hierzu wird eine Konfusionsmatrix erstellt wobei die Zeile 0 "kein Express" und die Zeile 1 "Express" bedeutet..</p>
 
 ```{r}
-# Extrahiere die Wahrscheinlichkeiten für die Klasse 1 (Express genutzt)
-express_used_probabilities <- predictions[, 2]
+pred <- predict(nn_model, test_data)
+labels <- c("Express", "Standard")
+prediction_label <- data.frame(max.col(pred)) %>%     
+  mutate(pred = labels[max.col(pred)]) %>%
+  select(pred) %>%
+  unlist()
 
-# Runden der Wahrscheinlichkeit auf genau 1 oder 0 (Express genutzt oder nicht)
-rounded_predictions <- ifelse(express_used_probabilities > 0.5, 1, 0)
+conf_matrix <- table(test_data$Express_Shipping_Used, prediction_label, dnn = c("Actual", "Predicted"))
+
+
+heatmap_plot <- ggplot(data = as.data.frame(as.table(conf_matrix)), aes(x = Actual, y = Predicted, fill = Freq)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "orange", high = "blue") +
+  theme_minimal() +
+  labs(title = "Confusion Matrix", x = "Tatsächlich", y = "Vorhergesagt", fill = "Frequenz")
+
+
+print(heatmap_plot)
+
 ```
 
-<p>Die Genauigkeit des Modells wird nun berechnet und die Confusion Matrix erstellt.</p>
+<p>Ein weiterer Wert zum Überprüfen der Performance ist die Accuracy.</p>
 
 ```{r}
-confusion_matrix <- table(rounded_predictions, test_data$Express_Shipping_Used)
-accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
-cat("Accuracy:", accuracy, "\n")
-cat("Confusion Matrix:\n", confusion_matrix, "\n")
-
-conf_matrix <- matrix(c(3, 4, 0, 13), nrow = 2, byrow = TRUE,
-                      dimnames = list(c("Tatsächlich 0", "Tatsächlich 1"), c("Vorhergesagt 0", "Vorhergesagt 1")))
-```
-
-<p>Die Confusion Matrix wird nun als Heatmap dargestellt.</p>
-
-```{r}
-# Installiere das Paket "heatmaply", falls es noch nicht installiert ist
-if (!requireNamespace("heatmaply", quietly = TRUE)) {
-  install.packages("heatmaply")
+if(!requireNamespace("caret", quietly = TRUE)) {
+  install.packages("caret")
 }
 
-# Lade das Paket "heatmaply"
-library(heatmaply)
+confusion_matrix = as.matrix((table(Actual_values = test_data$Express_Shipping_Used, Predicted_values = prediction_label)))
 
-# Plot als Heatmap
-heatmaply(conf_matrix, 
-          colors = c("green", "yellow", "red"), 
-          main = "Confusion Matrix")
+accuracy = sum(diag(confusion_matrix))/sum(confusion_matrix)*100
+print(accuracy)
+
 ```
 
 ### Beurteilung
+<p> Mittels der Modelle 3 und 4 wird mittels eines Machine-Learning und eines Random-Forestes Modells die Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€ analysiert. Beide Modelle beschäfitgen sich mit den selben Thesen, um einen Vergleich der Eignung herstellen zu können. Darüberhinaus arbeiten beide Modelle mit dem identischen Datensatz, um die Performancewerte bestmöglich miteinander vergleichen zu können.
 
+Es stelle sich heraus, dass das Machine-Learning Modell mit einer Accuracy von 70 % eine wesentlich höhere Accuracy als das Random-Forests Modell (25%) hat.
+
+Letzendlich lässt sich somit sagen, dass das Machine-Learning Modell für diese Analyse besser geeignet ist, als das Random-Forest Modell. </p>
 :::
 :::
 
