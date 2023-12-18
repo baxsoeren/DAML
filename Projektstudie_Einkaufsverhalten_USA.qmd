@@ -257,11 +257,18 @@ shopping_behavior <- raw_shopping_behavior |> select(-"Customer_ID")
 Des Weiteren ändern wir die Spalten Subscription_Status, Discount_Applied, Promo_Code_Used in Faktoren um, da diese nur die Werte "Yes" und "No" annehmen können:
 
 ```{r}
+shopping_behavior$Subscription_Status <- as.factor(shopping_behavior$Subscription_Status)
+shopping_behavior$Discount_Applied <- as.factor(shopping_behavior$Discount_Applied)
+shopping_behavior$Promo_Code_Used <- as.factor(shopping_behavior$Promo_Code_Used)
+```
+
+Zudem erstellen wir noch die Spalte Express_Shipping_Used, welche für einen Purchase_Amount von über 100 "Yes"  und für einen Purchase_amount von unter 100 "No" ist. Die Spalte wird hinterher in Modell 3 und 4 genutzt.
+
+```{r}
 shopping_behavior <- shopping_behavior |> mutate(
-    Subscription_Status = as_factor(Subscription_Status),
-    Discount_Applied = as_factor(Discount_Applied),
-    Promo_Code_Used = as_factor(Promo_Code_Used)
+    Express_Shipping_Used = if_else(Purchase_Amount > 75, "Yes", "No")
   )
+shopping_behavior$Express_Shipping_Used <- as.factor(shopping_behavior$Express_Shipping_Used)
 ```
 
 Werfen wir einen Blick auf das finale Datenset.
@@ -1014,69 +1021,16 @@ Wir können sehen, dass die Wahrscheinlichkeit, dass ein Rabattcode genutzt wird
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-Im Anschluss wird ein Data-Frame erstellt:
-
-```{r}
-set.seed(42)
-df <- data.frame(
-  Age = sample(18:65, 100, replace = TRUE),
-  Purchase_Amount = runif(100, min = 50, max = 200),
-  Shipping_Type = ifelse(runif(100) > 0.5, "Standard", "Express"),
-  Gender = sample(c("Male", "Female"), 100, replace = TRUE),
-  Item_Purchased = sample(c("Product_A", "Product_B", "Product_C"), 100, replace = TRUE),
-  Category = sample(c("Electronics", "Clothing", "Food"), 100, replace = TRUE),
-  Location = sample(c("City", "Suburb", "Rural"), 100, replace = TRUE),
-  Size = sample(c("S", "M", "L", "XL"), 100, replace = TRUE),
-  Color = sample(c("Red", "Blue", "Green", "Black"), 100, replace = TRUE),
-  Season = sample(c("Spring", "Summer", "Autumn", "Winter"), 100, replace = TRUE),
-  Review_Rating = runif(100, min = 3, max = 5),
-  Subscription_Status = sample(c("Subscribed", "Not Subscribed"), 100, replace = TRUE),
-  Promo_Code_Used = sample(c("Code1", "Code2", "None"), 100, replace = TRUE),
-  Previous_Purchase = sample(c("Yes", "No"), 100, replace = TRUE),
-  Payment_Method = sample(c("Credit Card", "PayPal"), 100, replace = TRUE)
-)
-```
-
-Nun werden die Daten in den richtigen Datentypen gespeichert und die Variable "Express_Shipping_Used" erstellt.
-
-```{r}
-
-df$Express_Shipping_Used <- ifelse(df$Purchase_Amount > 100 & df$Shipping_Type == "Express", "Yes", "No")
-
-df$Gender <- as.factor(df$Gender)
-df$Item_Purchased <- as.factor(df$Item_Purchased)
-df$Category <- as.factor(df$Category)
-df$Location <- as.factor(df$Location)
-df$Size <- as.factor(df$Size)
-df$Color <- as.factor(df$Color)
-df$Season <- as.factor(df$Season)
-df$Subscription_Status <- as.factor(df$Subscription_Status)
-df$Promo_Code_Used <- as.factor(df$Promo_Code_Used)
-df$Previous_Purchase <- as.factor(df$Previous_Purchase)
-df$Payment_Method <- as.factor(df$Payment_Method)
-df$Express_Shipping_Used <- as.factor(df$Express_Shipping_Used)
-```
-
-Die Daten werden in Trainings- und Testdaten aufgeteilt.
-
-```{r}
-
-split_index <- sample(1:nrow(df), 0.8 * nrow(df))
-train_data <- df[split_index, ]
-test_data <- df[-split_index, ]
-```
-
 Da nun die erforderlichen Datensätze existieren, wird nun das Modell erstellt.
 
 ```{r}
-
-rf_model <- randomForest(Express_Shipping_Used ~ . - Purchase_Amount - Shipping_Type - Express_Shipping_Used, data = train_data)
+rf_model <- randomForest(Express_Shipping_Used ~ . - Purchase_Amount - Shipping_Type - Express_Shipping_Used, data = train_data_main)
 ```
 
 Die Vorhersagen, welche von dem Modell getroffen werden, werden in einer Tabelle zusammengefasst.
 ```{r}
-predictions_fb <- predict(rf_model, newdata = test_data)
-prediction_table_fb <- data.frame(Express_Shipping_Used = test_data$Express_Shipping_Used, Predicted_Probability = predictions_fb)
+predictions_fb <- predict(rf_model, newdata = test_data_main)
+prediction_table_fb <- data.frame(Express_Shipping_Used = test_data_main$Express_Shipping_Used, Predicted_Probability = predictions_fb)
 print(head(prediction_table_fb, 10))
 ```
 
@@ -1084,9 +1038,9 @@ Im Folgenden werden die Testdaten genommen und es werden Vorhersagen mit dem Ran
 Außerdem werden die Werte für die Confusion-Matrix errechnet.
 
 ```{r}
-predictions_fb <- predict(rf_model, newdata = test_data)
+predictions_fb <- predict(rf_model, newdata = test_data_main)
 
-confusion_matrix <- table(predictions_fb, test_data$Express_Shipping_Used)
+confusion_matrix <- table(predictions_fb, test_data_main$Express_Shipping_Used)
 
 accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
 cat("Accuracy:", accuracy, "\n")
@@ -1122,17 +1076,6 @@ Das verwendete Paket erfordert für die initiale Ausführung eine CRANmirror Ver
 options(repos = c(CRAN = "https://cran.uni-muenster.de/"))
 ```
 
-Für den Fall, dass das Paket neuralnet noch nicht installiert ist, wird es hier heruntergeladen.
-
-```{r}
-
-if (!requireNamespace("neuralnet", quietly = TRUE)) {
-  install.packages("neuralnet")
-}
-
-library(neuralnet)
-```
-
 Zunächst wird ein Data-Frame erstellt und die Daten in Test- und Trainingsdaten aufgeteilt.
 
 ```{r}
@@ -1158,7 +1101,7 @@ df <- data.frame(
 
 #print(df)
 
-df$Express_Shipping_Used <- ifelse(df$Purchase_Amount > 100 & df$Shipping_Type == "Express", 1, 0)
+df$Express_Shipping_Used <- ifelse(df$Purchase_Amount > 100 & df$Shipping_Type == "Express", "Yes", "No")
 
 df$Gender <- as.factor(df$Gender)
 df$Item_Purchased <- as.factor(df$Item_Purchased)
@@ -1188,12 +1131,12 @@ Das Modell wird nun erstellt und die Vorhersagen getroffen.
 ```{r}
 nn_model <- neuralnet(
   Express_Shipping_Used ~ Purchase_Amount,
-  data = train_data, 
+  data = train_data_main, 
   hidden = c(5),
   linear.output = TRUE
 )
 
-predictions_fb <- predict(nn_model, newdata = test_data)
+predictions_fb <- predict(nn_model, newdata = test_data_main)
 ```
 
 Die Vorhersagen werden nun ausgewertet. Hierfür werden die Wahrscheinlichkeiten für das Ergebnis "Express genutzt" (Wert 1) extrahiert. Außerdem werden die Werte auf genau 1 oder 0 gerundet.
@@ -1209,7 +1152,7 @@ rounded_predictions_fb <- ifelse(express_used_probabilities > 0.5, 1, 0)
 Die Genauigkeit des Modells wird nun berechnet und die Confusion Matrix erstellt.
 
 ```{r}
-confusion_matrix <- table(rounded_predictions_fb, test_data$Express_Shipping_Used)
+confusion_matrix <- table(rounded_predictions_fb, test_data_main$Express_Shipping_Used)
 accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
 cat("Accuracy:", accuracy, "\n")
 cat("Confusion Matrix:\n", confusion_matrix, "\n")

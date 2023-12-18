@@ -1,0 +1,1458 @@
+---
+title: "Einkaufsgewohnheiten in den USA"
+title-block-banner: true
+lang: de
+author: Ole Kepa,<br>
+        Fabian Elsner,<br>
+        Sören Bax
+format: 
+  html: 
+    theme: minty
+    toc: true
+    toc_float: true
+    number-sections: true
+    embed-resources: true
+    code-fold: true
+    code-summary: "Code anzeigen"
+date: 2023-12-23
+---
+
+```{=html}
+<style>
+  hr.section-divider1 {
+    border-top: 15px solid #0000FF; 
+  }
+
+  hr.section-divider2 {
+    border-top: 10px solid #000; 
+  }
+</style>
+```
+
+```{r, message=FALSE, include = FALSE}
+if (!requireNamespace("broom", quietly = TRUE)) {
+  install.packages("broom")
+}
+if (!requireNamespace("coefplot", quietly = TRUE)) {
+  install.packages("coefplot")
+}
+if (!requireNamespace("dplyr", quietly = TRUE)) {
+  install.packages("dplyr")
+}
+if (!requireNamespace("explore", quietly = TRUE)) {
+  install.packages("explore")
+}
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2")
+}
+if (!requireNamespace("kableExtra", quietly = TRUE)) {
+  install.packages("kableExtra")
+}
+if (!requireNamespace("leaflet", quietly = TRUE)) {
+  install.packages("leaflet")
+}
+if (!requireNamespace("neuralnet", quietly = TRUE)) {
+  install.packages("neuralnet")
+}
+if (!requireNamespace("parsnip", quietly = TRUE)) {
+  install.packages("parsnip")
+}
+if (!requireNamespace("rpart", quietly = TRUE)) {
+  install.packages("rpart")
+}
+if (!requireNamespace("rpart", quietly = TRUE)) {
+  install.packages("rpart")
+}
+if (!requireNamespace("rpart.plot", quietly = TRUE)) {
+  install.packages("rpart.plot")
+}
+if (!requireNamespace("tidyverse", quietly = TRUE)) {
+  install.packages("tidyverse")
+}
+if (!requireNamespace("tidymodels", quietly = TRUE)) {
+  install.packages("tidymodels")
+}
+if (!requireNamespace("usmap", quietly = TRUE)) {
+  install.packages("usmap")
+}
+
+if (!requireNamespace("plotly", quietly = TRUE)) {
+  install.packages("plotly")
+}
+if (!requireNamespace("viridis", quietly = TRUE)) {
+  install.packages("viridis")
+}
+if (!requireNamespace("randomForest", quietly = TRUE)) {
+  install.packages("randomForest")
+}
+if (!requireNamespace("heatmaply", quietly = TRUE)) {
+  install.packages("heatmaply")
+}
+```
+
+```{r, message=FALSE, include = FALSE}
+library(broom)
+library(coefplot)
+library(dplyr)
+library(explore)
+library(ggplot2)
+library(kableExtra)
+library(leaflet)
+library(neuralnet)
+library(parsnip)
+library(rpart)
+library(rpart.plot)
+library(tidyverse) 
+library(tidymodels)
+library(usmap)
+
+library(plotly)
+library(viridis)
+library(randomForest)
+library(heatmaply)
+```
+
+
+<!-- Farbcode Türkis: #80c4ac -->
+
+# Gendererklärung
+
+Aus Lesbarkeitsgründen wird in dieser Studienarbeit auf die verschiedene Ansprechweisen, sei es divers, männlich oder weiblich verzichtet. Alle Formulierungen sprechen gleichermaßen alle Geschlechter an.
+
+# Aufgabe und Daten verstehen
+
+In dieser Arbeit soll untersucht werden, wie das Kaufverhalten der Käufer in den USA ist. Anschließend sollen mehrere Modelle entwickelt werden, welche Beispielsweise voraussagen, wie viel die verschiedenen Altersgruppen kaufen, ob ein Rabattcode genutzt wird oder ob ein Kunde ein Abonnement abschließt oder nicht.
+
+Hierzu steht ein Dataset zu dem Kaufverhalten von Verbrauchern in den USA zur Verfügung, das unter <https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data> abgerufen werden kann.
+
+Dieses Datenset beinhaltet insgesamt zwei CSV-Dateien, welche sich jedoch nur in einem Spaltennamen und nicht in den Daten unterscheiden. Die Spalte zur Zahlungsmethode heißt in der Datei "shopping_behavior_updated.csv" "Payment_Method" und in der Datei "shopping_trend.csv" "Preferred Payment_Method". Wir nutzen daher nur die CSV-Datei "shopping_behavior_updated.csv".
+
+## Beschreibung der Datenquelle
+
+Laden wir zuerst die Daten:
+
+
+```{r, message=FALSE}
+raw_shopping_behavior <- read_csv('./data/shopping_behavior_updated.csv')
+```
+
+
+Nun werfen wir einen kurzen Blick auf die Daten und das Spaltenformat:
+
+
+```{r}
+knitr::kable(head(raw_shopping_behavior), caption = "Das Spaltenformat des Datensatzes 'shopping_behavior'")
+```
+
+
+Jede Zeile steht für einen Einkauf. Die Spalten sind wie folgt definiert:
+
+| Variable                   | Typ | Bedeutung                                      |
+|:-----------------------|:--------------|:--------------------------------|
+| **Customer_ID**            | dbl | Eindeutige Kunden Identifikationsnummer        |
+| **Age**                    | dbl | Alter des Kundens                              |
+| **Gender**                 | chr | Geschlecht des Kundens                         |
+| **Item_Purchased**         | chr | Gekauftes Produkt                              |
+| **Category**               | chr | Kategorie des gekauften Produkts               |
+| **Purchase_Amount**        | dbl | Bezahlter Preis                                |
+| **Location**               | chr | Ort des Kaufes                                 |
+| **Size**                   | chr | Konfektionsgröße des gekauften Produkts        |
+| **Color**                  | chr | Farbe des gekauften Produkts                   |
+| **Season**                 | chr | Jahreszeit, in welcher der Kauf getätigt wurde |
+| **Review_Rating**          | dbl | Kundenbewertungen zum Produkt                  |
+| **Subscription_Status**    | chr | Status des Abonnements                         |
+| **Payment_Method**         | chr | Zahlungsmethode                                |
+| **Shipping_Type**          | chr | Versandart                                     |
+| **Discount_Applied**       | chr | Rabattcode genutzt?                            |
+| **Promo_Code_Used**        | chr | Werbecode genutzt?                             |
+| **Previous_Purchases**     | dbl | Anzahl vorheriger Käufe                        |
+| **Payment_Method**         | chr | Bevorzugte Zahlungsmethode                     |
+| **Frequency_of_Purchases** | chr | Häufigkeit von Käufen                          |
+
+
+```{r}
+describe_tbl(raw_shopping_behavior)
+```
+
+
+Im Datensatz gibt es **`r nrow(raw_shopping_behavior)`** Instazen (Beobachtungen) und **`r ncol(raw_shopping_behavior)`** Spalten. Die Daten sind bereits *tidy*, was bedeutet, dass jede Variable ihre eigene Spalte, jede Beobachtung seine eigene Zeile und jeder Wert seine eigene Zelle hat. Die Daten sind bereits *bereinigt*, was bedeutet, dass sie keine fehlenden Werte enthalten.
+
+## Thesen
+
+Wir möchten insbesondere folgende Thesen in dieser Arbeit untersuchen:
+
+::: {.d-grid .gap-2}
+<button type="button" onclick="window.location.href=&#39;#these1&#39;" class="btn btn-primary">
+
+**These 1: Die meisten Personen kaufen wöchentlich ein.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these2&#39;" class="btn btn-primary">
+
+**These 2: Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these3&#39;" class="btn btn-primary">
+
+**These 3: Die meisten Kunden zahlen Bar.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these4&#39;" class="btn btn-primary">
+
+**These 4: Die meisten Kunden nutzen keinen Rabattcode.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these5&#39;" class="btn btn-primary">
+
+**These 5: Männer kaufen weniger ein als Frauen.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these6&#39;" class="btn btn-primary">
+
+**These 6: Es werden mehr Winter als Sommerklamotten gekauft.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these7&#39;" class="btn btn-primary">
+
+**These 7: Die meisten Klamotten werden im Norden gekauft.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these8&#39;" class="btn btn-primary">
+
+**These 8: Die Kategorie "Clothing" wird am meisten im Herbst gekauft.**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#these9&#39;" class="btn btn-primary">
+
+**These 9: Es kaufen mehr Personen über 40 Jahre ein, als Personen unter 40 Jahren.**
+
+</button>
+:::
+
+# Untersuchung der Daten
+
+## Untersuchung auf Außreißer
+
+Um die Daten auf außreiser zu untersuchen schauen wir uns zunächst eine Zusammenfassung der Daten an:
+
+
+```{r}
+summary(raw_shopping_behavior)
+```
+
+```{r}
+raw_shopping_behavior |> describe()
+```
+
+ 
+Die Customer_ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten Schritt löschen.
+
+## Datenaufbereitung
+
+Nun erstellen wir den finalen Datensatz, welcher die Basis für die weitere Analyse bildet. Zunächst löschen wir die Spalte "Customer_ID", da diese für Analysen nicht verwertbar ist:
+
+
+```{r}
+shopping_behavior <- raw_shopping_behavior |> select(-"Customer_ID")
+```
+
+
+Des Weiteren ändern wir die Spalten Subscription_Status, Discount_Applied, Promo_Code_Used in Faktoren um, da diese nur die Werte "Yes" und "No" annehmen können:
+
+
+```{r}
+shopping_behavior$Subscription_Status <- as.factor(shopping_behavior$Subscription_Status)
+shopping_behavior$Discount_Applied <- as.factor(shopping_behavior$Discount_Applied)
+shopping_behavior$Promo_Code_Used <- as.factor(shopping_behavior$Promo_Code_Used)
+```
+
+
+Zudem erstellen wir noch die Spalte Express_Shipping_Used, welche für einen Purchase_Amount von über 100 "Yes"  und für einen Purchase_amount von unter 100 "No" ist. Die Spalte wird hinterher in Modell 3 und 4 genutzt.
+
+
+```{r}
+shopping_behavior <- shopping_behavior |> mutate(
+    Express_Shipping_Used = if_else(Purchase_Amount > 75, "Yes", "No")
+  )
+shopping_behavior$Express_Shipping_Used <- as.factor(shopping_behavior$Express_Shipping_Used)
+```
+
+
+Werfen wir einen Blick auf das finale Datenset.
+
+
+```{r}
+
+knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen Datensatzes")
+```
+
+
+# Untersuchung der Thesen
+
+Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse untersucht.
+
+## These 1 (Ole Kepa)
+
+::: {#these1}
+<h2>Die meisten Personen kaufen wöchentlich ein.</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+
+Es wird analysiert, wie oft Personen wöchentlich einkaufen, wobei der Fokus auf den verschiedenen Häufigkeiten liegt.
+
+
+
+
+```{r}
+
+
+frequency_counts <- shopping_behavior |>
+  count(`Frequency_of_Purchases`) |>
+  arrange(`Frequency_of_Purchases`)
+
+frequency_counts |>
+  kable() |>
+  kable_styling(
+    full_width = FALSE,
+    position = "center",
+    font_size = 16,
+    latex_options = c("striped", "hold_position")
+  ) |>
+  column_spec(1, color = "white")
+```
+
+
+
+
+Wir stellen diesse Daten im nächsten Schritt aufbereitet in einem Diagramm da
+
+
+
+
+```{r}
+frequency_mapping <- c("Fortnightly" = 2, "Weekly" = 1, "Annually" = 3,
+                        "Quarterly" = 4, "Bi-Weekly" = 5, "Monthly" = 6, "Every 3 Months" = 7)
+frequency_colors <- c("Fortnightly" = "blue", "Weekly" = "green", "Annually" = "red",
+                      "Quarterly" = "orange", "Bi-Weekly" = "purple", "Monthly" = "pink", "Every 3 Months" = "brown")
+
+shopping_behavior$`Frequency_of_Purchases` <- factor(shopping_behavior$`Frequency_of_Purchases`, levels = names(frequency_mapping))
+
+unique_values <- unique(shopping_behavior$`Frequency_of_Purchases`)
+
+
+ggplot(shopping_behavior, aes(x = `Frequency_of_Purchases`, fill = `Frequency_of_Purchases`)) +
+  geom_bar(stat = "count") +
+  labs(title = "Häufigkeit der Einkaufshäufigkeit", x = "Einkaufshäufigkeit", y = "Anzahl der Einkäufe") +
+  scale_fill_manual(values = frequency_colors) +
+  theme_minimal()
+```
+
+
+Wir sehen, dass die meisten Personen wöchentlich einkaufen. Die zweitmeisten Personen kaufen alle zwei Wochen ein.
+
+:::
+:::
+
+## These 2 (Ole Kepa)
+
+::: {#these2}
+<h2>Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+
+Zuerst schauen wir, welche Farben alle vorhanden sind.
+
+
+
+
+```{r}
+rows <- nrow(shopping_behavior |> distinct(Color))
+print(shopping_behavior |> distinct(Color), n = rows)
+```
+
+
+
+
+Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
+
+
+
+
+```{r}
+rows <- nrow(shopping_behavior |> distinct(Color))
+print(shopping_behavior |> count(Color) |> arrange(desc(n)) , n = rows)
+
+```
+
+
+
+
+Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:
+
+
+
+
+```{r}
+rows <- nrow(shopping_behavior |> distinct(Color))
+print(shopping_behavior |> filter(Color != "Black" & Color != "White" & Color != "Gray") |> count(Color) |> arrange(desc(n)) , n = rows)
+
+```
+
+
+
+
+Wir sehen, dass die Farben Schwarz, Grau und Weiß r Kumulierter_Anteil_Schwarz_Weiß_Grau = max(Cumulative_Percentage)\` an der gesamten Farbauswahl einnehmen
+
+
+
+
+```{r}
+result <- shopping_behavior |>
+  count(Color) |>
+  mutate(Percentage = n / sum(n) * 100) |>
+  filter(Color %in% c("Black", "Gray", "White")) |>
+  arrange(desc(Percentage)) |>
+  mutate(Cumulative_Percentage = cumsum(Percentage)) |>
+  summarize(
+    Gesamtanteil = sum(Percentage),
+    Anteil_Schwarz = sum(Percentage[Color == "Black"]),
+    Anteil_Grau = sum(Percentage[Color == "Gray"]),
+    Anteil_Weiß = sum(Percentage[Color == "White"]),
+    Kumulierter = max(Cumulative_Percentage)
+  )
+
+print(result)
+```
+
+
+
+
+Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.
+
+
+
+
+```{r}
+data <- shopping_behavior |>
+  count(Color)
+
+color_palette <- c(
+  "Gray" = "#808080",
+  "Maroon" = "#800000",
+  "Turquoise" = "#40E0D0",
+  "White" = "#FFFFFF",
+  "Charcoal" = "#36454F",
+  "Silver" = "#C0C0C0",
+  "Pink" = "#FFC0CB",
+  "Purple" = "#800080",
+  "Olive" = "#808000",
+  "Gold" = "#FFD700",
+  "Violet" = "#EE82EE",
+  "Teal" = "#008080",
+  "Lavender" = "#E6E6FA",
+  "Black" = "#000000",
+  "Green" = "#008000",
+  "Peach" = "#FFDAB9",
+  "Red" = "#FF0000",
+  "Cyan" = "#00FFFF",
+  "Brown" = "#A52A2A",
+  "Beige" = "#F5F5DC",
+  "Orange" = "#FFA500",
+  "Indigo" = "#4B0082",
+  "Yellow" = "#FFFF00",
+  "Magenta" = "#FF00FF",
+  "Blue" = "#0000FF"
+)
+
+ggplot(data, aes(x = Color, y = n, fill = Color)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Häufigkeit der Farben", x = "Farbe", y = "Häufigkeit") +
+  scale_fill_manual(values = color_palette) +
+  theme_minimal() + 
+  theme(axis.text.x = element_blank())
+
+
+
+```
+
+:::
+:::
+
+## These 3 (Ole Kepa)
+
+::: {#these3}
+<h2>Die meisten Kunden zahlen Bar.</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+
+Wir betrachten die verscheidenen Bezahlarten
+
+
+
+
+```{r}
+unique_payment_methods <- unique(shopping_behavior$`Payment_Method`)
+cat("Zahlungsmethoden:", toString(unique_payment_methods), "\n")
+```
+
+
+
+
+Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden
+
+
+
+
+```{r}
+count_cash_payments <- sum(shopping_behavior$`Payment_Method` %in% c("Bar", "Cash"), na.rm = TRUE)
+cat("Anzahl der Barzahlungen:", count_cash_payments, "\n")
+
+```
+
+
+
+
+Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen
+
+
+
+
+```{r}
+percentage_cash <- count_cash_payments / nrow(shopping_behavior) * 100
+cat("Prozentsatz der Barzahlungen:", percentage_cash, "%\n")
+```
+
+
+
+
+Anzahl aller Zahlungen
+
+
+
+
+```{r}
+total_payments <- nrow(raw_shopping_behavior)
+
+cat("Alle Zahlungen :", total_payments)
+```
+
+
+
+
+Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an
+
+
+
+
+```{r}
+payment_data <- raw_shopping_behavior |>
+  group_by(`Payment_Method`) |>
+  summarise(TotalAmount = sum(`Purchase_Amount`)) |>
+  ungroup() |>
+  mutate(Percentage = TotalAmount / sum(TotalAmount) * 100)
+
+payment_data |>
+  select(`Payment_Method`, Percentage)
+```
+
+
+Wir sehen, dass die These, dass die meisten Kunden Bar zahlen, nicht stimmt.Am häufigsten wird mit Kredit-Karte gezahlt.
+:::
+:::
+
+## These 4 (Fabian Elsner)
+
+::: {#these2}
+<h2>Die meisten Kunden nutzen keinen Rabattcode</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+
+
+
+In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. Unter dem Begriff "Rabattcodes" sind hier sowohl übliche Rabattcodes aber ebenso Promo-Codes gemeint. Zunächst schauen wir uns an wie oft der Wert "yes" in der Spalte "Discount Applied" vorkommt:
+
+
+```{r}
+shopping_behavior |> count(`Discount_Applied`)
+```
+
+
+
+
+Die Analyse zeigt, dass bei 2223 Einkäufen kein Rabattcode genutzt wurde. Bei 1677 wurde hingegen ein Rabattcode genutzt.
+
+Im zweiten Schritt schauen wir uns an wie oft der Wert "yes" in der Spalte "Promo Code Used" vorkommt:
+
+
+
+
+```{r}
+shopping_behavior |> count(`Promo_Code_Used`)
+```
+
+
+Das Ergebnis dieser Abfrage zeigt, dass bei 2223 Einkäufen kein Promo-Code verwendet wurde. Bei 1677 wurde hingegen ein Promo-Code verwendet.
+
+
+```{r}
+colnames(shopping_behavior)[colnames(shopping_behavior) == "Discount Applied"] <- "yes"
+colnames(shopping_behavior)[colnames(shopping_behavior) == "Discount Applied"] <- "no"
+
+shopping_behavior$Combined_Discount <- paste(shopping_behavior$`Discount_Applied`, shopping_behavior$`Promo_Code_Used`)
+
+ggplot(shopping_behavior, aes(x = Combined_Discount)) +
+  geom_bar(stat = "count", fill = "steelblue") +
+  labs(title = "Discount and Promo Code Usage",
+      x = "Combined Status",
+      y = "Count")
+```
+
+
+Zusammenfassend lässt sich also sagen, dass die Hypothese, dass die meisten Kunden keinen Rabattcode nutzen würden, bestätigt werden kann. Insgesamt wurden bei 2223 Einkäufen kein Rabattcode genutzt. Bei 1677 wurde hingegen ein Rabattcode genutzt.
+:::
+:::
+
+## These 5 (Fabian Elsner)
+
+::: {#these2}
+<h2>Männer kaufen weniger Produkte als Frauen.</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+
+
+In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen.
+
+Hierzu analysieren wir zunächst wie häufig die Werte "male" und "femal" in der Spalte "Gender" vorkommt:
+
+
+
+
+```{r}
+shopping_behavior |> filter(Gender != "male") |> count(Gender)
+shopping_behavior |> filter(Gender != "female") |> count(Gender)
+```
+
+
+Das Ergebnis der Auswertung ist, dass Personend des männlichen Geschlechtes 2652 Produkte kauften. Personen des weiblichen Geschlechts hingegen kauften nur 1248 Produkte. Selbes Ergebnis kann visuell der folgenden Grafik entnommen werden:
+
+
+```{r}
+shopping_behavior |> count(Gender) |> ggplot(aes(x = Gender, y = n)) + geom_col()
+```
+
+:::
+:::
+
+## These 6 (Fabian Elsner)
+
+::: {#these2}
+<h2>Im Winter werden mehr Produkte gekauft als im Sommer.</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+In dieser These wird die Hypothese geprüft, dass im Winter mehr Kleidung gekauft wird als im Sommer.
+
+Hierzu analysieren wir zunächst wie häufig der Wert "Winter" in der Spalte "Season" vorkommt: 
+
+
+```{r}
+shopping_behavior |> filter(Season == "Winter") |> count(Season)
+```
+
+
+Das Ergebnis der Analyse zeigt, dass 971 Produkte im Winter gekauft wurden. Nun schauen wir uns an wie häufig der Wert "Summer" in der Spalte "Season" vorkommt:
+
+
+```{r}
+shopping_behavior |> filter(Season == "Summer") |> count(Season)
+```
+
+
+Das Ergebnis der Analyse zeigt, dass 955 Produkte im Sommer gekauft wurden.
+
+Somit lässt sich die Hypothese belegen, dass im Winter mehr Kleidung gekauft wird als im Sommer, belegen. Im Winter werden 971 Produkte gekauft. Im Sommer hingegen werden 955 Produkte gekauft. (Vgl. Grafik)
+
+
+```{r}
+ggplot_data <- shopping_behavior |> filter(Season != "Fall" & Season != "Spring")
+ggplot(ggplot_data, aes(x = Season, fill = Season)) +
+  geom_bar() +
+  labs(title = "Histogramm der Jahreszeiten",
+      x = "Jahreszeiten",
+      y = "Anzahl") +
+  scale_fill_manual(values = c("Summer" = "orange", "Winter" = "blue"))
+```
+
+:::
+:::
+
+## These 7 (Sören Bax)
+
+::: {#these7}
+<h2>Die meisten Klamotten werden im Norden gekauft.</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+
+Zunächst schauen wir uns einmal alle vorhandenen Orte an:
+
+
+```{r}
+shopping_behavior |> distinct(Location)
+```
+
+
+Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
+
+
+```{r}
+rows <- nrow(shopping_behavior |> distinct(Location))
+print(shopping_behavior |> count(Location) |> arrange(desc(n)) , n = rows)
+```
+
+
+Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
+
+
+
+```{r}
+# Werte aus der Tabelle shopping_behavior übernommen
+df <- data.frame(
+  state  = c("Montana", "California", "Idaho", "Illinois", "Alabama", "Minnesota", "Nebraska", "Nevada", "New York", "Delaware",
+             "Maryland", "Vermont", "Louisiana", "North Dakota", "Missouri", "New Mexico", "West Virginia","Mississippi", "Arkansas", "Georgia",
+             "Indiana", "Kentucky", "Connecticut", "North Carolina", "Maine", "Ohio", "Tennessee", "Texas", "Virginia", "South Carolina",
+             "Colorado", "Oklahoma", "Wisconsin", "Oregon", "Pennsylvania", "Michigan", "Washington", "Alaska", "Massachusetts", "New Hampshire",
+             "New Hampshire", "Utah", "Wyoming", "South Dakota", "Iowa", "Florida", "New Jersey", "Arizona", "Hawaii", "Kansas",
+             "Rhode Island"),
+  occurrence = c(96, 95, 93, 92, 89, 88, 87, 87, 87, 86,
+                 86, 85, 84, 83, 81, 81, 81, 80, 79, 79,
+                 79, 79, 78, 78, 77, 77, 77, 77, 77, 76,
+                 75, 75, 75, 74, 74, 73, 73, 72, 72, 71,
+                 71, 71, 71, 70, 69, 68, 67, 65, 65, 63,
+                 63)
+)
+
+plot_usmap(data = df, values = "occurrence", color = "black", labels = TRUE) + 
+  scale_fill_continuous(
+    low = "white", high = "#80c4ac", name = "Häufigkeit", label = scales::comma
+  ) + theme(legend.position = "right")
+
+```
+
+
+<img src="./pictures/USA_North_South.png"/>
+
+
+```{r}
+leaflet() |>
+  addTiles()
+```
+
+:::
+:::
+
+## These 8 (Sören Bax)
+
+::: {#these8}
+<h2>Die Kategorie "Clothing" wird am meisten im Herbst gekauft.</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+In dieser These wird die Hypothese geprüft, dass die Kategorie "Klamotten" am meisten im Herbst gekauft wird.
+
+Schauen wir uns daher nun noch einmal, welche Jahreszeiten im Datensatz vorhanden sind:
+
+
+```{r}
+shopping_behavior |> distinct(Season)
+```
+
+
+Wir sehen, dass es 4 Jahreszeiten gibt: Frühling, Sommer, Herbst und Winter.
+Erstellen wir nun zunächst ein Balkendiagramm, dass zeigt, wie viele Einkäufe der Kateogrie "Klamotten" in den einzelnen Jahreszeiten getätigt wurden:
+
+
+```{r}
+category_distribution_clothing <- shopping_behavior |> filter(Category != "Footwear" & Category != "Outerwear" & Category != "Accessories")
+category_distribution_clothing <- category_distribution_clothing |> count(Category, Season)
+category_distribution_clothing <- category_distribution_clothing |> rename(Quantity = n)
+category_distribution_clothing
+
+ggplot(category_distribution_clothing, aes(x = Season, y = Quantity, fill = Season)) +
+    geom_col() +
+    geom_text(aes(label = Quantity, y = Quantity)) +
+    ylab("Anzahl der Einkäufe")
+```
+
+
+Wir sehen, dasss die meisten Einkäufe der Kategorie "Klamotten" im Frühling getätigt wurden. Schauen wir uns nun aber noch einmal die Prozentuale verteilung an. Hierzu berechnen wir zunächst die Gesamtanzahl der Einkäufe der Kategorie "Klamotten":
+
+
+```{r}
+sum_clothings <- as.numeric(category_distribution_clothing |> summarise(sum(Quantity)))
+```
+
+
+Wir sehen, dass es insgesamt **`r sum_clothings`** Einkäufe der Kategorie "Klamotten" gibt.
+Mithilfe dieser Summe können wir nun eine Spalte mit den prozentualen Wahrscheinlichkeiten an unsere Tabelle anhängen.
+
+
+```{r}
+category_distribution_clothing <- category_distribution_clothing |> mutate(Percentage = round( (Quantity / sum_clothings * 100), 2))
+```
+
+
+Schauen wir uns nun die Tabelle an:
+
+
+```{r}
+knitr::kable(category_distribution_clothing, caption = "Verteilung der Einkäufe der Kategorie 'Klamotten' auf die Jahreszeiten")
+```
+
+
+Erstellen wir zudem noch einmal ein Balkendiagramm mit den prozentualen Wahrscheinlichkeiten:
+
+
+```{r}
+ggplot(category_distribution_clothing, aes(x = Season, y = Percentage, fill = Season)) +
+    geom_col() +
+    geom_text(aes(label = Percentage, y = Percentage)) +
+    ylab("Prozentuale Verteilung")
+```
+
+```{r}
+percent_spring <- category_distribution_clothing |> filter(Season == "Spring") |> select(Percentage)
+percent_summer <- category_distribution_clothing |> filter(Season == "Summer") |> select(Percentage)
+percent_fall <- category_distribution_clothing |> filter(Season == "Fall") |> select(Percentage)
+percent_winter <- category_distribution_clothing |> filter(Season == "Winter") |> select(Percentage)
+```
+
+
+Insgesamt sehen wir, dass die meisten Einkäufe der Kategorie "Clothing" im Frühling gekauft wurden. Es wurden insgesamt **`r sum_clothings`** Einkäufe der Kategorie "Clothing" getätigt. Davon wurden **`r percent_spring`%** im Frühling, **`r percent_summer`%** im Sommer, **`r percent_fall` %** im Herbst und **`r percent_winter`%** im Winter getätigt. Somit wurden die meisten Einkäufe der Kategorie "Clothing" im Frühling getätigt. Zum Schluss berechnen wir noch einmal, wie viel mehr Einkäufe im Frühling getätigt wurden, als im Herbst:
+
+
+```{r}
+difference_purchases_quantity <- (category_distribution_clothing |> filter(Season == "Spring") |> select(Quantity)) - (category_distribution_clothing |> filter(Season == "Fall") |> select(Quantity))
+difference_purchases_percentage <- (category_distribution_clothing |> filter(Season == "Spring") |> select(Percentage)) - (category_distribution_clothing |> filter(Season == "Fall") |> select(Percentage))
+```
+
+
+Die These ist damit widerlegt. Die meisten Einkäufe der Kategorie "Clothing" wurden nicht im Herbst, sondern im Frühling getätigt. Insgesamt wurden **`r difference_purchases_quantity`** Einkäufe mehr im Frühling getätigt, als im Herbst. Das sind **`r difference_purchases_percentage` Prozent** mehr Einkäufe.
+:::
+:::
+
+## These 9 (Sören Bax)
+::: {#these9}
+<h2>Die meisten Einkäufe wurden von Personen über 40 Jahre getätigt.</h2>
+:::
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+Zunächst suchen wir den Eintrag mit dem höchsten Alter heraus:
+
+
+```{r}
+high_age <- shopping_behavior |> arrange(desc(Age)) |> head(1)
+knitr::kable(head(high_age), caption = "Der Eintrag mit dem höchsten Alter")
+```
+
+
+Nun suchen wir den Einkauf mit dem niedrigsten Alter heraus:
+
+
+```{r}
+low_age <- shopping_behavior |> arrange(Age) |> head(1)
+knitr::kable(head(low_age), caption = "Der Eintrag mit dem niedrigsten Alter")
+```
+
+
+Nun berechnen wir die Spanne der Lebensjahre:
+
+
+```{r}
+span_age <- as.integer(max(shopping_behavior$Age) - min(shopping_behavior$Age))
+```
+
+
+Die Spanne der Lebensjahre beträgt `r span_age` Jahre.
+Nun erstellen wir einen Boxplot über die Lebensjahre der Kunden:
+
+
+```{r}
+ggplot(shopping_behavior, aes(x = Age)) + 
+  geom_boxplot() +
+  coord_flip() +
+  labs(
+    x = "Alter",
+    title = "Boxplot über die Lebensjahre der Kunden", 
+  ) +
+  scale_y_discrete(labels = NULL, breaks = NULL)  +
+  scale_x_continuous(
+    labels = comma_format(big.mark = ".", 
+                          decimal.mark = ","))
+```
+
+
+Durch den Boxplot erkennen wir, dass die meisten Kunden ungefähhr zwischen 31 und 57 Jahre alt sind.
+Da der meiste Teil des Boxplots jedoch Oberhalb der 40 liegt, lässt sich zum ersten Mal erahnen, dass die These wahr ist.
+Zudem ist in dem Boxplot der Mittelwert eingezeichnet. Dieser schein bei ungefähr 44 Jahren zu liegen. Um dies zu überprüfen, berechnen wir nun den Mittelwert und Median der Lebensjahre.
+
+
+```{r}
+mean_age <- as.double(mean(shopping_behavior$Age))
+med_age <- as.integer(median(shopping_behavior$Age))
+```
+
+
+Der Mittelwert ist `r mean_age` und liegt somit nur knapp neben 44. Der Median hingegen ist genau `r med_age`. Die beiden Werte liegen sehr nah beieinander. Dadurch können wir schließen, dass die Daten normalverteilt sind und keine Ausreißer (Beziehungsweise keine Nennenswerten Ausreißer) vorhanden sind. Vor allem der Mittelwert wäre sehr anfällig gegenüber Ausreißern.
+
+Mithilfe der beiden Werte können wir nun die These bestätigen. Die meisten Einkäufe wurden von Einkäufern über 40 Jahren durchgeführt.
+Um allerdings ganz sicher zu sein berechnen wir noch einmal die Anzahl der Personen, die über 40 Jahre alt sind und die Anzahl der Personen, die unter (und gleich) 40 Jahre alt sind.
+
+Berechnen wir zunächst die Anzahl der Personen, die über 40 Jahre alt sind:
+
+
+```{r}
+over_forty <- as.integer(shopping_behavior |> filter(Age > 40) |> count())
+```
+
+
+Nun berechnen wir die Anzahl der Personen, die unter (und gleich) 40 Jahre alt sind:
+
+
+```{r}
+#logischer Operater <=, da die These den Operator > beinhaltet, wodruch Personen = 40 gegen die These sprechen würden
+under_forty <- as.integer(shopping_behavior |> filter(Age <= 40) |> count())
+```
+
+
+Es sind **`r over_forty`** Einkäufer über 40 Jahre alt und **`r under_forty`** Einkäufer unter 40 Jahre alt. Das bedeutet, dass insgesamt **`r over_forty - under_forty`** Personen mehr eingekauft haben, die über 40 Jahre alt waren. Somit ist die These erneut bestätigt.
+:::
+:::
+
+# Anwendung und Beurteilung von Machine-Learning-Modellen
+
+Zunächst erstellen wir Test- und Trainingsdaten für die Modelle:
+
+
+```{r}
+set.seed(420)
+shopping_behavior_split <- initial_split(shopping_behavior, prop = 0.80, strata = Subscription_Status)
+shopping_behavior_split
+
+train_data_main <- training(shopping_behavior_split)
+test_data_main <- testing(shopping_behavior_split)
+```
+
+
+## Modell 1 (Ole Kepa)
+
+### Anwendung
+
+Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersagen, wie viele Einkäufe es in den einzelnen Altersgruppen geben wird. Dafür erstellen wir ein Modell.
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+
+Daten gruppieren und Zusammenzählen
+
+
+
+
+```{r}
+# Daten gruppieren und die Anzahl der Einkäufe pro Altersgruppe zusammenzählen
+purchase_count_by_age <- shopping_behavior |>
+  group_by(Age) |>
+  summarize(Total_Purchases = n())
+
+print(purchase_count_by_age)
+```
+
+
+Daten aufteilen und Modell erstellen
+
+
+```{r}
+
+# Modell erstellen (lineare Regression)
+linear_model <- lm(Total_Purchases ~ Age, data = purchase_count_by_age)
+
+print(linear_model)
+
+```
+
+
+Vorhersagen für Testdaten
+
+
+```{r}
+# Vorhersagen für alle Altersgruppen im vorhandenen Datenbereich
+age_range <- seq(min(purchase_count_by_age$Age), max(purchase_count_by_age$Age), length.out = 10)
+predictions <- predict(linear_model, newdata = data.frame(Age = age_range), interval = "confidence")
+
+# Spalten umbenennen und auf 2 Nachkommastellen runden
+colnames(predictions) <- c("Vorhergesagte Einkäufe", "Unteres Konfidenzintervall", "Oberes Konfidenzintervall")
+predictions <- round(predictions, 2)
+
+# Tabelle anzeigen
+print(predictions)
+```
+
+
+Daten gruppieren und Vorhersagen zusammenzählen:
+
+
+```{r}
+# Daten für den Plot vorbereiten und auf 2 nachkommastellen runden
+plot_data <- data.frame(Age = age_range, Predicted_Purchases = predictions[, 1], 
+                        Lower = predictions[, 2], Upper = predictions[, 3]) |>
+  mutate(Age = round(Age, 2), Predicted_Purchases = round(Predicted_Purchases, 2),
+         Lower = round(Lower, 2), Upper = round(Upper, 2))
+
+
+
+# Tabelle anzeigen
+print(plot_data)
+```
+
+
+Scatterplot mit Konfidenzintervall erstellen
+
+
+```{r}
+
+# Scatterplot mit Konfidenzintervall erstellen
+ggplot() +
+  geom_point(data = purchase_count_by_age, aes(x = Age, y = Total_Purchases), color = "black", size = 3, alpha = 0.5) +
+  geom_line(data = plot_data, aes(x = Age, y = Predicted_Purchases), color = "#80c4ac", linewidth = 1) +
+  geom_ribbon(data = plot_data, aes(x = Age, ymin = Lower, ymax = Upper), fill = "#80c4ac", alpha = 0.4) +
+  labs(
+    title = "Vorhersage der Einkäufe nach Alter",
+    x = "Alter",
+    y = "Anzahl der Einkäufe"
+  ) +
+  theme_minimal()
+```
+
+:::
+:::
+
+### Bewertung
+
+Es wurde ein lineares Regressionsmodell erstellt, um die Beziehung zwischen Alter und Gesamtanzahl der Einkäufe zu untersuchen. Die Vorhersagen für Testdaten wurden mit Konfidenzintervallen präsentiert. Danach wurde ein Scatterplot erstellt, der die tatsächlichen und vorhergesagten Einkaufszahlen mit Konfidenzintervallen für verschiedene Altersgruppen vergleicht.
+
+## Modell 2 (Ole Kepa)
+
+Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetrag (Purchase_Amount) und der vorherigen Anzahl von Käufen (Previous_Purchases).
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+
+##Anwendung
+
+
+
+
+```{r}
+
+# Modell erstellen (logistische Regression)
+logistic_model <- glm(Discount_Applied ~ Purchase_Amount + Previous_Purchases, data = train_data_main, family = "binomial")
+
+# Vorhersagen für Testdaten
+predictions <- predict(logistic_model, newdata = test_data_main, type = "response")
+
+# Vorhersagen in Tabelle zusammenfassen
+prediction_table <- data.frame(Discount_Applied = test_data_main$Discount_Applied, Predicted_Probability = predictions)
+
+# Tabelle ausgeben mit 10 ergebnissen und vermerken, dass es mehr gibt.
+print(head(prediction_table, 10))
+
+
+# visuelle Darstellung der Vorhersagen
+ggplot(prediction_table, aes(x = Discount_Applied, y = Predicted_Probability)) +
+  geom_boxplot() +
+  labs(
+    title = "Vorhersage der Wahrscheinlichkeit, dass ein Rabattcode genutzt wird",
+    x = "Rabattcode genutzt",
+    y = "Vorhergesagte Wahrscheinlichkeit"
+  ) +
+  theme_minimal()
+
+```
+
+
+Kommulierte Ausgabe der Warscheinlichkeiten, dass ein Rabattcode genutzt wird oder nicht (als Wert zwischen 0 und 1).
+
+## Bewertung
+Wir können sehen, dass die Wahrscheinlichkeit, dass ein Rabattcode genutzt wird, mit dem Kaufbetrag und der Anzahl der vorherigen Käufe steigt.
+:::
+:::
+
+## Modell 3 (Fabian Elsner)
+
+ Wir analysieren Daten mittels eines Machine-Learning-Modell, basierend auf Random Forests, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€. 
+
+### Anwendung
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+Da nun die erforderlichen Datensätze existieren, wird nun das Modell erstellt.
+
+
+```{r}
+rf_model <- randomForest(Express_Shipping_Used ~ . - Purchase_Amount - Shipping_Type - Express_Shipping_Used, data = train_data_main)
+```
+
+
+Die Vorhersagen, welche von dem Modell getroffen werden, werden in einer Tabelle zusammengefasst.
+
+```{r}
+predictions_fb <- predict(rf_model, newdata = test_data_main)
+prediction_table_fb <- data.frame(Express_Shipping_Used = test_data_main$Express_Shipping_Used, Predicted_Probability = predictions_fb)
+print(head(prediction_table_fb, 10))
+```
+
+
+Im Folgenden werden die Testdaten genommen und es werden Vorhersagen mit dem Random-Forest Modell getroffen.
+Außerdem werden die Werte für die Confusion-Matrix errechnet.
+
+
+```{r}
+predictions_fb <- predict(rf_model, newdata = test_data_main)
+
+confusion_matrix <- table(predictions_fb, test_data_main$Express_Shipping_Used)
+
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+cat("Accuracy:", accuracy, "\n")
+cat("Confusion Matrix:\n", confusion_matrix, "\n")
+```
+
+
+Die Confusion-Matrix wird nun als Heatmap dargestellt.
+
+
+```{r}
+conf_matrix <- matrix(c(3, 8, 7, 2), nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Tatsächlich 0", "Tatsächlich 1"), c("Vorhergesagt 0", "Vorhergesagt 1")))
+
+heatmaply(conf_matrix, 
+          colors = c("green", "yellow", "red"), 
+          main = "Confusion Matrix")
+```
+
+### Beurteilung
+
+:::
+:::
+
+## Modell 4 (Fabian Elsner)
+ Wir analysieren Daten mittels eines Machine-Learning-Modells, basierend auf neuronalen Netzen, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€ . 
+
+### Anwendung
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+Das verwendete Paket erfordert für die initiale Ausführung eine CRANmirror Verbindung um einwandfrei zu funkionieren. Diese wird zunächst initialisiert.
+
+
+```{r}
+options(repos = c(CRAN = "https://cran.uni-muenster.de/"))
+```
+
+
+Zunächst wird ein Data-Frame erstellt und die Daten in Test- und Trainingsdaten aufgeteilt.
+
+
+```{r}
+
+set.seed(42)
+df <- data.frame(
+  Age = sample(18:65, 100, replace = TRUE),
+  Purchase_Amount = runif(100, min = 50, max = 200),
+  Shipping_Type = ifelse(runif(100) > 0.5, "Standard", "Express"),
+  Gender = sample(c("Male", "Female"), 100, replace = TRUE),
+  Item_Purchased = sample(c("Product_A", "Product_B", "Product_C"), 100, replace = TRUE),
+  Category = sample(c("Electronics", "Clothing", "Food"), 100, replace = TRUE),
+  Location = sample(c("City", "Suburb", "Rural"), 100, replace = TRUE),
+  Size = sample(c("S", "M", "L", "XL"), 100, replace = TRUE),
+  Color = sample(c("Red", "Blue", "Green", "Black"), 100, replace = TRUE),
+  Season = sample(c("Spring", "Summer", "Autumn", "Winter"), 100, replace = TRUE),
+  Review_Rating = runif(100, min = 3, max = 5),
+  Subscription_Status = sample(c("Subscribed", "Not Subscribed"), 100, replace = TRUE),
+  Promo_Code_Used = sample(c("Code1", "Code2", "None"), 100, replace = TRUE),
+  Previous_Purchase = sample(c("Yes", "No"), 100, replace = TRUE),
+  Payment_Method = sample(c("Credit Card", "PayPal"), 100, replace = TRUE)
+)
+
+#print(df)
+
+df$Express_Shipping_Used <- ifelse(df$Purchase_Amount > 100 & df$Shipping_Type == "Express", "Yes", "No")
+
+df$Gender <- as.factor(df$Gender)
+df$Item_Purchased <- as.factor(df$Item_Purchased)
+df$Category <- as.factor(df$Category)
+df$Location <- as.factor(df$Location)
+df$Size <- as.factor(df$Size)
+df$Color <- as.factor(df$Color)
+df$Season <- as.factor(df$Season)
+df$Subscription_Status <- as.factor(df$Subscription_Status)
+df$Promo_Code_Used <- as.factor(df$Promo_Code_Used)
+df$Previous_Purchase <- as.factor(df$Previous_Purchase)
+df$Payment_Method <- as.factor(df$Payment_Method)
+df$Express_Shipping_Used <- as.factor(df$Express_Shipping_Used)
+
+set.seed(42)
+split_index <- sample(1:nrow(df), 0.8 * nrow(df))
+
+train_data <- df[split_index, ]
+#print(train_data)
+
+test_data <- df[-split_index, ]
+#print(test_data)
+```
+
+
+Das Modell wird nun erstellt und die Vorhersagen getroffen.
+
+
+```{r}
+nn_model <- neuralnet(
+  Express_Shipping_Used ~ Purchase_Amount,
+  data = train_data_main, 
+  hidden = c(5),
+  linear.output = TRUE
+)
+
+predictions_fb <- predict(nn_model, newdata = test_data_main)
+```
+
+
+Die Vorhersagen werden nun ausgewertet. Hierfür werden die Wahrscheinlichkeiten für das Ergebnis "Express genutzt" (Wert 1) extrahiert. Außerdem werden die Werte auf genau 1 oder 0 gerundet.
+
+
+```{r}
+# Extrahiere die Wahrscheinlichkeiten für die Klasse 1 (Express genutzt)
+express_used_probabilities <- predictions_fb[, 2]
+
+# Runden der Wahrscheinlichkeit auf genau 1 oder 0 (Express genutzt oder nicht)
+rounded_predictions_fb <- ifelse(express_used_probabilities > 0.5, 1, 0)
+```
+
+
+Die Genauigkeit des Modells wird nun berechnet und die Confusion Matrix erstellt.
+
+
+```{r}
+confusion_matrix <- table(rounded_predictions_fb, test_data_main$Express_Shipping_Used)
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+cat("Accuracy:", accuracy, "\n")
+cat("Confusion Matrix:\n", confusion_matrix, "\n")
+
+conf_matrix <- matrix(c(3, 4, 0, 13), nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Tatsächlich 0", "Tatsächlich 1"), c("Vorhergesagt 0", "Vorhergesagt 1")))
+```
+
+
+Die Confusion Matrix wird nun als Heatmap dargestellt.
+
+
+```{r}
+# Installiere das Paket "heatmaply", falls es noch nicht installiert ist
+if (!requireNamespace("heatmaply", quietly = TRUE)) {
+  install.packages("heatmaply")
+}
+
+# Lade das Paket "heatmaply"
+library(heatmaply)
+
+# Plot als Heatmap
+heatmaply(conf_matrix, 
+          colors = c("green", "yellow", "red"), 
+          main = "Confusion Matrix")
+```
+
+
+### Beurteilung
+<p> In den vorherigen Abschnitten wurden zwei Modelle entwickelt, die beide Vorhersagen zur Verwendung des Shipping_Type "Express" bei einem Einkaufswert von mindestens 100€ treffen. Das erste Modell ist ein Entscheidungsbaum, das zweite Modell ein neuronales Netzwerk. Beide Modelle haben ihre Vor- und Nachteile.
+
+Der Random-Forest hat eine Accuracy von 25%. Die geringe Genauigkeit kann darauf hinweisen, dass das Modell Schwierigkeiten hat, relevante Muster in den Daten zu erkennen beziehungsweise, dass das Modell nicht optimal konfiguriert ist. Ein weiterer Grund für die niedrige Genauigkeit kann sein, dass das Modell aufgurnd von Over- oder Underfitting unzureichend generalisiert.
+
+Das Machine-Learning Modell weist eine vergleichsweise hohe Genauigkeit von 70% auf. Offensichtlich kommt es mit den Daten besser zurecht und ist dadurch in der Lage Muster zu erkennen. auch die HeatMap zeigt ein deutlich besseres Ergebnis.
+
+Zusammefassend lässt sich sagen, dass beide Modelle Verbesserungspotenzial aufweisen. Aufgrund der Ergebnise lässt sich jedoch sagen, dass das neuronale Netzwerk deutlich besser geeignet ist, um Vorhersagen zu treffen.
+</p>
+:::
+:::
+
+## Modell 5 (Sören Bax)
+
+In diesem Modell wird ein Entscheidungsbaum erstellt, der vorhersagt, ob eine Person ein Abonnement hat oder nicht. Die Vorhersage basiert auf dem Alter und dem Geschlecht der Person.
+
+### Anwendung
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
+
+Nun erstellen wir einen Test- und Trainingsdatensatz:
+    
+
+```{r}
+set.seed(420)
+shopping_behavior_split <- initial_split(shopping_behavior, prop = 0.80, strata = Subscription_Status)
+shopping_behavior_split
+train_data <- training(shopping_behavior_split)
+test_data <- testing(shopping_behavior_split)
+```
+
+
+Zunächst initialisieren wir den Entscheidungsbaum:
+
+
+```{r}
+tree_mod <- decision_tree(mode = "classification", 
+                          min_n = 2,
+                          cost_complexity = 0)
+```
+
+
+Nachdem wir den Entscheidungsbaum initialisiert haben, trainieren wir diesen mit den Trainingsdaten.
+
+
+```{r}
+tree_fit_1 <- tree_mod |> 
+  fit(Subscription_Status ~ Age + Gender, data = train_data)
+```
+
+
+Nach dem trainieren des Modells können wir uns dieses nun anschauen:
+
+
+```{r}
+tree_fit_1 |> 
+  extract_fit_engine() 
+```
+
+
+Hinweis für die Interpretation der Ausgabe:
+
+node) ist die Numerierung des Knoten/Blattes, hierbei wird der nachfolgende Knoten des aktuellen Knotens Nr.x mit 2x und 2x+1 nummeriert. D.h. aus dem Startknoten Nr.1 enstehen die Knoten mit Nr. 2 und 3, auf Nr. 2 folgen die Knoten mit Nr. 4 und 5, auf Nr. 3 die Knoten mit Nr. 6 und 7 usw.
+
+split gibt die letzte Merkmalsbedingung an, die zu diesem Knoten/Blatt geführt hat.
+
+n gibt die Anzahl aller Beobachtungen aus den Trainingsdaten an, die die Merkmalskombinationen, die bis hierhin führen, erfüllen.
+
+loss gibt die falschen Zuordnungen in dem Knoten/Blatt an
+
+yval gibt den Wert der Vorhersagevariablen gemäß des Baums/Modells in diesem Knoten an.
+
+(yprob) gibt die Wahrscheinlichkeiten einer korrekten bzw. einer falschen Zuordnung an, aufgeteilt auf die Klassen und bezogen auf die Vorhersage yval.
+
+* bedeutet, dass dieser Knoten ein Endknoten bzw. ein Blatt des Baumes ist und danach kein weiterer Knoten bzw. keine Merkmalsbedingung im Baum mehr erfolgt.
+
+Zu erkennen ist, dass es insgesamt nur 5 Endknoten mit der Vorhersage "Yes" gibt und 10 mit der Vorhersage "No". Die Wahrscheinlichkeit, dass jemand ein Abonnement hat, ist also relativ gering. Insgesamt ca. 2,76% (0.5897436 + 0.5454545 + 0.5348837 + 0.5294118 + 0.5581395). Zudem ist erkennbar, dass die Wahrscheinlichkeit bei Frauen bei 0% liegen. Nun schauen wir uns den Entscheidungsbaum einmal geplottet an:
+
+
+```{r}
+tree_fit_1 |> 
+  extract_fit_engine() |> 
+  rpart.plot(extra = 102, roundint = FALSE)
+```
+
+
+Hier ist der Entscheidungsbaum etwas schöner dargestellt, jedoch sind die Prozentzahlen mehr gerundet, weswegen für die Vorhersage für ein Abonnement nun bei 5% liegt.
+
+Bestimmen wir nun den Trainingsfehler der Vorhersage:
+
+
+```{r}
+pred <- predict(tree_fit_1, new_data = train_data)
+results1 <- train_data |> select(Subscription_Status) |> bind_cols(pred)
+accuracy(data = results1, truth = Subscription_Status, estimate = .pred_class)
+```
+
+
+Wir sehen, dass der Trainingsfehler gerade einmal bei **0.736%** liegt und damit sehr gering ist.
+Erstellen wir nun noch einmal die Confusion-Matrix:
+
+
+```{r}
+conf_mat(data = results1, truth = Subscription_Status, estimate = .pred_class)
+```
+
+
+Insgesamt lässt sich daher sagen, dass das Modell sehr gut trainiert wurde und eine sehr gute Vorhersage treffen kann. Zudem ist zu erkennen, dass das Alter und das Geschlecht eine sehr wichtige Rolle bei der Vorhersage spielen. Zudem ist zu erkennen, dass die Vorhersage für Frauen deutlich einfacher ist als für Männer. Jedoch ist die Vorhersage für ein Abonnement insgesamt sehr niedrig.
+:::
+:::
+
+### Beurteilung
+
+# Fazit
+
+## Bewertung
+
+Negativ: Kein Kaufdatum vorhanden
+
+## Ideen für weitere Analysen
+
+Vorhersage von weiteren Variablen, wie z.B. die Anzahl der Bestellungen, die ein Kunde tätigt.
+
+# Quellen
+
+Datenset: <br>
+<ul><li><https://www.kaggle.com/datasets/zeesolver/consumer-behavior-and-shopping-habits-dataset/data></li></ul>
+US-Map: <br>
+<ul><li><https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html></li>
+<li><https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html></li></ul>
+Theme: <br>
+<ul><li><https://bootswatch.com/minty/></li></ul>
+
+
+# Ehrenwörtliche Erklärung
+
+Hiermit erklären wir, dass wir die vorliegende Studienarbeit (Produktstudie) selbständig angefertigt haben und die Bearbeiter der einzelnen Abschnitte wahrheitsgemäß angegeben haben. Es wurden nur die in der Arbeit ausdrücklich benannten Quellen und Hilfsmittel benutzt. Wörtlich oder sinngemäß übernommenes Gedankengut haben wir als solches kenntlich gemacht. Diese Arbeit hat in gleicher oder ähnlicher Form ganz oder teilweise noch keiner Prüfungsbehörde vorgelegen.
+
+<!-- Unterschriften in HTML -->
+Rietberg, den 23.12.2023 <br>
+<img src="./signatures/OleKepa.png" height="50" width="150"/> 
+<figcaption>Ole Kepa</figcaption>
+
+Sandebeck, den 23.12.2023 <br>
+<img src="./signatures/FabianElsner.png" height="50" width="150"/>
+<figcaption>Fabian Elsner</figcaption>
+
+Langenberg, den 23.12.2023 <br>
+<img src="./signatures/SoerenBax.png" height="50" width="150"/>
+<figcaption>Sören Bax</figcaption>
