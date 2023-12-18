@@ -601,15 +601,13 @@ Hierzu analysieren wir zunächst wie häufig der Wert "Winter" in der Spalte "Se
 shopping_behavior |> filter(Season == "Winter") |> count(Season)
 ```
 
-Das Ergebnis der Analyse zeigt, dass `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte im Winter gekauft wurden. Nun schauen wir uns an wie häufig der Wert "Summer" in der Spalte "Season" vorkommt:
+Das Ergebnis der Analyse zeigt, dass 971 Produkte im Winter gekauft wurden. Nun schauen wir uns an wie häufig der Wert "Summer" in der Spalte "Season" vorkommt:
 
 ```{r}
 shopping_behavior |> filter(Season == "Summer") |> count(Season)
 ```
 
-
-
-Das Ergebnis der Analyse zeigt, dass `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte im Sommer gekauft wurden.
+Das Ergebnis der Analyse zeigt, dass 955 Produkte im Sommer gekauft wurden.
 
 Somit lässt sich die Hypothese belegen, dass im Winter mehr Kleidung gekauft wird als im Sommer, belegen. Im Winter werden `r nrow(shopping_behavior |> filter(Season == "Winter") |> count(Season))` Produkte gekauft. Im Sommer hingegen werden `r nrow(shopping_behavior |> filter(Season == "Summer") |> count(Season))` Produkte gekauft. (Vgl. Grafik)
 
