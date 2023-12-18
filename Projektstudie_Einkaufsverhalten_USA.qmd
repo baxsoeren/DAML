@@ -225,7 +225,7 @@ summary(raw_shopping_behavior)
 ```{r}
 raw_shopping_behavior |> describe()
 ```
-
+ 
 Die Customer_ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten Schritt löschen.
 
 ## Datenaufbereitung
@@ -312,6 +312,9 @@ ggplot(shopping_behavior, aes(x = `Frequency_of_Purchases`, fill = `Frequency_of
   scale_fill_manual(values = frequency_colors) +
   theme_minimal()
 ```
+
+Wir sehen, dass die meisten Personen wöchentlich einkaufen. Die zweitmeisten Personen kaufen alle zwei Wochen ein.
+
 :::
 :::
 
@@ -503,6 +506,8 @@ payment_data <- raw_shopping_behavior |>
 payment_data |>
   select(`Payment_Method`, Percentage)
 ```
+
+Wir sehen, dass die These, dass die meisten Kunden Bar zahlen, nicht stimmt.Am häufigsten wird mit Kredit-Karte gezahlt.
 :::
 :::
 
@@ -938,7 +943,7 @@ Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetra
 ::: card-body
 
 
-Anwendung
+##Anwendung
 
 
 
@@ -978,6 +983,11 @@ ggplot(prediction_table, aes(x = Discount_Applied, y = Predicted_Probability)) +
 ```
 
 Kommulierte Ausgabe der Warscheinlichkeiten, dass ein Rabattcode genutzt wird oder nicht (als Wert zwischen 0 und 1).
+
+## Bewertung
+Wir können sehen, dass die Wahrscheinlichkeit, dass ein Rabattcode genutzt wird, mit dem Kaufbetrag und der Anzahl der vorherigen Käufe steigt.
+:::
+:::
 
 ## Modell 3 (Fabian Elsner)
 
