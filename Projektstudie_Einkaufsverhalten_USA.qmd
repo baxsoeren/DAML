@@ -75,6 +75,19 @@ if (!requireNamespace("tidymodels", quietly = TRUE)) {
 if (!requireNamespace("usmap", quietly = TRUE)) {
   install.packages("usmap")
 }
+
+if (!requireNamespace("plotly", quietly = TRUE)) {
+  install.packages("plotly")
+}
+if (!requireNamespace("viridis", quietly = TRUE)) {
+  install.packages("viridis")
+}
+if (!requireNamespace("randomForest", quietly = TRUE)) {
+  install.packages("randomForest")
+}
+if (!requireNamespace("heatmaply", quietly = TRUE)) {
+  install.packages("heatmaply")
+}
 ```
 
 ```{r, message=FALSE, include = FALSE}
@@ -92,6 +105,11 @@ library(rpart.plot)
 library(tidyverse) 
 library(tidymodels)
 library(usmap)
+
+library(plotly)
+library(viridis)
+library(randomForest)
+library(heatmaply)
 ```
 
 <!-- Farbcode Türkis: #80c4ac -->
@@ -617,13 +635,8 @@ Das Ergebnis der Analyse zeigt, dass 955 Produkte im Sommer gekauft wurden.
 Somit lässt sich die Hypothese belegen, dass im Winter mehr Kleidung gekauft wird als im Sommer, belegen. Im Winter werden 971 Produkte gekauft. Im Sommer hingegen werden 955 Produkte gekauft. (Vgl. Grafik)
 
 ```{r}
-if (!requireNamespace("ggplot2", quietly = TRUE)) {
-  install.packages("ggplot2")
-}
-
-library(ggplot2)
-
-ggplot(shopping_behavior, aes(x = Season, fill = Season)) +
+ggplot_data <- shopping_behavior |> filter(Season != "Fall" & Season != "Spring")
+ggplot(ggplot_data, aes(x = Season, fill = Season)) +
   geom_bar() +
   labs(title = "Histogramm der Jahreszeiten",
       x = "Jahreszeiten",
@@ -848,6 +861,17 @@ Es sind **`r over_forty`** Einkäufer über 40 Jahre alt und **`r under_forty`**
 
 # Anwendung und Beurteilung von Machine-Learning-Modellen
 
+Zunächst erstellen wir Test- und Trainingsdaten für die Modelle:
+
+```{r}
+set.seed(420)
+shopping_behavior_split <- initial_split(shopping_behavior, prop = 0.80, strata = Subscription_Status)
+shopping_behavior_split
+
+train_data_main <- training(shopping_behavior_split)
+test_data_main <- testing(shopping_behavior_split)
+```
+
 ## Modell 1 (Ole Kepa)
 
 ### Anwendung
@@ -949,22 +973,14 @@ Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetra
 
 ```{r}
 
-shopping_behavior$Discount_Applied <- as.factor(shopping_behavior$Discount_Applied)
-
-# Daten aufteilen
-set.seed(123)
-training_rows <- sample(1:nrow(shopping_behavior), 0.8 * nrow(shopping_behavior))
-training_data <- shopping_behavior[training_rows, ]
-test_data <- shopping_behavior[-training_rows, ]
-
 # Modell erstellen (logistische Regression)
-logistic_model <- glm(Discount_Applied ~ Purchase_Amount + Previous_Purchases, data = training_data, family = "binomial")
+logistic_model <- glm(Discount_Applied ~ Purchase_Amount + Previous_Purchases, data = train_data_main, family = "binomial")
 
 # Vorhersagen für Testdaten
-predictions <- predict(logistic_model, newdata = test_data, type = "response")
+predictions <- predict(logistic_model, newdata = test_data_main, type = "response")
 
 # Vorhersagen in Tabelle zusammenfassen
-prediction_table <- data.frame(Discount_Applied = test_data$Discount_Applied, Predicted_Probability = predictions)
+prediction_table <- data.frame(Discount_Applied = test_data_main$Discount_Applied, Predicted_Probability = predictions)
 
 # Tabelle ausgeben mit 10 ergebnissen und vermerken, dass es mehr gibt.
 print(head(prediction_table, 10))
@@ -997,17 +1013,6 @@ Wir können sehen, dass die Wahrscheinlichkeit, dass ein Rabattcode genutzt wird
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-
-Zunächst wird sichergestellt, dass das erforderliche Paket installiert ist.
-
-```{r}
-
-if (!requireNamespace("randomForest", quietly = TRUE)) {
-  install.packages("randomForest")
-}
-
-library(randomForest)
-```
 
 Im Anschluss wird ein Data-Frame erstellt:
 
@@ -1069,21 +1074,19 @@ rf_model <- randomForest(Express_Shipping_Used ~ . - Purchase_Amount - Shipping_
 ```
 
 Die Vorhersagen, welche von dem Modell getroffen werden, werden in einer Tabelle zusammengefasst.
-
 ```{r}
-
-prediction_table <- data.frame(Express_Shipping_Used = test_data$Express_Shipping_Used, Predicted_Probability = predictions)
-
-print(head(prediction_table, 10))
+predictions_fb <- predict(rf_model, newdata = test_data)
+prediction_table_fb <- data.frame(Express_Shipping_Used = test_data$Express_Shipping_Used, Predicted_Probability = predictions_fb)
+print(head(prediction_table_fb, 10))
 ```
 
 Im Folgenden werden die Testdaten genommen und es werden Vorhersagen mit dem Random-Forest Modell getroffen.
 Außerdem werden die Werte für die Confusion-Matrix errechnet.
 
 ```{r}
-predictions <- predict(rf_model, newdata = test_data)
+predictions_fb <- predict(rf_model, newdata = test_data)
 
-confusion_matrix <- table(predictions, test_data$Express_Shipping_Used)
+confusion_matrix <- table(predictions_fb, test_data$Express_Shipping_Used)
 
 accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
 cat("Accuracy:", accuracy, "\n")
@@ -1095,12 +1098,6 @@ Die Confusion-Matrix wird nun als Heatmap dargestellt.
 ```{r}
 conf_matrix <- matrix(c(3, 8, 7, 2), nrow = 2, byrow = TRUE,
                       dimnames = list(c("Tatsächlich 0", "Tatsächlich 1"), c("Vorhergesagt 0", "Vorhergesagt 1")))
-
-if (!requireNamespace("heatmaply", quietly = TRUE)) {
-  install.packages("heatmaply")
-}
-
-library(heatmaply)
 
 heatmaply(conf_matrix, 
           colors = c("green", "yellow", "red"), 
@@ -1196,23 +1193,23 @@ nn_model <- neuralnet(
   linear.output = TRUE
 )
 
-predictions <- predict(nn_model, newdata = test_data)
+predictions_fb <- predict(nn_model, newdata = test_data)
 ```
 
 Die Vorhersagen werden nun ausgewertet. Hierfür werden die Wahrscheinlichkeiten für das Ergebnis "Express genutzt" (Wert 1) extrahiert. Außerdem werden die Werte auf genau 1 oder 0 gerundet.
 
 ```{r}
 # Extrahiere die Wahrscheinlichkeiten für die Klasse 1 (Express genutzt)
-express_used_probabilities <- predictions[, 2]
+express_used_probabilities <- predictions_fb[, 2]
 
 # Runden der Wahrscheinlichkeit auf genau 1 oder 0 (Express genutzt oder nicht)
-rounded_predictions <- ifelse(express_used_probabilities > 0.5, 1, 0)
+rounded_predictions_fb <- ifelse(express_used_probabilities > 0.5, 1, 0)
 ```
 
 Die Genauigkeit des Modells wird nun berechnet und die Confusion Matrix erstellt.
 
 ```{r}
-confusion_matrix <- table(rounded_predictions, test_data$Express_Shipping_Used)
+confusion_matrix <- table(rounded_predictions_fb, test_data$Express_Shipping_Used)
 accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
 cat("Accuracy:", accuracy, "\n")
 cat("Confusion Matrix:\n", confusion_matrix, "\n")
