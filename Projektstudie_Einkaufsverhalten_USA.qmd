@@ -1231,7 +1231,14 @@ heatmaply(conf_matrix,
 ```
 
 ### Beurteilung
+<p> In den vorherigen Abschnitten wurden zwei Modelle entwickelt, die beide Vorhersagen zur Verwendung des Shipping_Type "Express" bei einem Einkaufswert von mindestens 100€ treffen. Das erste Modell ist ein Entscheidungsbaum, das zweite Modell ein neuronales Netzwerk. Beide Modelle haben ihre Vor- und Nachteile.
 
+Der Random-Forest hat eine Accuracy von 25%. Die geringe Genauigkeit kann darauf hinweisen, dass das Modell Schwierigkeiten hat, relevante Muster in den Daten zu erkennen beziehungsweise, dass das Modell nicht optimal konfiguriert ist. Ein weiterer Grund für die niedrige Genauigkeit kann sein, dass das Modell aufgurnd von Over- oder Underfitting unzureichend generalisiert.
+
+Das Machine-Learning Modell weist eine vergleichsweise hohe Genauigkeit von 70% auf. Offensichtlich kommt es mit den Daten besser zurecht und ist dadurch in der Lage Muster zu erkennen. auch die HeatMap zeigt ein deutlich besseres Ergebnis.
+
+Zusammefassend lässt sich sagen, dass beide Modelle Verbesserungspotenzial aufweisen. Aufgrund der Ergebnise lässt sich jedoch sagen, dass das neuronale Netzwerk deutlich besser geeignet ist, um Vorhersagen zu treffen.
+</p>
 :::
 :::
 
