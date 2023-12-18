@@ -291,10 +291,7 @@ Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse un
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-
 Es wird analysiert, wie oft Personen wöchentlich einkaufen, wobei der Fokus auf den verschiedenen Häufigkeiten liegt.
-
-
 
 ```{r}
 
@@ -314,11 +311,7 @@ frequency_counts |>
   column_spec(1, color = "white")
 ```
 
-
-
 Wir stellen diesse Daten im nächsten Schritt aufbereitet in einem Diagramm da
-
-
 
 ```{r}
 frequency_mapping <- c("Fortnightly" = 2, "Weekly" = 1, "Annually" = 3,
@@ -352,21 +345,14 @@ Wir sehen, dass die meisten Personen wöchentlich einkaufen. Die zweitmeisten Pe
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-
 Zuerst schauen wir, welche Farben alle vorhanden sind.
-
-
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
 print(shopping_behavior |> distinct(Color), n = rows)
 ```
 
-
-
 Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Color))` Farben gibt. Nun schauen wir uns die Häufigkeit der Farben an:
-
-
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -374,11 +360,7 @@ print(shopping_behavior |> count(Color) |> arrange(desc(n)) , n = rows)
 
 ```
 
-
-
 Wir sehen, dass die Farben Schwarz, Weiß und Grau am häufigsten vorkommen. Nun schauen wir uns die Häufigkeit der Farben an, die nicht Schwarz, Weiß oder Grau sind:
-
-
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Color))
@@ -386,11 +368,7 @@ print(shopping_behavior |> filter(Color != "Black" & Color != "White" & Color !=
 
 ```
 
-
-
 Wir sehen, dass die Farben Schwarz, Grau und Weiß r Kumulierter_Anteil_Schwarz_Weiß_Grau = max(Cumulative_Percentage)\` an der gesamten Farbauswahl einnehmen
-
-
 
 ```{r}
 result <- shopping_behavior |>
@@ -410,11 +388,7 @@ result <- shopping_behavior |>
 print(result)
 ```
 
-
-
 Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häufigsten gekauft werden, nicht stimmt. Zur verdeutlichung wird ein Balkendiagramm erstellt.
-
-
 
 ```{r}
 data <- shopping_behavior |>
@@ -470,21 +444,14 @@ ggplot(data, aes(x = Color, y = n, fill = Color)) +
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-
 Wir betrachten die verscheidenen Bezahlarten
-
-
 
 ```{r}
 unique_payment_methods <- unique(shopping_behavior$`Payment_Method`)
 cat("Zahlungsmethoden:", toString(unique_payment_methods), "\n")
 ```
 
-
-
 Wir schauen uns an, wie viele Zahlungen Bar getätigt wurden
-
-
 
 ```{r}
 count_cash_payments <- sum(shopping_behavior$`Payment_Method` %in% c("Bar", "Cash"), na.rm = TRUE)
@@ -492,22 +459,14 @@ cat("Anzahl der Barzahlungen:", count_cash_payments, "\n")
 
 ```
 
-
-
 Wir zeigen den prozentualen Anteil der Barzahlungen an allen Zahlungen
-
-
 
 ```{r}
 percentage_cash <- count_cash_payments / nrow(shopping_behavior) * 100
 cat("Prozentsatz der Barzahlungen:", percentage_cash, "%\n")
 ```
 
-
-
 Anzahl aller Zahlungen
-
-
 
 ```{r}
 total_payments <- nrow(raw_shopping_behavior)
@@ -515,11 +474,7 @@ total_payments <- nrow(raw_shopping_behavior)
 cat("Alle Zahlungen :", total_payments)
 ```
 
-
-
 Für eine gute Analyse der Werte, schauen wir uns alle Bezahlmethoden an
-
-
 
 ```{r}
 payment_data <- raw_shopping_behavior |>
@@ -545,22 +500,15 @@ Wir sehen, dass die These, dass die meisten Kunden Bar zahlen, nicht stimmt.Am h
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-
-
-
 In dieser These wird die Hypothese geprüft, dass die meisten Kunden keine Rabattcodes nutzen würden. Unter dem Begriff "Rabattcodes" sind hier sowohl übliche Rabattcodes aber ebenso Promo-Codes gemeint. Zunächst schauen wir uns an wie oft der Wert "yes" in der Spalte "Discount Applied" vorkommt:
 
 ```{r}
 shopping_behavior |> count(`Discount_Applied`)
 ```
 
-
-
 Die Analyse zeigt, dass bei 2223 Einkäufen kein Rabattcode genutzt wurde. Bei 1677 wurde hingegen ein Rabattcode genutzt.
 
 Im zweiten Schritt schauen wir uns an wie oft der Wert "yes" in der Spalte "Promo Code Used" vorkommt:
-
-
 
 ```{r}
 shopping_behavior |> count(`Promo_Code_Used`)
@@ -594,13 +542,9 @@ Zusammenfassend lässt sich also sagen, dass die Hypothese, dass die meisten Kun
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-
-
 In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen.
 
 Hierzu analysieren wir zunächst wie häufig die Werte "male" und "femal" in der Spalte "Gender" vorkommt:
-
-
 
 ```{r}
 shopping_behavior |> filter(Gender != "male") |> count(Gender)
@@ -875,8 +819,8 @@ set.seed(420)
 shopping_behavior_split <- initial_split(shopping_behavior, prop = 0.80, strata = Subscription_Status)
 shopping_behavior_split
 
-train_data_main <- training(shopping_behavior_split)
-test_data_main <- testing(shopping_behavior_split)
+train_data <- training(shopping_behavior_split)
+test_data <- testing(shopping_behavior_split)
 ```
 
 ## Modell 1 (Ole Kepa)
@@ -888,10 +832,7 @@ Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersag
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-
 Daten gruppieren und Zusammenzählen
-
-
 
 ```{r}
 # Daten gruppieren und die Anzahl der Einkäufe pro Altersgruppe zusammenzählen
@@ -976,18 +917,16 @@ Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetra
 
 ##Anwendung
 
-
-
 ```{r}
 
 # Modell erstellen (logistische Regression)
-logistic_model <- glm(Discount_Applied ~ Purchase_Amount + Previous_Purchases, data = train_data_main, family = "binomial")
+logistic_model <- glm(Discount_Applied ~ Purchase_Amount + Previous_Purchases, data = train_data, family = "binomial")
 
 # Vorhersagen für Testdaten
-predictions <- predict(logistic_model, newdata = test_data_main, type = "response")
+predictions <- predict(logistic_model, newdata = test_data, type = "response")
 
 # Vorhersagen in Tabelle zusammenfassen
-prediction_table <- data.frame(Discount_Applied = test_data_main$Discount_Applied, Predicted_Probability = predictions)
+prediction_table <- data.frame(Discount_Applied = test_data$Discount_Applied, Predicted_Probability = predictions)
 
 # Tabelle ausgeben mit 10 ergebnissen und vermerken, dass es mehr gibt.
 print(head(prediction_table, 10))
@@ -1014,7 +953,7 @@ Wir können sehen, dass die Wahrscheinlichkeit, dass ein Rabattcode genutzt wird
 
 ## Modell 3 (Fabian Elsner)
 
- Wir analysieren Daten mittels eines Machine-Learning-Modell, basierend auf Random Forests, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€. 
+ Wir analysieren Daten mittels eines Machine-Learning-Modell, basierend auf Random Forests, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100$. 
 
 ### Anwendung
 
@@ -1024,13 +963,13 @@ Wir können sehen, dass die Wahrscheinlichkeit, dass ein Rabattcode genutzt wird
 Da nun die erforderlichen Datensätze existieren, wird nun das Modell erstellt.
 
 ```{r}
-rf_model <- randomForest(Express_Shipping_Used ~ . - Purchase_Amount - Shipping_Type - Express_Shipping_Used, data = train_data_main)
+rf_model <- randomForest(Express_Shipping_Used ~ . - Purchase_Amount - Shipping_Type - Express_Shipping_Used, data = train_data)
 ```
 
 Die Vorhersagen, welche von dem Modell getroffen werden, werden in einer Tabelle zusammengefasst.
 ```{r}
-predictions_fb <- predict(rf_model, newdata = test_data_main)
-prediction_table_fb <- data.frame(Express_Shipping_Used = test_data_main$Express_Shipping_Used, Predicted_Probability = predictions_fb)
+predictions_fb <- predict(rf_model, newdata = test_data)
+prediction_table_fb <- data.frame(Express_Shipping_Used = test_data$Express_Shipping_Used, Predicted_Probability = predictions_fb)
 print(head(prediction_table_fb, 10))
 ```
 
@@ -1038,9 +977,9 @@ Im Folgenden werden die Testdaten genommen und es werden Vorhersagen mit dem Ran
 Außerdem werden die Werte für die Confusion-Matrix errechnet.
 
 ```{r}
-predictions_fb <- predict(rf_model, newdata = test_data_main)
+predictions_fb <- predict(rf_model, newdata = test_data)
 
-confusion_matrix <- table(predictions_fb, test_data_main$Express_Shipping_Used)
+confusion_matrix <- table(predictions_fb, test_data$Express_Shipping_Used)
 
 accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
 cat("Accuracy:", accuracy, "\n")
@@ -1063,130 +1002,65 @@ heatmaply(conf_matrix,
 :::
 
 ## Modell 4 (Fabian Elsner)
- Wir analysieren Daten mittels eines Machine-Learning-Modells, basierend auf neuronalen Netzen, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100€ . 
+ Wir analysieren Daten mittels eines Machine-Learning-Modells, basierend auf neuronalen Netzen, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100$ . 
 
 ### Anwendung
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-Das verwendete Paket erfordert für die initiale Ausführung eine CRANmirror Verbindung um einwandfrei zu funkionieren. Diese wird zunächst initialisiert.
-
-```{r}
-options(repos = c(CRAN = "https://cran.uni-muenster.de/"))
-```
-
-Zunächst wird ein Data-Frame erstellt und die Daten in Test- und Trainingsdaten aufgeteilt.
-
-```{r}
-
-set.seed(42)
-df <- data.frame(
-  Age = sample(18:65, 100, replace = TRUE),
-  Purchase_Amount = runif(100, min = 50, max = 200),
-  Shipping_Type = ifelse(runif(100) > 0.5, "Standard", "Express"),
-  Gender = sample(c("Male", "Female"), 100, replace = TRUE),
-  Item_Purchased = sample(c("Product_A", "Product_B", "Product_C"), 100, replace = TRUE),
-  Category = sample(c("Electronics", "Clothing", "Food"), 100, replace = TRUE),
-  Location = sample(c("City", "Suburb", "Rural"), 100, replace = TRUE),
-  Size = sample(c("S", "M", "L", "XL"), 100, replace = TRUE),
-  Color = sample(c("Red", "Blue", "Green", "Black"), 100, replace = TRUE),
-  Season = sample(c("Spring", "Summer", "Autumn", "Winter"), 100, replace = TRUE),
-  Review_Rating = runif(100, min = 3, max = 5),
-  Subscription_Status = sample(c("Subscribed", "Not Subscribed"), 100, replace = TRUE),
-  Promo_Code_Used = sample(c("Code1", "Code2", "None"), 100, replace = TRUE),
-  Previous_Purchase = sample(c("Yes", "No"), 100, replace = TRUE),
-  Payment_Method = sample(c("Credit Card", "PayPal"), 100, replace = TRUE)
-)
-
-#print(df)
-
-df$Express_Shipping_Used <- ifelse(df$Purchase_Amount > 100 & df$Shipping_Type == "Express", "Yes", "No")
-
-df$Gender <- as.factor(df$Gender)
-df$Item_Purchased <- as.factor(df$Item_Purchased)
-df$Category <- as.factor(df$Category)
-df$Location <- as.factor(df$Location)
-df$Size <- as.factor(df$Size)
-df$Color <- as.factor(df$Color)
-df$Season <- as.factor(df$Season)
-df$Subscription_Status <- as.factor(df$Subscription_Status)
-df$Promo_Code_Used <- as.factor(df$Promo_Code_Used)
-df$Previous_Purchase <- as.factor(df$Previous_Purchase)
-df$Payment_Method <- as.factor(df$Payment_Method)
-df$Express_Shipping_Used <- as.factor(df$Express_Shipping_Used)
-
-set.seed(42)
-split_index <- sample(1:nrow(df), 0.8 * nrow(df))
-
-train_data <- df[split_index, ]
-#print(train_data)
-
-test_data <- df[-split_index, ]
-#print(test_data)
-```
-
 Das Modell wird nun erstellt und die Vorhersagen getroffen.
 
 ```{r}
-nn_model <- neuralnet(
-  Express_Shipping_Used ~ Purchase_Amount,
-  data = train_data_main, 
-  hidden = c(5),
-  linear.output = TRUE
-)
-
-predictions_fb <- predict(nn_model, newdata = test_data_main)
+mlp_cheese_mod <- 
+    mlp() |>  
+    set_mode("classification") |> 
+    set_engine("nnet")
 ```
 
 Die Vorhersagen werden nun ausgewertet. Hierfür werden die Wahrscheinlichkeiten für das Ergebnis "Express genutzt" (Wert 1) extrahiert. Außerdem werden die Werte auf genau 1 oder 0 gerundet.
 
 ```{r}
-# Extrahiere die Wahrscheinlichkeiten für die Klasse 1 (Express genutzt)
-express_used_probabilities <- predictions_fb[, 2]
-
-# Runden der Wahrscheinlichkeit auf genau 1 oder 0 (Express genutzt oder nicht)
-rounded_predictions_fb <- ifelse(express_used_probabilities > 0.5, 1, 0)
+ set.seed(1)
+  mlp_cheese_fit <- mlp_cheese_mod |> fit(Express_Shipping_Used ~ Purchase_Amount, data = train_data)
+  mlp_cheese_fit
 ```
 
 Die Genauigkeit des Modells wird nun berechnet und die Confusion Matrix erstellt.
 
 ```{r}
-confusion_matrix <- table(rounded_predictions_fb, test_data_main$Express_Shipping_Used)
-accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
-cat("Accuracy:", accuracy, "\n")
-cat("Confusion Matrix:\n", confusion_matrix, "\n")
-
-conf_matrix <- matrix(c(3, 4, 0, 13), nrow = 2, byrow = TRUE,
-                      dimnames = list(c("Tatsächlich 0", "Tatsächlich 1"), c("Vorhergesagt 0", "Vorhergesagt 1")))
+mlp_cheese_fit |> extract_fit_engine() |> summary()
 ```
 
 Die Confusion Matrix wird nun als Heatmap dargestellt.
 
 ```{r}
-# Installiere das Paket "heatmaply", falls es noch nicht installiert ist
-if (!requireNamespace("heatmaply", quietly = TRUE)) {
-  install.packages("heatmaply")
-}
+pred_fb <- predict(mlp_cheese_fit, test_data)
+results_fb <- test_data |> dplyr::select(Express_Shipping_Used) |> bind_cols(pred_fb)
+accuracy(data = results_fb, truth = Express_Shipping_Used, estimate = .pred_class)
 
-# Lade das Paket "heatmaply"
-library(heatmaply)
+conf_mat(data = results_fb, truth = Express_Shipping_Used, estimate = .pred_class)
+```
 
-# Plot als Heatmap
+Die Confusion-Matrix wird nun als Heatmap dargestellt.
+
+```{r}
+conf_matrix <- matrix(c(0, 254, 527, 0), nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Tatsächlich 1", "Tatsächlich 0"), c("Vorhergesagt 0", "Vorhergesagt 1")))
+
 heatmaply(conf_matrix, 
-          colors = c("green", "yellow", "red"), 
+          colors = c("red", "yellow", "green"), 
           main = "Confusion Matrix")
 ```
 
 ### Beurteilung
-<p> In den vorherigen Abschnitten wurden zwei Modelle entwickelt, die beide Vorhersagen zur Verwendung des Shipping_Type "Express" bei einem Einkaufswert von mindestens 100€ treffen. Das erste Modell ist ein Entscheidungsbaum, das zweite Modell ein neuronales Netzwerk. Beide Modelle haben ihre Vor- und Nachteile.
+ In den vorherigen Abschnitten wurden zwei Modelle entwickelt, die beide Vorhersagen zur Verwendung des Shipping_Type "Express" bei einem Einkaufswert von mindestens 100$ treffen. Das erste Modell ist ein Entscheidungsbaum, das zweite Modell ein neuronales Netzwerk. Beide Modelle haben ihre Vor- und Nachteile.
 
 Der Random-Forest hat eine Accuracy von 25%. Die geringe Genauigkeit kann darauf hinweisen, dass das Modell Schwierigkeiten hat, relevante Muster in den Daten zu erkennen beziehungsweise, dass das Modell nicht optimal konfiguriert ist. Ein weiterer Grund für die niedrige Genauigkeit kann sein, dass das Modell aufgurnd von Over- oder Underfitting unzureichend generalisiert.
 
 Das Machine-Learning Modell weist eine vergleichsweise hohe Genauigkeit von 70% auf. Offensichtlich kommt es mit den Daten besser zurecht und ist dadurch in der Lage Muster zu erkennen. auch die HeatMap zeigt ein deutlich besseres Ergebnis.
 
 Zusammefassend lässt sich sagen, dass beide Modelle Verbesserungspotenzial aufweisen. Aufgrund der Ergebnise lässt sich jedoch sagen, dass das neuronale Netzwerk deutlich besser geeignet ist, um Vorhersagen zu treffen.
-</p>
 :::
 :::
 
@@ -1198,16 +1072,6 @@ In diesem Modell wird ein Entscheidungsbaum erstellt, der vorhersagt, ob eine Pe
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-
-Nun erstellen wir einen Test- und Trainingsdatensatz:
-    
-```{r}
-set.seed(420)
-shopping_behavior_split <- initial_split(shopping_behavior, prop = 0.80, strata = Subscription_Status)
-shopping_behavior_split
-train_data <- training(shopping_behavior_split)
-test_data <- testing(shopping_behavior_split)
-```
 
 Zunächst initialisieren wir den Entscheidungsbaum:
 
@@ -1282,7 +1146,7 @@ Insgesamt lässt sich daher sagen, dass das Modell sehr gut trainiert wurde und 
 
 ## Bewertung
 
-Negativ: Kein Kaufdatum vorhanden
+Negativ: Kein Kaufdatum vorhanden, Purchase_Amount nur unter 100$
 
 ## Ideen für weitere Analysen
 
@@ -1295,9 +1159,10 @@ Datenset: <br>
 US-Map: <br>
 <ul><li><https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html></li>
 <li><https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html></li></ul>
+Heatmaply:
+<ul><li><https://cran.r-project.org/web/packages/heatmaply/vignettes/heatmaply.html></li></ul>
 Theme: <br>
 <ul><li><https://bootswatch.com/minty/></li></ul>
-
 
 # Ehrenwörtliche Erklärung
 
