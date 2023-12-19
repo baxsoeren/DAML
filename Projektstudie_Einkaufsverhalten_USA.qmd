@@ -297,9 +297,11 @@ Zudem erstellen wir noch die Spalte Express_Shipping_Used, welche für einen Pur
 
 ```{r}
 shopping_behavior <- shopping_behavior |> mutate(
-    Express_Shipping_Used = if_else(Purchase_Amount > 75, "Yes", "No")
+    Express_Shipping_Used = if_else(Purchase_Amount > 75, "Yes", "No"),
+    Gender_ID = if_else(Gender == "Male", 1, 0),
   )
 shopping_behavior$Express_Shipping_Used <- as.factor(shopping_behavior$Express_Shipping_Used)
+shopping_behavior$Gender_ID <- as.numeric(shopping_behavior$Gender_ID)
 ```
 
 Werfen wir einen Blick auf das finale Datenset.
@@ -862,78 +864,42 @@ test_data <- testing(shopping_behavior_split)
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
+
 Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersagen, wie viele Einkäufe es in den einzelnen Altersgruppen geben wird. Dafür erstellen wir ein Modell.
 
-Daten gruppieren und Zusammenzählen
-
+Zunächst wird das Modell initialisiert.
 ```{r}
-# Daten gruppieren und die Anzahl der Einkäufe pro Altersgruppe zusammenzählen
-purchase_count_by_age <- shopping_behavior |>
-  group_by(Age) |>
-  summarize(Total_Purchases = n())
-
-print(purchase_count_by_age)
+# Modell initialisieren
+lm_model <- linear_reg() |> set_engine("lm")
 ```
 
-Daten aufteilen und Modell erstellen
-
 ```{r}
-
-# Modell erstellen (lineare Regression)
-linear_model <- lm(Total_Purchases ~ Age, data = purchase_count_by_age)
-
-print(linear_model)
-
+# Modell trainieren ("fitten")
+lm_fit_a1<- lm_model |> fit(Previous_Purchases ~ Age + Gender_ID, data = train_data)
 ```
 
-Vorhersagen für Testdaten
-
+Zeige das Ergebnis an: 
 ```{r}
-# Vorhersagen für alle Altersgruppen im vorhandenen Datenbereich
-age_range <- seq(min(purchase_count_by_age$Age), max(purchase_count_by_age$Age), length.out = 10)
-predictions <- predict(linear_model, newdata = data.frame(Age = age_range), interval = "confidence")
-
-# Spalten umbenennen und auf 2 Nachkommastellen runden
-colnames(predictions) <- c("Vorhergesagte Einkäufe", "Unteres Konfidenzintervall", "Oberes Konfidenzintervall")
-predictions <- round(predictions, 2)
-
-# Tabelle anzeigen
-print(predictions)
+summary_a1 <- lm_fit_a1 |> extract_fit_engine() |> summary()
+summary_a1
 ```
 
-Daten gruppieren und Vorhersagen zusammenzählen:
-
 ```{r}
-# Daten für den Plot vorbereiten und auf 2 nachkommastellen runden
-plot_data <- data.frame(Age = age_range, Predicted_Purchases = predictions[, 1], 
-                        Lower = predictions[, 2], Upper = predictions[, 3]) |>
-  mutate(Age = round(Age, 2), Predicted_Purchases = round(Predicted_Purchases, 2),
-         Lower = round(Lower, 2), Upper = round(Upper, 2))
-
-
-
-# Tabelle anzeigen
-print(plot_data)
+c1 <- summary_a1$coefficients[1]
+c2 <- summary_a1$coefficients[2]
+c3 <- summary_a1$coefficients[2]
 ```
 
-Scatterplot mit Konfidenzintervall erstellen
+Funktion: Einkäufe = `r c1` + `r c2` * Alter + `r c3` * Geschlecht
 
-```{r}
+**Bestimmtheitsmaß**: 0.004114 --> Bedeutung: nur 0,41% der Gesamtvariation der abhängigen Variablen Y = Einkäufe können durch den Prädiktor "Alter" und “Geschlecht” erklärt werden. Nicht gut.
 
-# Scatterplot mit Konfidenzintervall erstellen
-ggplot() +
-  geom_point(data = purchase_count_by_age, aes(x = Age, y = Total_Purchases), color = "black", size = 3, alpha = 0.5) +
-  geom_line(data = plot_data, aes(x = Age, y = Predicted_Purchases), color = "#80c4ac", linewidth = 1) +
-  geom_ribbon(data = plot_data, aes(x = Age, ymin = Lower, ymax = Upper), fill = "#80c4ac", alpha = 0.4) +
-  labs(
-    title = "Vorhersage der Einkäufe nach Alter",
-    x = "Alter",
-    y = "Anzahl der Einkäufe"
-  ) +
-  theme_minimal()
-```
+**F-Test**: F_emp = 6.437. Der kritische Wert ist nicht angegeben, aber der p-Wert. Da p = 0,16% < 5% -- BEDEUTUNG?
 
-Es wurde ein lineares Regressionsmodell erstellt, um die Beziehung zwischen Alter und Gesamtanzahl der Einkäufe zu untersuchen. Die Vorhersagen für Testdaten wurden mit Konfidenzintervallen präsentiert. Danach wurde ein Scatterplot erstellt, der die tatsächlichen und vorhergesagten Einkaufszahlen mit Konfidenzintervallen für verschiedene Altersgruppen vergleicht.
+Prüfung der Regressionskoeffizienten
+Das ist eigentlich nicht erforderlich, da wir bereits gesehen haben, dass das gesamte Modell nicht signifikant ist. Wir können für die unabhängigen Variablen beobachten:
+
+**p-Werte**: Die p-Werte für Alter ist kleiner als 5%, damit ist (keiner) der geschätzten Parameter statistisch relevant.
 :::
 :::
 
