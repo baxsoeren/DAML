@@ -11,6 +11,7 @@ format:
     toc: true
     toc_float: true
     number-sections: true
+    code-line-numbers: true
     embed-resources: true
     code-fold: true
     code-summary: "Code anzeigen"
@@ -45,17 +46,23 @@ if (!requireNamespace("explore", quietly = TRUE)) {
 if (!requireNamespace("ggplot2", quietly = TRUE)) {
   install.packages("ggplot2")
 }
+if (!requireNamespace("heatmaply", quietly = TRUE)) {
+  install.packages("heatmaply")
+}
 if (!requireNamespace("kableExtra", quietly = TRUE)) {
   install.packages("kableExtra")
 }
 if (!requireNamespace("leaflet", quietly = TRUE)) {
   install.packages("leaflet")
 }
-if (!requireNamespace("neuralnet", quietly = TRUE)) {
-  install.packages("neuralnet")
-}
 if (!requireNamespace("parsnip", quietly = TRUE)) {
   install.packages("parsnip")
+}
+if (!requireNamespace("plotly", quietly = TRUE)) {
+  install.packages("plotly")
+}
+if (!requireNamespace("randomForest", quietly = TRUE)) {
+  install.packages("randomForest")
 }
 if (!requireNamespace("rpart", quietly = TRUE)) {
   install.packages("rpart")
@@ -75,18 +82,8 @@ if (!requireNamespace("tidymodels", quietly = TRUE)) {
 if (!requireNamespace("usmap", quietly = TRUE)) {
   install.packages("usmap")
 }
-
-if (!requireNamespace("plotly", quietly = TRUE)) {
-  install.packages("plotly")
-}
 if (!requireNamespace("viridis", quietly = TRUE)) {
   install.packages("viridis")
-}
-if (!requireNamespace("randomForest", quietly = TRUE)) {
-  install.packages("randomForest")
-}
-if (!requireNamespace("heatmaply", quietly = TRUE)) {
-  install.packages("heatmaply")
 }
 ```
 
@@ -96,20 +93,18 @@ library(coefplot)
 library(dplyr)
 library(explore)
 library(ggplot2)
+library(heatmaply)
 library(kableExtra)
 library(leaflet)
-library(neuralnet)
 library(parsnip)
+library(plotly)
+library(randomForest)
 library(rpart)
 library(rpart.plot)
 library(tidyverse) 
 library(tidymodels)
 library(usmap)
-
-library(plotly)
 library(viridis)
-library(randomForest)
-library(heatmaply)
 ```
 
 <!-- Farbcode Türkis: #80c4ac -->
@@ -274,7 +269,6 @@ shopping_behavior$Express_Shipping_Used <- as.factor(shopping_behavior$Express_S
 Werfen wir einen Blick auf das finale Datenset.
 
 ```{r}
-
 knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen Datensatzes")
 ```
 
