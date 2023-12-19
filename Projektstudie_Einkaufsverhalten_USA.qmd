@@ -225,6 +225,42 @@ Wir möchten insbesondere folgende Thesen in dieser Arbeit untersuchen:
 </button>
 :::
 
+## Modelle
+
+In dieser Arbeit sollen zudem folgende Modelle zur vorhersage verschiedener Daten genutzt werden:
+
+::: {.d-grid .gap-2}
+<button type="button" onclick="window.location.href=&#39;#modell1&#39;" class="btn btn-primary">
+
+**Modell 1: ...**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#modell2&#39;" class="btn btn-primary">
+
+**Modell 2: ...**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#modell3&#39;" class="btn btn-primary">
+
+**Modell 3: RandomForest**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;modell4&#39;" class="btn btn-primary">
+
+**Modell 4: Neuronales Netz**
+
+</button>
+
+<button type="button" onclick="window.location.href=&#39;#modell5&#39;" class="btn btn-primary">
+
+**Modell 5: Entscheidungsbaum**
+
+</button>
+:::
+
 # Untersuchung der Daten
 
 ## Untersuchung auf Außreißer
@@ -819,12 +855,14 @@ test_data <- testing(shopping_behavior_split)
 
 ## Modell 1 (Ole Kepa)
 
-### Anwendung
-
-Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersagen, wie viele Einkäufe es in den einzelnen Altersgruppen geben wird. Dafür erstellen wir ein Modell.
+::: {#modell1}
+<h2>Vorhersage ---.</h2>
+:::
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
+
+Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersagen, wie viele Einkäufe es in den einzelnen Altersgruppen geben wird. Dafür erstellen wir ein Modell.
 
 Daten gruppieren und Zusammenzählen
 
@@ -894,22 +932,21 @@ ggplot() +
   ) +
   theme_minimal()
 ```
-:::
-:::
-
-### Bewertung
 
 Es wurde ein lineares Regressionsmodell erstellt, um die Beziehung zwischen Alter und Gesamtanzahl der Einkäufe zu untersuchen. Die Vorhersagen für Testdaten wurden mit Konfidenzintervallen präsentiert. Danach wurde ein Scatterplot erstellt, der die tatsächlichen und vorhergesagten Einkaufszahlen mit Konfidenzintervallen für verschiedene Altersgruppen vergleicht.
+:::
+:::
 
 ## Modell 2 (Ole Kepa)
+
+::: {#modell2}
+<h2>Vorhersage ---.</h2>
+:::
 
 Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetrag (Purchase_Amount) und der vorherigen Anzahl von Käufen (Previous_Purchases).
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-
-
-##Anwendung
 
 ```{r}
 
@@ -940,19 +977,20 @@ ggplot(prediction_table, aes(x = Discount_Applied, y = Predicted_Probability)) +
 
 Kommulierte Ausgabe der Warscheinlichkeiten, dass ein Rabattcode genutzt wird oder nicht (als Wert zwischen 0 und 1).
 
-## Bewertung
 Wir können sehen, dass die Wahrscheinlichkeit, dass ein Rabattcode genutzt wird, mit dem Kaufbetrag und der Anzahl der vorherigen Käufe steigt.
 :::
 :::
 
 ## Modell 3 (Fabian Elsner)
 
- Wir analysieren Daten mittels eines Machine-Learning-Modell, basierend auf Random Forests, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100$. 
-
-### Anwendung
+::: {#modell3}
+<h2>Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 75$.</h2>
+:::
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
+
+ Wir analysieren Daten mittels eines Machine-Learning-Modell, basierend auf Random Forests, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 75$. 
 
 Da nun die erforderlichen Datensätze existieren, wird nun das Modell erstellt.
 
@@ -990,18 +1028,20 @@ heatmaply(conf_matrix,
           colors = c("green", "yellow", "red"), 
           main = "Confusion Matrix")
 ```
-### Beurteilung
 
 :::
 :::
 
 ## Modell 4 (Fabian Elsner)
- Wir analysieren Daten mittels eines Machine-Learning-Modells, basierend auf neuronalen Netzen, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 100$ . 
 
-### Anwendung
+::: {#modell4}
+<h2>Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 75$.</h2>
+:::
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
+
+ Wir analysieren Daten mittels eines Machine-Learning-Modells, basierend auf neuronalen Netzen, zur Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 75$ . 
 
 Das Modell wird nun erstellt und die Vorhersagen getroffen.
 
@@ -1047,7 +1087,6 @@ heatmaply(conf_matrix,
           main = "Confusion Matrix")
 ```
 
-### Beurteilung
  In den vorherigen Abschnitten wurden zwei Modelle entwickelt, die beide Vorhersagen zur Verwendung des Shipping_Type "Express" bei einem Einkaufswert von mindestens 100$ treffen. Das erste Modell ist ein Entscheidungsbaum, das zweite Modell ein neuronales Netzwerk. Beide Modelle haben ihre Vor- und Nachteile.
 
 Der Random-Forest hat eine Accuracy von 25%. Die geringe Genauigkeit kann darauf hinweisen, dass das Modell Schwierigkeiten hat, relevante Muster in den Daten zu erkennen beziehungsweise, dass das Modell nicht optimal konfiguriert ist. Ein weiterer Grund für die niedrige Genauigkeit kann sein, dass das Modell aufgurnd von Over- oder Underfitting unzureichend generalisiert.
@@ -1060,12 +1099,14 @@ Zusammefassend lässt sich sagen, dass beide Modelle Verbesserungspotenzial aufw
 
 ## Modell 5 (Sören Bax)
 
-In diesem Modell wird ein Entscheidungsbaum erstellt, der vorhersagt, ob eine Person ein Abonnement hat oder nicht. Die Vorhersage basiert auf dem Alter und dem Geschlecht der Person.
-
-### Anwendung
+::: {#modell5}
+<h2>Vorhersage ob eine Person ein Abonnement abgeschlossen hat oder nicht.</h2>
+:::
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
+
+In diesem Modell wird ein Entscheidungsbaum erstellt, der vorhersagt, ob eine Person ein Abonnement hat oder nicht. Die Vorhersage basiert auf dem Alter und dem Geschlecht der Person.
 
 Zunächst initialisieren wir den Entscheidungsbaum:
 
@@ -1133,8 +1174,6 @@ conf_mat(data = results1, truth = Subscription_Status, estimate = .pred_class)
 Insgesamt lässt sich daher sagen, dass das Modell sehr gut trainiert wurde und eine sehr gute Vorhersage treffen kann. Zudem ist zu erkennen, dass das Alter und das Geschlecht eine sehr wichtige Rolle bei der Vorhersage spielen. Zudem ist zu erkennen, dass die Vorhersage für Frauen deutlich einfacher ist als für Männer. Jedoch ist die Vorhersage für ein Abonnement insgesamt sehr niedrig.
 :::
 :::
-
-### Beurteilung
 
 # Fazit
 
