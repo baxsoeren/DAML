@@ -1159,19 +1159,31 @@ Hier ist der Entscheidungsbaum etwas schöner dargestellt, jedoch sind die Proze
 Bestimmen wir nun den Trainingsfehler der Vorhersage:
 
 ```{r}
-pred <- predict(tree_fit_1, new_data = train_data)
-results1 <- train_data |> select(Subscription_Status) |> bind_cols(pred)
+pred <- predict(tree_fit_1, new_data = test_data)
+results1 <- test_data |> select(Subscription_Status) |> bind_cols(pred)
 accuracy(data = results1, truth = Subscription_Status, estimate = .pred_class)
 ```
 
-Wir sehen, dass der Trainingsfehler gerade einmal bei **0.736%** liegt und damit sehr gering ist.
+Wir sehen, dass die Trefferwahrscheinlichkeit bei **71.7%** liegt und damit nur ganz okay ist. Insgesamt wurden **28.3%** richtig vorhergesagt.
+
 Erstellen wir nun noch einmal die Confusion-Matrix:
 
 ```{r}
 conf_mat(data = results1, truth = Subscription_Status, estimate = .pred_class)
 ```
 
-Insgesamt lässt sich daher sagen, dass das Modell sehr gut trainiert wurde und eine sehr gute Vorhersage treffen kann. Zudem ist zu erkennen, dass das Alter und das Geschlecht eine sehr wichtige Rolle bei der Vorhersage spielen. Zudem ist zu erkennen, dass die Vorhersage für Frauen deutlich einfacher ist als für Männer. Jedoch ist die Vorhersage für ein Abonnement insgesamt sehr niedrig.
+Die Confusion-Matrix wird nun als Heatmap dargestellt.
+
+```{r}
+conf_matrix <- matrix(c(29, 19, 541, 192), nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Tatsächlich 1", "Tatsächlich 0"), c("Vorhergesagt 0", "Vorhergesagt 1")))
+
+heatmaply(conf_matrix, 
+          colors = c("red", "yellow", "green"), 
+          main = "Confusion Matrix")
+```
+
+Insgesamt lässt sich daher sagen, dass das Modell eine seher schwache Vorhersage bietet. Die Fehlerquote ist mit 28.3% sehr hoch und insgesamt wurden nur 560 von 781 Vorhersagen richtig getroffen.
 :::
 :::
 
