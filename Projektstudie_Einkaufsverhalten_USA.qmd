@@ -249,7 +249,7 @@ In dieser Arbeit sollen zudem folgende Modelle zur vorhersage verschiedener Date
 
 </button>
 
-<button type="button" onclick="window.location.href=&#39;modell4&#39;" class="btn btn-primary">
+<button type="button" onclick="window.location.href=&#39;#modell4&#39;" class="btn btn-primary">
 
 **Modell 4: Neuronales Netz**
 
@@ -539,7 +539,7 @@ Wir sehen, dass die These, dass die meisten Kunden Bar zahlen, nicht stimmt.Am h
 
 ## These 4 
 
-::: {#these2}
+::: {#these4}
 <h2>Die meisten Kunden nutzen keinen Rabattcode</h2>
 :::
 
@@ -581,7 +581,7 @@ Zusammenfassend lässt sich also sagen, dass die Hypothese, dass die meisten Kun
 
 ## These 5 
 
-::: {#these2}
+::: {#these5}
 <h2>Männer kaufen weniger Produkte als Frauen.</h2>
 :::
 
@@ -607,7 +607,7 @@ shopping_behavior |> count(Gender) |> ggplot(aes(x = Gender, y = n)) + geom_col(
 
 ## These 6 
 
-::: {#these2}
+::: {#these6}
 <h2>Im Winter werden mehr Produkte gekauft als im Sommer.</h2>
 :::
 
