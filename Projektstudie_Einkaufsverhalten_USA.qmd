@@ -73,6 +73,9 @@ if (!requireNamespace("rpart", quietly = TRUE)) {
 if (!requireNamespace("rpart.plot", quietly = TRUE)) {
   install.packages("rpart.plot")
 }
+if (!requireNamespace("skimr", quietly = TRUE)) {
+  install.packages("skimr")
+}
 if (!requireNamespace("tidyverse", quietly = TRUE)) {
   install.packages("tidyverse")
 }
@@ -101,6 +104,7 @@ library(plotly)
 library(randomForest)
 library(rpart)
 library(rpart.plot)
+library(skimr)
 library(tidyverse) 
 library(tidymodels)
 library(usmap)
@@ -208,7 +212,7 @@ Wir möchten insbesondere folgende Thesen in dieser Arbeit untersuchen:
 
 <button type="button" onclick="window.location.href=&#39;#these7&#39;" class="btn btn-primary">
 
-**These 7: Die meisten Klamotten werden im Norden gekauft.**
+**These 7: Im Norden werden wird mehr eingekaut, als im Süden.**
 
 </button>
 
@@ -271,11 +275,18 @@ Um die Daten auf außreiser zu untersuchen schauen wir uns zunächst eine Zusamm
 summary(raw_shopping_behavior)
 ```
 
+Nun schauen wir uns eine Beschreibung der Daten:
+
 ```{r}
 raw_shopping_behavior |> describe()
 ```
  
-Die Customer_ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten Schritt löschen.
+Nun schauen wir uns die Beschreibung noch einmal mit der Library skimr an:
+```{r}
+skimr::skim(raw_shopping_behavior)
+```
+
+Die Customer_ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten Schritt löschen. Zudem müssen die Felder Subscription Status, Discount Applied, Promo Code Used zu einem Faktor umgewandelt werden. Zudem sind keine Ausreißer in den Daten zu erkennen.
 
 ## Datenaufbereitung
 
@@ -638,7 +649,7 @@ ggplot(ggplot_data, aes(x = Season, fill = Season)) +
 ## These 7 
 
 ::: {#these7}
-<h2>Die meisten Klamotten werden im Norden gekauft.</h2>
+<h2>Im Norden werden wird mehr eingekaut, als im Süden.</h2>
 :::
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
@@ -695,10 +706,10 @@ leaflet() |>
   addTiles()
 ```
 
-Zum Norden gehören folgende Staaten:
+Zum Norden gehören folgende Staaten: <br>
 Washington, Oregon, Idaho, Montana, Wyoming, North Dakota, South Dakota, Nebraska, Minnesota, Iowa, Missouri, Wisconsin, Illinois, Michigan, Indiana, Ohio, Kentucky, New York, Delaware, Maryland, Vermont, West Virginia, Connecticut,  Maine, Virginia, Pennsylvania, Alaska, Massachusetts, New Hampshire,New Jersey, Rhode Island
 
-Zum Süden gehören folgende Staaten:
+Zum Süden gehören folgende Staaten: <br>
 California, Nevada, Utah, Arizona, Colorado, New Mexico, Kansas, Oklahoma, Texas, Arkansas, Louisiana, Mississippi, Tennessee, Alabama, North Carolina, South Carolina, Georgia,Florida, Hawaii
 
 Nun schauen wir uns an, wie viele Produkte im Norden und wie viele Produkte im Süden gekauft wurden:
@@ -883,14 +894,13 @@ test_data <- testing(shopping_behavior_split)
 ## Modell 1 
 
 ::: {#modell1}
-<h2>Vorhersage ---.</h2>
+<h2>Vorhersage der Einkäufe mit berücksichtigung des Alters und des Geschlechts.</h2>
 :::
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
-
-Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersagen, wie viele Einkäufe es in den einzelnen Altersgruppen geben wird. Dafür erstellen wir ein Modell.
+Wir analysieren die Daten mit Hilfe von lineare Regression. Wir wollen vorhersagen, wie viele Einkäufe eine Person tätigt, auf Basis von Alter und Geschlecht.
 
 Zunächst wird das Modell initialisiert.
 ```{r}
@@ -931,10 +941,8 @@ Das ist eigentlich nicht erforderlich, da wir bereits gesehen haben, dass das ge
 ## Modell 2 
 
 ::: {#modell2}
-<h2>Vorhersage ---.</h2>
+<h2>Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetrag (Purchase_Amount) und der vorherigen Anzahl von Käufen (Previous_Purchases).</h2>
 :::
-
-Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetrag (Purchase_Amount) und der vorherigen Anzahl von Käufen (Previous_Purchases).
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
@@ -1037,39 +1045,35 @@ heatmaply(conf_matrix,
 Das Modell wird nun erstellt und die Vorhersagen getroffen.
 
 ```{r}
-mlp_cheese_mod <- 
+neuralnetwork_1 <- 
     mlp() |>  
     set_mode("classification") |> 
     set_engine("nnet")
 ```
 
-Die Vorhersagen werden nun ausgewertet. Hierfür werden die Wahrscheinlichkeiten für das Ergebnis "Express genutzt" (Wert 1) extrahiert. Außerdem werden die Werte auf genau 1 oder 0 gerundet.
+Zunächst setzen wir den Zufallszahlengenerator auf den Startwert = 1. Hierdurch stellen wir sicher, dass unsere Ergebnisse reproduzierbar sind. Außerdem passen wir das Neuronale Netz an die Trainingsdaten an. Hierbei ist Express Shipping Used die abhängige und Purchase Amount die unabhängige Variable.
 
 ```{r}
  set.seed(1)
-  mlp_cheese_fit <- mlp_cheese_mod |> fit(Express_Shipping_Used ~ Purchase_Amount, data = train_data)
-  mlp_cheese_fit
+  neuralnetwork_fit <- neuralnetwork_1 |> fit(Express_Shipping_Used ~ Purchase_Amount, data = train_data)
+  neuralnetwork_fit
 ```
 
-Die Genauigkeit des Modells wird nun berechnet und die Confusion Matrix erstellt.
+Nun geben wir die Informationen als Zusammefassung aus.
 
 ```{r}
-mlp_cheese_fit |> extract_fit_engine() |> summary()
+neuralnetwork_fit |> extract_fit_engine() |> summary()
 ```
 
-Die Confusion Matrix wird nun als Heatmap dargestellt.
+Im Folgenden treffen für die Vorhersagen für das trainierte Modell und evualieren die Aussagen mit dem Performance-Wert "Accuracy". Außerdem zeichnen wir eine Confusion-Matrix, um die Ergebnisse besser zu veranschaulichen.
 
 ```{r}
-pred_fb <- predict(mlp_cheese_fit, test_data)
+pred_fb <- predict(neuralnetwork_fit, test_data)
 results_fb <- test_data |> dplyr::select(Express_Shipping_Used) |> bind_cols(pred_fb)
 accuracy(data = results_fb, truth = Express_Shipping_Used, estimate = .pred_class)
 
 conf_mat(data = results_fb, truth = Express_Shipping_Used, estimate = .pred_class)
-```
 
-Die Confusion-Matrix wird nun als Heatmap dargestellt.
-
-```{r}
 conf_matrix <- matrix(c(0, 254, 527, 0), nrow = 2, byrow = TRUE,
                       dimnames = list(c("Tatsächlich 1", "Tatsächlich 0"), c("Vorhergesagt 0", "Vorhergesagt 1")))
 
@@ -1078,13 +1082,13 @@ heatmaply(conf_matrix,
           main = "Confusion Matrix")
 ```
 
- In den vorherigen Abschnitten wurden zwei Modelle entwickelt, die beide Vorhersagen zur Verwendung des Shipping_Type "Express" bei einem Einkaufswert von mindestens 100$ treffen. Das erste Modell ist ein Entscheidungsbaum, das zweite Modell ein neuronales Netzwerk. Beide Modelle haben ihre Vor- und Nachteile.
+##Beurteilung der Modelle 3 und 4
 
-Der Random-Forest hat eine Accuracy von 25%. Die geringe Genauigkeit kann darauf hinweisen, dass das Modell Schwierigkeiten hat, relevante Muster in den Daten zu erkennen beziehungsweise, dass das Modell nicht optimal konfiguriert ist. Ein weiterer Grund für die niedrige Genauigkeit kann sein, dass das Modell aufgurnd von Over- oder Underfitting unzureichend generalisiert.
+Im Modell 3 wurden Random-Forests verwendet, um die Nutzung des Versandtypen "Express Shipping" ab einem Einkaufswert von 75$ vorherzusagen. Die Accuracy des Modells beträgt 66,58%. Bei einer Vorhersage von 100 Instanzen würde dies bedeuten, dass jede dritte Vorhersage falsch ist. 
 
-Das Machine-Learning Modell weist eine vergleichsweise hohe Genauigkeit von 70% auf. Offensichtlich kommt es mit den Daten besser zurecht und ist dadurch in der Lage Muster zu erkennen. auch die HeatMap zeigt ein deutlich besseres Ergebnis.
+Im Modell 4 wurde ein neuroanles Netz auf die selbe Fragestellung angewendet. Die Accuracy dieses Modells beträgt 100%. Bei einer Vorhersage von 100 Instanzen würde dies bedeuten, dass alle Vorhersagen richtig sind. Die Ergebnisse lassen sich besonders gut anhand der Confusion Matrix veranschaulichen.
 
-Zusammefassend lässt sich sagen, dass beide Modelle Verbesserungspotenzial aufweisen. Aufgrund der Ergebnise lässt sich jedoch sagen, dass das neuronale Netzwerk deutlich besser geeignet ist, um Vorhersagen zu treffen.
+Zusammenfassend lässt sich sagen, dass die Nutzung eines neuronalen Netzes wesentlich besser zur Vorhersage des Versandtypen "Express Shipping" bei einem Einkaufswert von mindestens 75$ geeignet ist, als die Verwendung von Random-Forests.
 :::
 :::
 
@@ -1182,11 +1186,11 @@ Insgesamt lässt sich daher sagen, dass das Modell eine seher schwache Vorhersag
 
 ## Bewertung
 
-Negativ: Kein Kaufdatum vorhanden, Purchase_Amount nur unter 100$
+Zum Schluss dieser Arbeit möchten wir diese nochmals kritisch betrachten. Hierzu gehen wir zunächst auf das verwendete Datenset und im Anschluss auf unsere Arbeitsweisen ein. Dabei hinterfragen wir besonders unser Vorgehen und die erzielten Ergebnisse. Das Datenset ist für für die Beantwortung unserer Thesen geeignet. Es umfasst einen Umfang von Rund 3700 Einträgen und ist somit ausreichend repräsentativ. Es gibt jedoch auch einige Kritikpunkte die wir an dieser Stelle anbringen möchten. 1. Kein Kaufdatum Bei den Datensätzen sind keine Kaufdaten hinterlegt. Dies wäre bei der Beantwortung der Thesen x und x von Vorteil gewesen, um die Thesen besser zu stützen oder sogar aufgrunddessen wiederlegen zu können. 2. Keine Umsätze über 100$ Es gibt keine Datensätze, welche einen Umsatz von über 100 $ aufweisen. 3. Keine Angabe darüber, ob Kunden mehrfach Käufe getätigt haben. Aus dem Datenset ist nicht ersichtlich, dass Kunden mehrfach Käufe getätigt haben könnten. Dies verfälscht wohlmöglich die Vorhersagen der Modelle. Es lässt sich nicht sicher sagen, dass jeder Kauf tatäschlich von einer anderen Person getätigt wurde. 4. Ungenaue Eingrenzung, ob etwas zum "Norden" oder "Süden" liegt. Die Unterteilung der USA in Nord und Süd basiert auf keinen zugrundeliegenden Informationen, sondern wurde "aus dem Gefühl" heraus vorgenommen. Dies kann zu einer Verfälschung der Ergebnisse führen, da die Einteilung nicht objektiv ist und Einträge in "Süd" strenggenommen zu "Nord" gehören könnten und anderes herum. Nun zu unserer Arbeitsweise. Allgemein sind wir strukturiert vorgegangen. Die Thesen wurden ausreichend gründlich analysiert und hinreichend belegt oder wiederlegt. Die Ergebnisse sind nachvollziehbar und die verwendeten Methoden sind angemessen. Hätte das Datenset tiefergreifende Informationen gehabt, hätten die Thesen noch tieferlegend analysiert werden können um so eine bessere Basis für das Erstellen der Modelle zu schaffen. Würden wir diese Arbeit erneut durchführen, würden wir ein anderes Datenset nehmen, welches die Informationen des Kaufdatums, der Umsätze von über 100$ beinhaltet und eine eindeutige Identifizierung des Käufers beinhaltet. So lassen sich die Vorhersagen der Modelle und Vorhersagen besser beurteilen.
 
 ## Ideen für weitere Analysen
 
-Vorhersage von weiteren Variablen, wie z.B. die Anzahl der Bestellungen, die ein Kunde tätigt.
+Vorhersage von weiteren Variablen, wie z.B. die Anzahl der Bestellungen, die ein Kunde tätigt. Analyse des Ratings
 
 # Quellen
 
@@ -1236,7 +1240,7 @@ Sören Bax:
 <li>5.5 Modell 5</li>
 </ul>
 
-Alle nicht explizit erwähnten Kapiterl wurden gemeinsam erarbeitet.
+Alle nicht explizit erwähnten Kapitel wurden gemeinsam erarbeitet.
 
 # Ehrenwörtliche Erklärung
 
