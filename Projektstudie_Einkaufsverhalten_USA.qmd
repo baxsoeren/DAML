@@ -67,9 +67,6 @@ if (!requireNamespace("randomForest", quietly = TRUE)) {
 if (!requireNamespace("rpart", quietly = TRUE)) {
   install.packages("rpart")
 }
-if (!requireNamespace("rpart", quietly = TRUE)) {
-  install.packages("rpart")
-}
 if (!requireNamespace("rpart.plot", quietly = TRUE)) {
   install.packages("rpart.plot")
 }
@@ -593,7 +590,7 @@ Zusammenfassend lässt sich also sagen, dass die Hypothese, dass die meisten Kun
 
 In dieser These wird die Hypothese geprüft, dass Männer weniger Produkte einkaufen als Frauen.
 
-Hierzu analysieren wir zunächst wie häufig die Werte "male" und "femal" in der Spalte "Gender" vorkommt:
+Hierzu analysieren wir zunächst wie häufig die Werte "male" und "female" in der Spalte "Gender" vorkommt:
 
 ```{r}
 shopping_behavior |> filter(Gender != "male") |> count(Gender)
