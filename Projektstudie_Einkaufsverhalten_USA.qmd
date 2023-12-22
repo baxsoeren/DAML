@@ -712,15 +712,21 @@ Washington, Oregon, Idaho, Montana, Wyoming, North Dakota, South Dakota, Nebrask
 Zum Süden gehören folgende Staaten: <br>
 California, Nevada, Utah, Arizona, Colorado, New Mexico, Kansas, Oklahoma, Texas, Arkansas, Louisiana, Mississippi, Tennessee, Alabama, North Carolina, South Carolina, Georgia,Florida, Hawaii
 
-Nun schauen wir uns an, wie viele Produkte im Norden und wie viele Produkte im Süden gekauft wurden:
+Nun berechnen wir, wie viele Produkte insgesamt in den Staaten im Norden und im Süden gekauft wurden:
 
 ```{r}
-shopping_behavior |> filter(Location %in% c("Washington", "Oregon", "Idaho", "Montana", "Wyoming", "North Dakota", "South Dakota", "Nebraska", "Minnesota", "Iowa", "Missouri", "Wisconsin", "Illinois", "Michigan", "Indiana", "Ohio", "Kentucky", "New York", "Delaware", "Maryland", "Vermont", "West Virginia", "Connecticut",  "Maine", "Virginia", "Pennsylvania", "Alaska", "Massachusetts", "New Hampshire", "New Jersey", "Rhode Island")) |> count(Location)
+shopping_north <- shopping_behavior |> filter(Location %in% c("Washington", "Oregon", "Idaho", "Montana", "Wyoming", "North Dakota", "South Dakota", "Nebraska", "Minnesota", "Iowa", "Missouri", "Wisconsin", "Illinois", "Michigan", "Indiana", "Ohio", "Kentucky", "New York", "Delaware", "Maryland", "Vermont", "West Virginia", "Connecticut",  "Maine", "Virginia", "Pennsylvania", "Alaska", "Massachusetts", "New Hampshire", "New Jersey", "Rhode Island")) |> count(Location)
+
+sum_north <- sum(shopping_north$n)
+
+
+shopping_south <- shopping_behavior |> filter(Location %in% c("California", "Nevada", "Utah", "Arizona", "Colorado", "New Mexico", "Kansas", "Oklahoma", "Texas", "Arkansas", "Louisiana", "Mississippi", "Tennessee", "Alabama", "North Carolina", "South Carolina", "Georgia", "Florida", "Hawaii")) |> count(Location)
+
+sum_south <- sum(shopping_south$n)
 ```
 
-```{r}
-shopping_behavior |> filter(Location %in% c("California", "Nevada", "Utah", "Arizona", "Colorado", "New Mexico", "Kansas", "Oklahoma", "Texas", "Arkansas", "Louisiana", "Mississippi", "Tennessee", "Alabama", "North Carolina", "South Carolina", "Georgia", "Florida", "Hawaii")) |> count(Location)
-```        
+Im Norden wurden insgesamt `r sum_north` Produkte gekauft, im Süden hingegen `r sum_south`. Insgesamt wurden also `r sum_north + sum_south` Produkte gekauft und somit wurden `r round(sum_north / (sum_north + sum_south) * 100, 2)`% der Produkte im Norden und `r round(sum_south / (sum_north + sum_south) * 100, 2)`% der Produkte im Süden gekauft. Die These ist damit belegt und wir können sagen, dass die meisten Produkte im Norden gekauft wurden.
+
 :::
 :::
 
