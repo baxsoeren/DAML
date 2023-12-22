@@ -1087,7 +1087,10 @@ heatmaply(conf_matrix,
           main = "Confusion Matrix")
 ```
 
-##Beurteilung der Modelle 3 und 4
+## Beurteilung der Modelle 3 und 4
+
+::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
+::: card-body
 
 Im Modell 3 wurden Random-Forests verwendet, um die Nutzung des Versandtypen "Express Shipping" ab einem Einkaufswert von 75$ vorherzusagen. Die Accuracy des Modells beträgt 66,58%. Bei einer Vorhersage von 100 Instanzen würde dies bedeuten, dass jede dritte Vorhersage falsch ist. 
 
@@ -1211,7 +1214,7 @@ Modell 2: <br>
 Theme: <br>
 <ul><li><https://bootswatch.com/minty/></li></ul>
 
-# Bearbeitungskennzeichnung
+# Bearbeitungs-kennzeichnung
 
 Ole Kepa:
 <ul>
@@ -1231,6 +1234,7 @@ Fabian Elsner:
 <li>4.6 These 6</li>
 <li>5.3 Modell 3</li>
 <li>5.4 Modell 4</li>
+<li>5.5 Bewertung Modell 4 und 5</li>
 </ul>
 
 Sören Bax:
@@ -1242,7 +1246,7 @@ Sören Bax:
 <li>4.7 These 7</li>
 <li>4.8 These 8</li>
 <li>4.9 These 9</li>
-<li>5.5 Modell 5</li>
+<li>5.6 Modell 5</li>
 </ul>
 
 Alle nicht explizit erwähnten Kapitel wurden gemeinsam erarbeitet.
