@@ -137,27 +137,27 @@ knitr::kable(head(raw_shopping_behavior), caption = "Das Spaltenformat des Daten
 
 Jede Zeile steht für einen Einkauf. Die Spalten sind wie folgt definiert:
 
-| Variable                   | Typ | Bedeutung                                      |
-|:-----------------------|:--------------|:--------------------------------|
-| **Customer_ID**            | dbl | Eindeutige Kunden Identifikationsnummer        |
-| **Age**                    | dbl | Alter des Kundens                              |
-| **Gender**                 | chr | Geschlecht des Kundens                         |
-| **Item_Purchased**         | chr | Gekauftes Produkt                              |
-| **Category**               | chr | Kategorie des gekauften Produkts               |
-| **Purchase_Amount**        | dbl | Bezahlter Preis                                |
-| **Location**               | chr | Ort des Kaufes                                 |
-| **Size**                   | chr | Konfektionsgröße des gekauften Produkts        |
-| **Color**                  | chr | Farbe des gekauften Produkts                   |
-| **Season**                 | chr | Jahreszeit, in welcher der Kauf getätigt wurde |
-| **Review_Rating**          | dbl | Kundenbewertungen zum Produkt                  |
-| **Subscription_Status**    | chr | Status des Abonnements                         |
-| **Payment_Method**         | chr | Zahlungsmethode                                |
-| **Shipping_Type**          | chr | Versandart                                     |
-| **Discount_Applied**       | chr | Rabattcode genutzt?                            |
-| **Promo_Code_Used**        | chr | Werbecode genutzt?                             |
-| **Previous_Purchases**     | dbl | Anzahl vorheriger Käufe                        |
-| **Payment_Method**         | chr | Bevorzugte Zahlungsmethode                     |
-| **Frequency_of_Purchases** | chr | Häufigkeit von Käufen                          |
+| Variable                   | Typ | Bedeutung                                                           |
+|:---------------------------|:----|:--------------------------------------------------------------------|
+| **Customer ID**            | dbl | Eindeutige Kunden Identifikationsnummer                             |
+| **Age**                    | dbl | Alter des Kundens                                                   |
+| **Gender**                 | chr | Geschlecht des Kundens                                              |
+| **Item Purchased**         | chr | Gekauftes Produkt                                                   |
+| **Category**               | chr | Kategorie des gekauften Produkts                                    |
+| **Purchase Amount**        | dbl | Bezahlter Preis                                                     |
+| **Location**               | chr | Ort des Kaufes                                                      |
+| **Size**                   | chr | Konfektionsgröße des gekauften Produkts                             |
+| **Color**                  | chr | Farbe des gekauften Produkts                                        |
+| **Season**                 | chr | Jahreszeit, in welcher der Kauf getätigt wurde                      |
+| **Review Rating**          | dbl | Kundenbewertungen zum Produkt                                       |
+| **Subscription Status**    | chr | Status des Abonnements                                              |
+| **Payment Method**         | chr | Zahlungsmethode                                                     |
+| **Shipping Type**          | chr | Versandart                                                          |
+| **Discount Applied**       | chr | Zeigt an, ob für den Kauf Aktionsrabatte gewährt wurden             |
+| **Promo Code Used**        | chr | Zeigt an, ob bei ein Aktionscode oder ein Gutschein verwendet wurde |
+| **Previous Purchases**     | dbl | Anzahl vorheriger Käufe                                             |
+| **Payment Method**         | chr | Verwendete Zahlungsart                                              |
+| **Frequency of Purchases** | chr | Häufigkeit von Käufen                                               |
 
 ```{r}
 describe_tbl(raw_shopping_behavior)
@@ -232,13 +232,13 @@ In dieser Arbeit sollen zudem folgende Modelle zur vorhersage verschiedener Date
 ::: {.d-grid .gap-2}
 <button type="button" onclick="window.location.href=&#39;#modell1&#39;" class="btn btn-primary">
 
-**Modell 1: ...**
+**Modell 1: lineare Regression**
 
 </button>
 
 <button type="button" onclick="window.location.href=&#39;#modell2&#39;" class="btn btn-primary">
 
-**Modell 2: ...**
+**Modell 2: logistische Regression**
 
 </button>
 
@@ -279,10 +279,16 @@ Die Customer_ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten
 
 ## Datenaufbereitung
 
+Zunächst ändern wir alle Spalten so um, dass die Leerzeichen durch Unterstriche ersetzt werden:
+
+```{r}
+raw_shopping_behavior <- raw_shopping_behavior |> rename_with(~str_replace_all(., " ", "_"))
+```
+
 Nun erstellen wir den finalen Datensatz, welcher die Basis für die weitere Analyse bildet. Zunächst löschen wir die Spalte "Customer_ID", da diese für Analysen nicht verwertbar ist:
 
 ```{r}
-shopping_behavior <- raw_shopping_behavior |> select(-"Customer_ID")
+shopping_behavior <- raw_shopping_behavior |> select(-Customer_ID)
 ```
 
 Des Weiteren ändern wir die Spalten Subscription_Status, Discount_Applied, Promo_Code_Used in Faktoren um, da diese nur die Werte "Yes" und "No" annehmen können:
@@ -293,7 +299,7 @@ shopping_behavior$Discount_Applied <- as.factor(shopping_behavior$Discount_Appli
 shopping_behavior$Promo_Code_Used <- as.factor(shopping_behavior$Promo_Code_Used)
 ```
 
-Zudem erstellen wir noch die Spalte Express_Shipping_Used, welche für einen Purchase_Amount von über 100 "Yes"  und für einen Purchase_amount von unter 100 "No" ist. Die Spalte wird hinterher in Modell 3 und 4 genutzt.
+Zudem erstellen wir noch die Spalte Express_Shipping_Used, welche für einen Purchase_Amount von über 100 "Yes" und für einen Purchase_amount von unter 100 "No" ist. Des Weiteren wird eine Spalte für die Gender_ID erstellt, welche für Männer 1 und für Frauen 0 ist. Die Spalten sind hinterher in Modell 1, 3 und 4 relevant.
 
 ```{r}
 shopping_behavior <- shopping_behavior |> mutate(
@@ -314,7 +320,7 @@ knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen D
 
 Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse untersucht.
 
-## These 1 (Ole Kepa)
+## These 1 
 
 ::: {#these1}
 <h2>Die meisten Personen kaufen wöchentlich ein.</h2>
@@ -368,7 +374,7 @@ Wir sehen, dass die meisten Personen wöchentlich einkaufen. Die zweitmeisten Pe
 :::
 :::
 
-## These 2 (Ole Kepa)
+## These 2 
 
 ::: {#these2}
 <h2>Die meisten Klamotten sind in den Farben Schwarz, Weiß oder Grau.</h2>
@@ -424,7 +430,7 @@ Dies zeigt uns, dass die These, dass die Farben Schwarz, Grau und Weiß am häuf
 
 ```{r}
 data <- shopping_behavior |>
-  count(Color)
+  count(Color)|> mutate(Color = reorder(Color, desc(n)))
 
 color_palette <- c(
   "Gray" = "#808080",
@@ -467,7 +473,7 @@ ggplot(data, aes(x = Color, y = n, fill = Color)) +
 :::
 :::
 
-## These 3 (Ole Kepa)
+## These 3 
 
 ::: {#these3}
 <h2>Die meisten Kunden zahlen Bar.</h2>
@@ -523,7 +529,7 @@ Wir sehen, dass die These, dass die meisten Kunden Bar zahlen, nicht stimmt.Am h
 :::
 :::
 
-## These 4 (Fabian Elsner)
+## These 4 
 
 ::: {#these2}
 <h2>Die meisten Kunden nutzen keinen Rabattcode</h2>
@@ -565,7 +571,7 @@ Zusammenfassend lässt sich also sagen, dass die Hypothese, dass die meisten Kun
 :::
 :::
 
-## These 5 (Fabian Elsner)
+## These 5 
 
 ::: {#these2}
 <h2>Männer kaufen weniger Produkte als Frauen.</h2>
@@ -591,7 +597,7 @@ shopping_behavior |> count(Gender) |> ggplot(aes(x = Gender, y = n)) + geom_col(
 :::
 :::
 
-## These 6 (Fabian Elsner)
+## These 6 
 
 ::: {#these2}
 <h2>Im Winter werden mehr Produkte gekauft als im Sommer.</h2>
@@ -629,7 +635,7 @@ ggplot(ggplot_data, aes(x = Season, fill = Season)) +
 :::
 :::
 
-## These 7 (Sören Bax)
+## These 7 
 
 ::: {#these7}
 <h2>Die meisten Klamotten werden im Norden gekauft.</h2>
@@ -639,21 +645,20 @@ ggplot(ggplot_data, aes(x = Season, fill = Season)) +
 ::: card-body
 
 
-Zunächst schauen wir uns einmal alle vorhandenen Orte an:
+Zunächst schauen wir uns einmal die ersten 5 vorhandenen Orte an:
 
 ```{r}
-shopping_behavior |> distinct(Location)
+shopping_behavior |> distinct(Location) |> head(5)
 ```
 
-Wir sehen, dass es `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
+Wir sehen, dass es insgesamt `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Location))
 print(shopping_behavior |> count(Location) |> arrange(desc(n)) , n = rows)
 ```
 
-Nun erstellen wir eine Heatmap über die Häufigkeit der Orte:
-
+Da die Orte alle nur in den USA liegen, können wir mit der Library usmap die Orte auf einer Karte als Heatmap darstellen:
 
 ```{r}
 # Werte aus der Tabelle shopping_behavior übernommen
@@ -679,16 +684,36 @@ plot_usmap(data = df, values = "occurrence", color = "black", labels = TRUE) +
 
 ```
 
+Für die untersuchung der These definieren wir nun die Grenze zwischen Norden und Süden. Diese ist in der Abbildung unten eingezeichnet. Dabei gilt zu erwähnen, dass Alaska noch zum Norden gehört, Hawaii jedoch zum Süden.
+
 <img src="./pictures/USA_North_South.png"/>
+
+Hier ist noch einmal eine Weltkarte, damit man nochmal nachschauen kann, welches Kürzel in der obigen Karte zu welchem Staat gehört:
 
 ```{r}
 leaflet() |>
   addTiles()
 ```
+
+Zum Norden gehören folgende Staaten:
+Washington, Oregon, Idaho, Montana, Wyoming, North Dakota, South Dakota, Nebraska, Minnesota, Iowa, Missouri, Wisconsin, Illinois, Michigan, Indiana, Ohio, Kentucky, New York, Delaware, Maryland, Vermont, West Virginia, Connecticut,  Maine, Virginia, Pennsylvania, Alaska, Massachusetts, New Hampshire,New Jersey, Rhode Island
+
+Zum Süden gehören folgende Staaten:
+California, Nevada, Utah, Arizona, Colorado, New Mexico, Kansas, Oklahoma, Texas, Arkansas, Louisiana, Mississippi, Tennessee, Alabama, North Carolina, South Carolina, Georgia,Florida, Hawaii
+
+Nun schauen wir uns an, wie viele Produkte im Norden und wie viele Produkte im Süden gekauft wurden:
+
+```{r}
+shopping_behavior |> filter(Location %in% c("Washington", "Oregon", "Idaho", "Montana", "Wyoming", "North Dakota", "South Dakota", "Nebraska", "Minnesota", "Iowa", "Missouri", "Wisconsin", "Illinois", "Michigan", "Indiana", "Ohio", "Kentucky", "New York", "Delaware", "Maryland", "Vermont", "West Virginia", "Connecticut",  "Maine", "Virginia", "Pennsylvania", "Alaska", "Massachusetts", "New Hampshire", "New Jersey", "Rhode Island")) |> count(Location)
+```
+
+```{r}
+shopping_behavior |> filter(Location %in% c("California", "Nevada", "Utah", "Arizona", "Colorado", "New Mexico", "Kansas", "Oklahoma", "Texas", "Arkansas", "Louisiana", "Mississippi", "Tennessee", "Alabama", "North Carolina", "South Carolina", "Georgia", "Florida", "Hawaii")) |> count(Location)
+```        
 :::
 :::
 
-## These 8 (Sören Bax)
+## These 8 
 
 ::: {#these8}
 <h2>Die Kategorie "Clothing" wird am meisten im Herbst gekauft.</h2>
@@ -766,7 +791,7 @@ Die These ist damit widerlegt. Die meisten Einkäufe der Kategorie "Clothing" wu
 :::
 :::
 
-## These 9 (Sören Bax)
+## These 9 
 ::: {#these9}
 <h2>Die meisten Einkäufe wurden von Personen über 40 Jahre getätigt.</h2>
 :::
@@ -855,7 +880,7 @@ train_data <- training(shopping_behavior_split)
 test_data <- testing(shopping_behavior_split)
 ```
 
-## Modell 1 (Ole Kepa)
+## Modell 1 
 
 ::: {#modell1}
 <h2>Vorhersage ---.</h2>
@@ -903,7 +928,7 @@ Das ist eigentlich nicht erforderlich, da wir bereits gesehen haben, dass das ge
 :::
 :::
 
-## Modell 2 (Ole Kepa)
+## Modell 2 
 
 ::: {#modell2}
 <h2>Vorhersage ---.</h2>
@@ -914,22 +939,22 @@ Vorhersage des Discount_Applied (Rabattcode genutzt) basierend auf dem Kaufbetra
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
 
+Zunächst erstellen wir das Modell und trainieren es mit den Trainingsdaten.
 ```{r}
-
-# Modell erstellen (logistische Regression)
 logistic_model <- glm(Discount_Applied ~ Purchase_Amount + Previous_Purchases, data = train_data, family = "binomial")
+```
 
-# Vorhersagen für Testdaten
+Nun erdtellen wir die Vorhersage und eine Vorhersagetabelle:
+```{r}
 predictions <- predict(logistic_model, newdata = test_data, type = "response")
 
-# Vorhersagen in Tabelle zusammenfassen
 prediction_table <- data.frame(Discount_Applied = test_data$Discount_Applied, Predicted_Probability = predictions)
+```
 
-# Tabelle ausgeben mit 10 ergebnissen und vermerken, dass es mehr gibt.
+Jetzt geben wir die ersten 10 Zeilen der Tabelle aus und erstellen eine visuelle Darstellung der Vorhersagen.
+```{r}
 print(head(prediction_table, 10))
 
-
-# visuelle Darstellung der Vorhersagen
 ggplot(prediction_table, aes(x = Discount_Applied, y = Predicted_Probability)) +
   geom_boxplot() +
   labs(
@@ -947,7 +972,7 @@ Wir können sehen, dass die Wahrscheinlichkeit, dass ein Rabattcode genutzt wird
 :::
 :::
 
-## Modell 3 (Fabian Elsner)
+## Modell 3 
 
 ::: {#modell3}
 <h2>Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 75$.</h2>
@@ -998,7 +1023,7 @@ heatmaply(conf_matrix,
 :::
 :::
 
-## Modell 4 (Fabian Elsner)
+## Modell 4 
 
 ::: {#modell4}
 <h2>Vorhersage der Verwendung des Shipping_Type "Express" ab einem Einkaufswert von 75$.</h2>
@@ -1063,7 +1088,7 @@ Zusammefassend lässt sich sagen, dass beide Modelle Verbesserungspotenzial aufw
 :::
 :::
 
-## Modell 5 (Sören Bax)
+## Modell 5
 
 ::: {#modell5}
 <h2>Vorhersage ob eine Person ein Abonnement abgeschlossen hat oder nicht.</h2>
@@ -1170,10 +1195,48 @@ Datenset: <br>
 US-Map: <br>
 <ul><li><https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html></li>
 <li><https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html></li></ul>
-Heatmaply:
+Heatmaply: <br>
 <ul><li><https://cran.r-project.org/web/packages/heatmaply/vignettes/heatmaply.html></li></ul>
+Modell 2: <br>
+<ul><li><https://www.statology.org/r-glm-predict/#:~:text=predict(object%2C%20newdata%2C%20type,type%20of%20prediction%20to%20make.></li></ul>
 Theme: <br>
 <ul><li><https://bootswatch.com/minty/></li></ul>
+
+# Bearbeitungskennzeichnung
+
+Ole Kepa:
+<ul>
+<li>2.2 Buttons</li>
+<li>4.1 These 1</li>
+<li>4.2 These 2</li>
+<li>4.3 These 3</li>
+<li>5.1 Modell 1</li>
+<li>5.2 Modell 2</li>
+</ul>
+
+Fabian Elsner:
+<ul>
+<li>2.1 Beschreibung der Datenquelle</li>
+<li>4.4 These 4</li>
+<li>4.5 These 5</li>
+<li>4.6 These 6</li>
+<li>5.3 Modell 3</li>
+<li>5.4 Modell 4</li>
+</ul>
+
+Sören Bax:
+<ul>
+<li>2 Aufgabe und Daten verstehen</li>
+<li>2.1 Beschreibung der Datenquelle</li>
+<li>2.3 Buttons</li>
+<li>3 Untersuchung der Daten</li>
+<li>4.7 These 7</li>
+<li>4.8 These 8</li>
+<li>4.9 These 9</li>
+<li>5.5 Modell 5</li>
+</ul>
+
+Alle nicht explizit erwähnten Kapiterl wurden gemeinsam erarbeitet.
 
 # Ehrenwörtliche Erklärung
 
