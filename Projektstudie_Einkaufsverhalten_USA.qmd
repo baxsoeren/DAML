@@ -267,6 +267,8 @@ In dieser Arbeit sollen zudem folgende Modelle zur vorhersage verschiedener Date
 
 # Untersuchung der Daten
 
+In diesem Kapitel werden die Daten untersucht. Zunächst werden die Daten auf Ausreißer untersucht. Anschließend werden die Daten aufbereitet und der finale Datensatz erstellt.
+
 ## Untersuchung auf Außreißer
 
 Um die Daten auf außreiser zu untersuchen schauen wir uns zunächst eine Zusammenfassung der Daten an:
@@ -329,7 +331,7 @@ knitr::kable(head(shopping_behavior), caption = "Das Spaltenformat des finalen D
 
 # Untersuchung der Thesen
 
-Im folgenden werden die Thesen mit den Methoden der emplorativen Datenanalyse untersucht.
+Im diesem Kaptiel werden die Thesen mit den Methoden der emplorativen Datenanalyse untersucht und belegt oder widerlegt.
 
 ## These 1 
 
@@ -661,7 +663,7 @@ Zunächst berechnen wir einmal, wie viele Orte es gibt:
 locations <- nrow(shopping_behavior |> distinct(Location))
 ```
 
-Wir sehen, dass es insgesamt `r locations`` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
+Wir sehen, dass es insgesamt `r locations` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Location))
@@ -724,7 +726,7 @@ shopping_south <- shopping_behavior |> filter(Location %in% c("California", "Nev
 sum_south <- sum(shopping_south$n)
 ```
 
-Im Norden wurden insgesamt `r sum_north` Produkte gekauft, im Süden hingegen `r sum_south`. Insgesamt wurden also `r sum_north + sum_south` Produkte gekauft und somit wurden `r round(sum_north / (sum_north + sum_south) * 100, 2)`% der Produkte im Norden und `r round(sum_south / (sum_north + sum_south) * 100, 2)`% der Produkte im Süden gekauft. Die These ist damit belegt und wir können sagen, dass die meisten Produkte im Norden gekauft wurden.
+Im Norden wurden insgesamt **`r sum_north`** Produkte gekauft, im Süden hingegen **`r sum_south`**. Insgesamt wurden also **`r sum_north + sum_south`** Produkte gekauft und somit wurden **`r round(sum_north / (sum_north + sum_south) * 100, 2)`%** der Produkte im Norden und **`r round(sum_south / (sum_north + sum_south) * 100, 2)`%** der Produkte im Süden gekauft. Die These ist damit belegt und wir können sagen, dass die meisten Produkte im Norden gekauft wurden.
 
 :::
 :::
@@ -885,6 +887,7 @@ Es sind **`r over_forty`** Einkäufer über 40 Jahre alt und **`r under_forty`**
 
 # Anwendung und Beurteilung von Machine-Learning-Modellen
 
+In diesem Kapitel werden verschiedene Machine-Learning-Modelle angewendet und beurteilt. <br>
 Zunächst erstellen wir Test- und Trainingsdaten für die Modelle:
 
 ```{r}
@@ -957,7 +960,7 @@ Zunächst erstellen wir das Modell und trainieren es mit den Trainingsdaten.
 logistic_model <- glm(Discount_Applied ~ Purchase_Amount + Previous_Purchases, data = train_data, family = "binomial")
 ```
 
-Nun erdtellen wir die Vorhersage und eine Vorhersagetabelle:
+Nun erstellen wir die Vorhersage und eine Vorhersagetabelle:
 ```{r}
 predictions <- predict(logistic_model, newdata = test_data, type = "response")
 
@@ -1194,6 +1197,8 @@ Insgesamt lässt sich daher sagen, dass das Modell eine seher schwache Vorhersag
 
 # Fazit
 
+In diesem Kapitel wird wird die Arbeit kritisch betrachtet und bewertet. Zudem werden Ideen für weitere Analysen gegeben.
+
 ## Bewertung
 
 Zum Schluss dieser Arbeit möchten wir diese nochmals kritisch betrachten. Hierzu gehen wir zunächst auf das verwendete Datenset und im Anschluss auf unsere Arbeitsweisen ein. Dabei hinterfragen wir besonders unser Vorgehen und die erzielten Ergebnisse. Das Datenset ist für die Beantwortung unserer Thesen geeignet. Es umfasst einen Umfang von 3900 Einträgen und ist somit ausreichend repräsentativ. Es gibt jedoch auch einige Kritikpunkte die wir an dieser Stelle anbringen möchten. <br>
@@ -1217,14 +1222,16 @@ Zudem könnte versucht werden vorhzusagen, wie glücklich die Käufer mit dem Ka
 
 ### Vorhersage des Shipping Types
 
-
+Es könnte versucht werden vorherzusagen, welchen Versandtyp ein Kunde wählt. Die Vorhersage könnte dabei auf Alter, Geschlecht und der Anzahl der vorherigen Käufe basieren. Die Vorhersage könnte auch auf den Kaufpreis bezogen sein.
 
 ### Genauere Analyse nach Geschlecht und Alter
 
+Eine weitere Idee ist, dass es noch genauere Analysen mit dem Geschlecht und dem Alter gibt. Es könnte geprüft werden, ob es Unterschiedliche Kaufverhalten je nach Alter gibt und ob das Geschlecht einen Einfluss auf das Kaufverhalten hat. <br>
+Zudem könnte versucht werden vorherzusagen, ob ein Kunde männlich oder weiblich ist. Die Vorhersage könnte dabei auf Alter und der Anzahl der vorherigen Käufe basieren. Die Vorhersage könnte auch auf den Kaufpreis bezogen sein.
 
 ###  Vorhersage der Anzahl der Käufe pro Kategorie
 
-
+Es könnte versucht werden vorherzusagen, wie viele Käufe ein Kunde in einer bestimmten Kategorie tätigt. Die Vorhersage könnte dabei auf Alter, Geschlecht und der Anzahl der vorherigen Käufe basieren. Die Vorhersage könnte auch auf den Kaufpreis oder auf die Bezahlmethode bezogen sein.
 
 # Quellen
 
