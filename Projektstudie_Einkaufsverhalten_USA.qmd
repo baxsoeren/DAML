@@ -713,7 +713,8 @@ Washington, Oregon, Idaho, Montana, Wyoming, North Dakota, South Dakota, Nebrask
 Zum Süden gehören folgende Staaten: <br>
 California, Nevada, Utah, Arizona, Colorado, New Mexico, Kansas, Oklahoma, Texas, Arkansas, Louisiana, Mississippi, Tennessee, Alabama, North Carolina, South Carolina, Georgia,Florida, Hawaii
 
-Nun berechnen wir, wie viele Produkte insgesamt in den Staaten im Norden und im Süden gekauft wurden:
+In der Heatmap ist zu sehen, dass die Staaten im Norden vermutlich mehr Kaufen, als im Süden. Dies ist zu Erkennen, da mehr Staaten im Norden dunkel gefärbt sind, als Staaten im Süden.<br>
+Nun berechnen wir, wie viele Produkte insgesamt in den Staaten im Norden und im Süden gekauft wurden, um unsere vermutung der Heatmap zu beweisen.
 
 ```{r}
 shopping_north <- shopping_behavior |> filter(Location %in% c("Washington", "Oregon", "Idaho", "Montana", "Wyoming", "North Dakota", "South Dakota", "Nebraska", "Minnesota", "Iowa", "Missouri", "Wisconsin", "Illinois", "Michigan", "Indiana", "Ohio", "Kentucky", "New York", "Delaware", "Maryland", "Vermont", "West Virginia", "Connecticut",  "Maine", "Virginia", "Pennsylvania", "Alaska", "Massachusetts", "New Hampshire", "New Jersey", "Rhode Island")) |> count(Location)
@@ -1191,7 +1192,7 @@ heatmaply(conf_matrix,
           main = "Confusion Matrix")
 ```
 
-Insgesamt lässt sich daher sagen, dass das Modell eine seher schwache Vorhersage bietet. Die Fehlerquote ist mit 28.3% sehr hoch und insgesamt wurden nur 560 von 781 Vorhersagen richtig getroffen.
+Insgesamt lässt sich daher sagen, dass das Modell eine eher schwache Vorhersage bietet. Die Fehlerquote ist mit 28.3% sehr hoch und insgesamt wurden nur 560 von 781 Vorhersagen richtig getroffen.
 :::
 :::
 
