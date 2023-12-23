@@ -2,9 +2,10 @@
 title: "Einkaufsgewohnheiten in den USA"
 title-block-banner: true
 lang: de
-author: Ole Kepa,<br>
-        Fabian Elsner,<br>
-        Sören Bax
+author:
+  - name: Ole Kepa,
+  - name: Fabian Elsner,<br>
+  - name: Sören Bax
 format: 
   html: 
     theme: minty
@@ -124,7 +125,7 @@ Dieses Datenset beinhaltet insgesamt zwei CSV-Dateien, welche sich jedoch nur in
 
 ## Beschreibung der Datenquelle
 
-Laden wir zuerst die Daten:
+Laden wir zuerst die Daten (die benötigten Pakete wurden im Hintergrund heruntergeladen und geladen):
 
 ```{r, message=FALSE}
 raw_shopping_behavior <- read_csv('./data/shopping_behavior_updated.csv')
@@ -138,27 +139,27 @@ knitr::kable(head(raw_shopping_behavior), caption = "Das Spaltenformat des Daten
 
 Jede Zeile steht für einen Einkauf. Die Spalten sind wie folgt definiert:
 
-| Variable                   | Typ | Bedeutung                                                           |
-|:---------------------------|:----|:--------------------------------------------------------------------|
-| **Customer ID**            | dbl | Eindeutige Kunden Identifikationsnummer                             |
-| **Age**                    | dbl | Alter des Kundens                                                   |
-| **Gender**                 | chr | Geschlecht des Kundens                                              |
-| **Item Purchased**         | chr | Gekauftes Produkt                                                   |
-| **Category**               | chr | Kategorie des gekauften Produkts                                    |
-| **Purchase Amount**        | dbl | Bezahlter Preis                                                     |
-| **Location**               | chr | Ort des Kaufes                                                      |
-| **Size**                   | chr | Konfektionsgröße des gekauften Produkts                             |
-| **Color**                  | chr | Farbe des gekauften Produkts                                        |
-| **Season**                 | chr | Jahreszeit, in welcher der Kauf getätigt wurde                      |
-| **Review Rating**          | dbl | Kundenbewertungen zum Produkt                                       |
-| **Subscription Status**    | chr | Status des Abonnements                                              |
-| **Payment Method**         | chr | Zahlungsmethode                                                     |
-| **Shipping Type**          | chr | Versandart                                                          |
-| **Discount Applied**       | chr | Zeigt an, ob für den Kauf Aktionsrabatte gewährt wurden             |
-| **Promo Code Used**        | chr | Zeigt an, ob bei ein Aktionscode oder ein Gutschein verwendet wurde |
-| **Previous Purchases**     | dbl | Anzahl vorheriger Käufe                                             |
-| **Payment Method**         | chr | Verwendete Zahlungsart                                              |
-| **Frequency of Purchases** | chr | Häufigkeit von Käufen                                               |
+| Variable                   | Typ | Bedeutung                                                  |
+|:---------------------------|:----|:-----------------------------------------------------------|
+| **Customer ID**            | dbl | Eindeutige Kunden Identifikationsnummer                    |
+| **Age**                    | dbl | Alter des Kundens                                          |
+| **Gender**                 | chr | Geschlecht des Kundens                                     |
+| **Item Purchased**         | chr | Gekauftes Produkt                                          |
+| **Category**               | chr | Kategorie des gekauften Produkts                           |
+| **Purchase Amount**        | dbl | Bezahlter Preis                                            |
+| **Location**               | chr | Ort des Kaufes                                             |
+| **Size**                   | chr | Konfektionsgröße des gekauften Produkts                    |
+| **Color**                  | chr | Farbe des gekauften Produkts                               |
+| **Season**                 | chr | Jahreszeit, in welcher der Kauf getätigt wurde             |
+| **Review Rating**          | dbl | Kundenbewertungen zum Produkt                              |
+| **Subscription Status**    | chr | Status des Abonnements                                     |
+| **Payment Method**         | chr | Zahlungsmethode                                            |
+| **Shipping Type**          | chr | Versandart                                                 |
+| **Discount Applied**       | chr | Zeigt an, ob für den Kauf Aktionsrabatte gewährt wurden    |
+| **Promo Code Used**        | chr | Zeigt an, ob bei ein Aktionscode/Gutschein verwendet wurde |
+| **Previous Purchases**     | dbl | Anzahl vorheriger Käufe                                    |
+| **Payment Method**         | chr | Verwendete Zahlungsart                                     |
+| **Frequency of Purchases** | chr | Häufigkeit von Käufen                                      |
 
 ```{r}
 describe_tbl(raw_shopping_behavior)
@@ -289,7 +290,7 @@ Die Customer_ID ist für Analysen nicht verwertbar. Wir können Sie im nächsten
 
 ## Datenaufbereitung
 
-Zunächst ändern wir alle Spalten so um, dass die Leerzeichen durch Unterstriche ersetzt werden:
+Zunächst ändern wir alle Spalten so um, dass die Leerzeichen durch Unterstriche ersetzt werden. Dies machen wir, um eine Namenskonvention zu haben, die uns die Arbeit erleichtert. Zudem ist der Zugriff auf die Spalten einfacher.
 
 ```{r}
 raw_shopping_behavior <- raw_shopping_behavior |> rename_with(~str_replace_all(., " ", "_"))
@@ -653,15 +654,14 @@ ggplot(ggplot_data, aes(x = Season, fill = Season)) +
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-
-
-Zunächst schauen wir uns einmal die ersten 5 vorhandenen Orte an:
+In dieser These wird die Hypothese geprüft, dass im Norden mehr eingekauft wird als im Süden.
+Zunächst berechnen wir einmal, wie viele Orte es gibt:
 
 ```{r}
-shopping_behavior |> distinct(Location) |> head(5)
+locations <- nrow(shopping_behavior |> distinct(Location))
 ```
 
-Wir sehen, dass es insgesamt `r nrow(shopping_behavior |> distinct(Location))` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
+Wir sehen, dass es insgesamt `r locations`` Orte gibt. Nun schauen wir uns die Häufigkeit der einzelnen Orte an:
 
 ```{r}
 rows <- nrow(shopping_behavior |> distinct(Location))
@@ -814,7 +814,7 @@ Die These ist damit widerlegt. Die meisten Einkäufe der Kategorie "Clothing" wu
 
 ::: {.card .text-white .bg-primary .mb-3 style="max-width: 90rem;"}
 ::: card-body
-
+In dieser These wird die Hypothese geprüft, dass die meisten Einkäufe wurden von Personen über 40 Jahre getätigt.
 Zunächst suchen wir den Eintrag mit dem höchsten Alter heraus:
 
 ```{r}
@@ -1086,6 +1086,8 @@ heatmaply(conf_matrix,
           colors = c("red", "yellow", "green"), 
           main = "Confusion Matrix")
 ```
+:::
+:::
 
 ## Beurteilung der Modelle 3 und 4
 
@@ -1147,7 +1149,7 @@ yval gibt den Wert der Vorhersagevariablen gemäß des Baums/Modells in diesem K
 
 (yprob) gibt die Wahrscheinlichkeiten einer korrekten bzw. einer falschen Zuordnung an, aufgeteilt auf die Klassen und bezogen auf die Vorhersage yval.
 
-* bedeutet, dass dieser Knoten ein Endknoten bzw. ein Blatt des Baumes ist und danach kein weiterer Knoten bzw. keine Merkmalsbedingung im Baum mehr erfolgt.
+'*' bedeutet, dass dieser Knoten ein Endknoten bzw. ein Blatt des Baumes ist und danach kein weiterer Knoten bzw. keine Merkmalsbedingung im Baum mehr erfolgt.
 
 Zu erkennen ist, dass es insgesamt nur 5 Endknoten mit der Vorhersage "Yes" gibt und 10 mit der Vorhersage "No". Die Wahrscheinlichkeit, dass jemand ein Abonnement hat, ist also relativ gering. Insgesamt ca. 2,76% (0.5897436 + 0.5454545 + 0.5348837 + 0.5294118 + 0.5581395). Zudem ist erkennbar, dass die Wahrscheinlichkeit bei Frauen bei 0% liegen. Nun schauen wir uns den Entscheidungsbaum einmal geplottet an:
 
@@ -1159,7 +1161,7 @@ tree_fit_1 |>
 
 Hier ist der Entscheidungsbaum etwas schöner dargestellt, jedoch sind die Prozentzahlen mehr gerundet, weswegen für die Vorhersage für ein Abonnement nun bei 5% liegt.
 
-Bestimmen wir nun den Trainingsfehler der Vorhersage:
+Bestimmen wir nun die Trefferwahrscheinlichkeit:
 
 ```{r}
 pred <- predict(tree_fit_1, new_data = test_data)
@@ -1167,7 +1169,7 @@ results1 <- test_data |> select(Subscription_Status) |> bind_cols(pred)
 accuracy(data = results1, truth = Subscription_Status, estimate = .pred_class)
 ```
 
-Wir sehen, dass die Trefferwahrscheinlichkeit bei **71.7%** liegt und damit nur ganz okay ist. Insgesamt wurden **28.3%** richtig vorhergesagt.
+Wir sehen, dass die Trefferwahrscheinlichkeit bei **71.7%** liegt und damit nur ganz okay ist. Insgesamt wurden **28.3%** falsch vorhergesagt.
 
 Erstellen wir nun noch einmal die Confusion-Matrix:
 
@@ -1194,11 +1196,35 @@ Insgesamt lässt sich daher sagen, dass das Modell eine seher schwache Vorhersag
 
 ## Bewertung
 
-Zum Schluss dieser Arbeit möchten wir diese nochmals kritisch betrachten. Hierzu gehen wir zunächst auf das verwendete Datenset und im Anschluss auf unsere Arbeitsweisen ein. Dabei hinterfragen wir besonders unser Vorgehen und die erzielten Ergebnisse. Das Datenset ist für für die Beantwortung unserer Thesen geeignet. Es umfasst einen Umfang von Rund 3700 Einträgen und ist somit ausreichend repräsentativ. Es gibt jedoch auch einige Kritikpunkte die wir an dieser Stelle anbringen möchten. 1. Kein Kaufdatum Bei den Datensätzen sind keine Kaufdaten hinterlegt. Dies wäre bei der Beantwortung der Thesen x und x von Vorteil gewesen, um die Thesen besser zu stützen oder sogar aufgrunddessen wiederlegen zu können. 2. Keine Umsätze über 100$ Es gibt keine Datensätze, welche einen Umsatz von über 100 $ aufweisen. 3. Keine Angabe darüber, ob Kunden mehrfach Käufe getätigt haben. Aus dem Datenset ist nicht ersichtlich, dass Kunden mehrfach Käufe getätigt haben könnten. Dies verfälscht wohlmöglich die Vorhersagen der Modelle. Es lässt sich nicht sicher sagen, dass jeder Kauf tatäschlich von einer anderen Person getätigt wurde. 4. Ungenaue Eingrenzung, ob etwas zum "Norden" oder "Süden" liegt. Die Unterteilung der USA in Nord und Süd basiert auf keinen zugrundeliegenden Informationen, sondern wurde "aus dem Gefühl" heraus vorgenommen. Dies kann zu einer Verfälschung der Ergebnisse führen, da die Einteilung nicht objektiv ist und Einträge in "Süd" strenggenommen zu "Nord" gehören könnten und anderes herum. Nun zu unserer Arbeitsweise. Allgemein sind wir strukturiert vorgegangen. Die Thesen wurden ausreichend gründlich analysiert und hinreichend belegt oder wiederlegt. Die Ergebnisse sind nachvollziehbar und die verwendeten Methoden sind angemessen. Hätte das Datenset tiefergreifende Informationen gehabt, hätten die Thesen noch tieferlegend analysiert werden können um so eine bessere Basis für das Erstellen der Modelle zu schaffen. Würden wir diese Arbeit erneut durchführen, würden wir ein anderes Datenset nehmen, welches die Informationen des Kaufdatums, der Umsätze von über 100$ beinhaltet und eine eindeutige Identifizierung des Käufers beinhaltet. So lassen sich die Vorhersagen der Modelle und Vorhersagen besser beurteilen.
+Zum Schluss dieser Arbeit möchten wir diese nochmals kritisch betrachten. Hierzu gehen wir zunächst auf das verwendete Datenset und im Anschluss auf unsere Arbeitsweisen ein. Dabei hinterfragen wir besonders unser Vorgehen und die erzielten Ergebnisse. Das Datenset ist für die Beantwortung unserer Thesen geeignet. Es umfasst einen Umfang von 3900 Einträgen und ist somit ausreichend repräsentativ. Es gibt jedoch auch einige Kritikpunkte die wir an dieser Stelle anbringen möchten. <br>
+<br>
+Zunächst die Kritikpunkte am Datenset. Der erste Kritikpunkt ist, dass kein Kaufdatum bei den Datensätzen hinterlegt ist. Dies wäre vorallem gut gewesen, um auch die Jahre, in der die Beobachtungen gemacht wurden, zu vergleichen. <br>
+Der zweite Kritikpunkt ist, dass es keine Einträge mit einem Umsatz von über 100$ gibt. Dies ist vor allem für die Vorhersage in den Modellen 3 und  4 von Nachteil, da die Modelle nicht auf einen solchen Fall trainiert werden können.
+Ein dritter Kritikpunkt ist, dass es keine Angaben darüber gibt, ob ein Kunde mehrere Produkte gekauft hat. Zu erkennen ist nur, dass ein Kunde eine bestimmte Anzahl an vorherigen Käufen getätigt hat. Hier wäre es noch interessant gewesen, ob ein Kunde in einem Kauf auch mehrere Produkte gekauft hat. Aus dem Datenset ist nicht ersichtlich, dass Kunden mehrfach Käufe getätigt haben könnten. Dies verfälscht wohlmöglich die Vorhersagen der Modelle. Es lässt sich nicht sicher sagen, dass jeder Kauf tatäschlich von einer anderen Person getätigt wurde.  <br>
+<br>
+Nun zu der kritischen Auseinandersetzung mit unserer Arbeitsweise. Allgemein sind wir strukturiert vorgegangen. Die Thesen wurden ausreichend gründlich analysiert und hinreichend belegt oder wiederlegt. Die Ergebnisse sind nachvollziehbar und die verwendeten Methoden sind angemessen. Hätte das Datenset tiefergreifende Informationen gehabt, hätten die Thesen noch tieferlegend analysiert werden können um so eine bessere Basis für das Erstellen der Modelle zu schaffen. Würden wir diese Arbeit erneut durchführen, würden wir ein anderes Datenset nehmen, welches die Informationen des Kaufdatums, der Umsätze von über 100$ beinhaltet und eine eindeutige Identifizierung des Käufers beinhaltet. So lassen sich die Vorhersagen der Modelle und Vorhersagen besser beurteilen. <br>
+Ein weiterer Kritikpunkt ist, dass die Eingrenzung in These 7 von "Norden" und "Süden" der USA nicht genau genug ist. Die Unterteilung der USA in Nord und Süd basiert auf keinen zugrundeliegenden Informationen, sondern wurde "aus dem Gefühl" heraus vorgenommen. Dies kann zu einer Verfälschung der Ergebnisse führen, da die Einteilung nicht objektiv ist und Einträge in "Süd" strenggenommen zu "Nord" gehören könnten und anderes herum. <br>
+Ein dritter Kritikpunkt ist die These 3. Hier wird die These zwar widerlegt, jedoch wird nicht der Shipping_Type beachtet. Dies wäre sehr sinnvoll, da es die Versandtypen Express, kostenloser Versand, Next Day Air, Standard, 2-Tage-Versand und Abholung im Geschäft gibt. Hierbei ist es logisch, dass Barzahlung am geringsten ist, da diese nur bei Abholung im Geschäft möglich ist. Daher hätte die These lauten müssen: "Kunden, die den Versandtyp Abholung im Geschäft wählen, zahlen am häufigsten per Barzahlung".
 
 ## Ideen für weitere Analysen
 
-Vorhersage von weiteren Variablen, wie z.B. die Anzahl der Bestellungen, die ein Kunde tätigt. Analyse des Ratings
+Im Folgenden werden Ideen für weitere Analysen aufgeführt, die sich aus dieser Arbeit ergeben haben.
+
+### Analyse und Vorhersage des Review_Rating
+
+Die Spalte Review_Rating könnte noch analysiert werden. Hiermit könnte man analysieren, wie Zufrieden die Kunden im durchschnitt mit dem Kauf sind und ob es einen Zusammenhang zwischen dem Rating und der Anzahl der Käufe gibt. <br>
+Zudem könnte versucht werden vorhzusagen, wie glücklich die Käufer mit dem Kauf sind. Die Vorhersage könnte dabei auf Alter und Geschlecht basieren.
+
+### Vorhersage des Shipping Types
+
+
+
+### Genauere Analyse nach Geschlecht und Alter
+
+
+###  Vorhersage der Anzahl der Käufe pro Kategorie
+
+
 
 # Quellen
 
